@@ -1,0 +1,24 @@
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'checkstyle'
+}
+
+
+checkstyle {
+    toolVersion "${checkstyle_version}"
+    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+    configProperties = [
+            'checkstyle.cache.file': "${buildDir}/checkstyle.cache",
+    ]
+    ignoreFailures = true
+    showViolations = true
+
+}
+
+checkstyleMain {
+    source = "src/main/java"
+}
+checkstyleTest {
+    source = "src/test/java"
+}
+

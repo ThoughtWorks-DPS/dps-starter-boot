@@ -1,0 +1,167 @@
+version: 2.1
+
+orbs:
+  secrethub: secrethub/cli@1.0.0
+executors:
+  build-agent:
+    docker:
+      - image: circleci/openjdk:11-jdk
+  deploy-agent:
+    docker:
+      - image: twdps/di-circleci-infra-image:stable
+
+defaults: &defaults
+  working_directory: ~/repo
+  environment:
+    DOCKER_REGISTRY: twdps
+
+
+jobs:
+  build:
+    executor: build-agent
+    <<: *defaults
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "service/build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: ./gradlew dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "service/build.gradle" }}
+
+      - run:
+          name: Run tests
+          command: ./gradlew test
+
+  publish:
+    executor: build-agent
+    environment:
+      DOCKER_REGISTRY: twdps
+      DOCKER_USER: secrethub://twdps/di/svc/dockerhub/username
+      DOCKER_PASSWORD: secrethub://twdps/di/svc/dockerhub/password
+
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker
+      - secrethub/install
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "service/build.gradle" }}
+            - v1-dependencies-
+
+      - run:
+          name: What's my build number?
+          command: echo $CIRCLE_BUILD_NUM
+
+      - run:
+          name: Build init container
+          command: docker build init-container -t twdps/dps-psql-init:lastest
+
+      - run:
+          name: Tag init container
+          command: docker tag twdps/dps-psql-init:lastest twdps/dps-psql-init:$CIRCLE_BUILD_NUM
+
+      - run:
+          name: Build Jar
+          command: ./gradlew build -x test
+
+      - run:
+          name: Build Image
+          command: docker build service -t twdps/dps-multi-module-starterkit-java:latest
+
+      - run:
+          name: Tag Main Image
+          command: docker tag twdps/dps-multi-module-starterkit-java:latest twdps/dps-multi-module-starterkit-java:$CIRCLE_BUILD_NUM
+
+      - run:
+          name: Docker authentication
+          shell: secrethub run -- /bin/sh -e
+          command: |
+            echo $DOCKER_PASSWORD | docker login --username $DOCKER_USER --password-stdin
+
+      - run:
+          name: Push init container
+          command: docker push twdps/dps-psql-init:lastest
+
+      - run:
+          name: Publish Docker Image
+          command: docker push twdps/dps-multi-module-starterkit-java:latest
+
+  dev-deploy:
+    executor: deploy-agent
+    environment:
+      AWS_DEFAULT_REGION: us-east-2
+      DOCKER_REGISTRY: twdps
+      DOCKER_USER: secrethub://twdps/di/svc/dockerhub/username
+      DOCKER_PASSWORD: secrethub://twdps/di/svc/dockerhub/password
+      POSTGRES_ENDPOINT: secrethub://twdps/di/svc/aurora/psql/endpoint
+      POSTGRES_ROOT_USER: secrethub://twdps/di/svc/aurora/psql/username
+      POSTGRESS_ROOT_PASSWORD: secrethub://twdps/di/svc/aurora/psql/password
+      POSTGRES_USER: secrethub://twdps/di/svc/aurora/psql/starter/username
+      POSTGRES_PASSWORD: secrethub://twdps/di/svc/aurora/psql/starter/password
+    <<: *defaults
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: pull kubeconfig
+          shell: secrethub run -- /bin/sh -e
+          command: |
+            mkdir ~/.kube
+            SECRETHUB_VAR_ENV=sandbox secrethub inject -i tpl/kubeconfig.tpl -o ~/.kube/config
+      - run:
+          name: Create registry secrets
+          shell: secrethub run -- /bin/sh -e
+          command: |
+            kubectl create secret docker-registry docker-hub-pull-secret -n di-dev \
+                        --docker-username=$DOCKER_USER \
+                        --docker-password=$DOCKER_PASSWORD \
+                        --dry-run=client -o yaml | kubectl apply -f -
+      - run:
+          name: Create postgres secrets
+          shell: secrethub run -- /bin/sh -e
+          command: |
+            kubectl create secret generic psql-secret -n di-dev \
+                        --from-literal=psql-username=$POSTGRES_USER \
+                        --from-literal=psql-password=$POSTGRES_PASSWORD \
+                        --from-literal=psql_root_username=$POSTGRES_ROOT_USER \
+                        --from-literal=psql_root_password=$POSTGRESS_ROOT_PASSWORD \
+                        --from-literal=psql_endpoint=$POSTGRES_ENDPOINT \
+                        --dry-run=client -o yaml | kubectl apply -f -
+  # need something to combine the endpoint, the port and the db name
+  #  - run:
+  #        name: run helm chart
+  #        shell: secrethub run -- /bin/sh -eo pipefail
+  #        command: |
+  #          helm upgrade poc-va-starter-java helm \
+  #                        --install \
+  #                        --wait \
+  #                        -f helm/api-2-dev.yaml \
+  #                        -n api-2-dev \
+  #                        --set tag="latest" \
+  #                        --set env.name.SECRETHUB_HELLO="$SECRETHUB_HELLO"
+
+workflows:
+  version: 2
+
+  build_test_publish:
+    jobs:
+      - build
+      - publish:
+          context: twdps-di
+          requires:
+            - build
+      - dev-deploy:
+          context: twdps-di
+          requires:
+            - build
+            - publish

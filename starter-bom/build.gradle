@@ -1,0 +1,66 @@
+plugins {
+    id 'java-platform'
+    id 'maven-publish'
+    id 'org.springframework.boot'
+}
+
+version getTagOrDefault("${module_version}")
+
+javaPlatform {
+    allowDependencies()
+}
+dependencies {
+    api platform("org.springframework.boot:spring-boot-dependencies:${spring_boot_version}")
+
+    constraints {
+        // api "io.twdps.starter:tracing:${tracing_version}"
+        api project(":tracing")
+        api "com.fasterxml.jackson.datatype:jackson-datatype-jsr310${jackson_version}"
+        api "io.opentracing.brave:brave-opentracing:${brave_opentracing_version}"
+        api "io.opentracing.contrib:opentracing-spring-web-starter:${opentracing_spring_web_starter_version}"
+        api "io.opentracing.contrib:opentracing-spring-cloud-jdbc-starter:${opentracing_spring_cloud_jdbc_starter_version}"
+        api "io.opentracing:opentracing-api:${opentracing_api_version}"
+        api "io.zipkin.reporter2:zipkin-reporter:${zipkin_reporter_version}"
+        api "io.zipkin.reporter2:zipkin-sender-okhttp3:${zipkin_sender_okhttp3_version}"
+        api "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:${gradle_intellij_plugin_version}"
+        api "org.assertj:assertj-core${assertj_core_version}"
+        api "org.junit.jupiter:junit-jupiter-api:${junit_jupiter_api_version}"
+        api "org.mapstruct:mapstruct:${mapstruct_version}"
+        api "org.mockito:mockito-core${mockito_version}"
+        api "org.projectlombok:lombok${lombok_version}"
+        api "org.spockframework:spock-core:${spock_core_version}"
+        api "org.springframework.boot:spring-boot-starter-web:${spring_boot_version}"
+        // TODO:  Not sure if this exclusion should be in the BOM
+//        api "org.springframework.boot:spring-boot-starter-test:${spring_boot_version}" {
+//            exclude "org.junit.vintage:junit-vintage-engine"
+//        }
+
+        runtime "com.h2database:h2:${h2_version}"
+        runtime "io.opentracing:opentracing-mock:${opentracing_mock_version}"
+        runtime "org.junit.jupiter:junit-jupiter-engine:${junit_jupiter_api_version}"
+        runtime "org.mock-server:mockserver-netty:${mockserver_netty_version}"
+        runtime "org.postgresql:postgresql:${postgresql_version}"
+    }
+}
+
+publishing {
+    publications {
+        myPlatform(MavenPublication) {
+            from components.javaPlatform
+        }
+    }
+}
+
+public static String getTagOrDefault(String defaultValue) {
+    String ref = System.getenv('GITHUB_REF')
+
+    if (!ref) {
+        return defaultValue
+    }
+
+    if (ref.startsWith('refs/tags/')) {
+        return ref.substring('refs/tags/'.length())
+    }
+
+    return defaultValue
+}

@@ -1,0 +1,10 @@
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'starter.java-build-conventions'
+    id 'starter.java-style-conventions'
+    id 'starter.java-swagger-conventions'
+    id "idea"
+    //id "io.spring.dependency-management"
+    id "org.ajoberstar.grgit"
+}
+

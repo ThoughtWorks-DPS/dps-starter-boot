@@ -1,0 +1,26 @@
+plugins {
+    // Apply the java Plugin to add support for Java.
+    //id 'java'
+    id 'jacoco'
+}
+
+sourceCompatibility = '11'
+
+
+tasks.named('test') {
+    // Use junit platform for unit tests.
+    useJUnitPlatform()
+}
+
+jacoco {
+    toolVersion = "${jacoco_version}"
+    reportsDir = file("$buildDir/jacoco")
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+}

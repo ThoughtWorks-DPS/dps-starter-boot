@@ -4,16 +4,13 @@ plugins {
     id 'jacoco'
 }
 
-sourceCompatibility = '11'
-
-
 tasks.named('test') {
     // Use junit platform for unit tests.
     useJUnitPlatform()
 }
 
 jacoco {
-    toolVersion = "${jacoco_version}"
+//    toolVersion = "${jacoco_version}"
     reportsDir = file("$buildDir/jacoco")
 }
 

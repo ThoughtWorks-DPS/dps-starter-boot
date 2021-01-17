@@ -1,27 +1,8 @@
 plugins {
-    // Apply the java Plugin to add support for Java.
-    id 'java'
     id "idea"
-    //id "io.spring.dependency-management"
-    //id "org.ajoberstar.grgit"
-    //id "io.swagger.swaggerhub"
-    //id "com.diffplug.spotless"
 }
 
 sourceCompatibility = '11'
-
-repositories {
-
-    jcenter()
-    mavenCentral()
-    maven {
-        url findProperty('mavenRepository')
-        credentials {
-            username ""
-            password ""
-        }
-    }
-}
 
 
 dependencies {

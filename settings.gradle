@@ -1,2 +1,3 @@
 rootProject.name = 'starter-boot'
 include('tracing', 'starter-bom'/*, 'starter-gradle'*/)
+includeBuild('example')

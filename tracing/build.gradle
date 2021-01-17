@@ -1,53 +1,30 @@
 plugins {
-    id 'java-gradle-plugin'
-    id 'starter.java-library-conventions'
-    // Apply the java-library plugin for API and implementation separation.
-    id 'starter.java-open-tracing-common-conventions'
+    id 'starter.std.java.library-conventions'
 }
 
-//dependencyManagement {
-//    imports {
-//        mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
-//    }
-//}
+configurations {
+    springBom
+    compileOnly.extendsFrom(springBom)
+    annotationProcessor.extendsFrom(springBom)
+    implementation.extendsFrom(springBom)
+    testAnnotationProcessor.extendsFrom(springBom)
+
+    annotationBom
+    implementation.extendsFrom(annotationBom)
+    annotationProcessor.extendsFrom(annotationBom)
+    testAnnotationProcessor.extendsFrom(annotationBom)
+}
 
 dependencies {
-    api platform(project(':starter-bom'))
-    annotationProcessor platform(project(':starter-bom'))
-//    implementation project(':starter-gradle')
-    implementation 'org.springframework:spring-webmvc'
+    annotationBom platform(project(':starter-bom'))
+
     implementation "org.springframework.boot:spring-boot-starter-web"
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation "io.opentracing.contrib:opentracing-spring-web-starter"
-    //implementation("org.postgresql:postgresql")
-}
+//    implementation "io.opentracing.contrib:opentracing-spring-web-starter"
 
-ext {
-//    gitRevision = grgit.head().id
-//    gitAbbRevision = grgit.head().abbreviatedId
-//    // Please don't change for 'gitBranchName = grgit.branch.current().name'
-//    // that doesn't work when the head is detached, which is the case
-//    // when running on the pipeline
-//    gitBranchName = System.getProperty("git.branchName", "local")
-
-}
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = 'io.twdps.starter'
-            artifactId = 'tracing'
-            version = "${module.version}"
-            from components.java
-        }
-    }
-    repositories {
-        maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            def releasesRepoUrl = "${mavenRepository}"
-            def snapshotsRepoUrl = "${mavenRepository}"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            url = "${mavenRepository}"
-        }
-    }
+    implementation 'io.opentracing.brave:brave-opentracing'
+    implementation 'io.opentracing.contrib:opentracing-spring-web-starter'
+    implementation 'io.opentracing:opentracing-api'
+    implementation 'io.zipkin.reporter2:zipkin-reporter'
+    implementation 'io.zipkin.reporter2:zipkin-sender-okhttp3'
 }
 

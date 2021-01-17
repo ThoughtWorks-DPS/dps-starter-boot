@@ -1,13 +1,30 @@
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    // There's a conflict between versions of jgit between spotless and axion release plugin
+    configurations.classpath {
+        resolutionStrategy {
+            force 'org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r'
+        }
+    }
+}
+
 plugins {
 //    id ("io.spring.dependency-management") version "${spring_dependency_management_version}"
-    id ("org.ajoberstar.grgit") version "${grgit_version}"
+    id ("org.ajoberstar.grgit") version "${grgit_version}" apply false
     id ("org.springframework.boot") version "${spring_boot_version}" apply false
-    id ("io.swagger.swaggerhub") version "${swaggerhub_version}"
-    id ("com.diffplug.spotless") version "${spotless_version}"
+    id ("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
+    id ("com.diffplug.spotless") version "${spotless_version}" apply false
 //    id ("com.palantir.docker") version "${palantir_docker_version}" apply false
 //    id ("com.palantir.docker-run") version "${palantir_docker_run_version}" apply false
     id("com.cdsap.talaiot") version "${talaiot_version}" apply false
     id("com.cdsap.talaiot.plugin.base") version "${talaiot_plugin_base_version}" apply false
     id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
+    id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}" apply false
     id("starter.metrics.build-time-tracker-conventions")
+    id("starter.java.release-conventions")
 }
+

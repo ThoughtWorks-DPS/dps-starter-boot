@@ -3,17 +3,13 @@
  */
 
 
-group = "${module_group}"
+//group = "${module_group}"
 version getTagOrDefault("${module_version}")
 
 public static String getTagOrDefault(String defaultValue) {
     String ref = System.getenv('GITHUB_REF')
 
-    if (!ref) {
-        return defaultValue
-    }
-
-    if (ref.startsWith('refs/tags/')) {
+    if (ref && ref.startsWith('refs/tags/')) {
         return ref.substring('refs/tags/'.length())
     }
 

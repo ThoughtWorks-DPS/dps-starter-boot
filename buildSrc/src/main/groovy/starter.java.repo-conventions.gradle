@@ -1,6 +1,11 @@
 //plugins {
 //}
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
 
 repositories {
 

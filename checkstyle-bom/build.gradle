@@ -1,0 +1,11 @@
+plugins {
+    id 'starter.std.java.bom-conventions'
+}
+
+dependencies {
+
+    constraints {
+        api 'com.puppycrawl.tools:checkstyle:8.36'
+    }
+}
+

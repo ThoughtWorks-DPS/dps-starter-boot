@@ -3,10 +3,18 @@ plugins {
     id 'checkstyle'
 }
 
+configurations {
+    checkstyleRules
+}
+
+dependencies {
+    checkstyleRules project(':checkstyle')
+}
 
 checkstyle {
     toolVersion "${checkstyle_version}"
-    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+//    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
+    config project.resources.text.fromArchiveEntry(configurations.checkstyleRules, 'config/checkstyle/checkstyle.xml')
     configProperties = [
             'checkstyle.cache.file': "${buildDir}/checkstyle.cache",
     ]

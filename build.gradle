@@ -12,6 +12,7 @@ buildscript {
     }
 }
 
+
 plugins {
 //    id ("io.spring.dependency-management") version "${spring_dependency_management_version}"
     id ("org.ajoberstar.grgit") version "${grgit_version}" apply false

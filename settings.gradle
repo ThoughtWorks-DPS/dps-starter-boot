@@ -1,2 +1,5 @@
 rootProject.name = 'starter-boot'
-include('tracing', 'starter-bom'/*, 'starter-gradle'*/)
+include ':tracing'
+include ':starter-bom'
+include ':checkstyle-bom'
+include ':checkstyle'

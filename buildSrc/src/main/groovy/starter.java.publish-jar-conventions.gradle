@@ -18,7 +18,6 @@ publishing {
             def releasesRepoUrl = "${mavenRepository}"
             def snapshotsRepoUrl = "${mavenSnapshotRepository}"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-//            url = "${mavenRepository}"
         }
     }
 }

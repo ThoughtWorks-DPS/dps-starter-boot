@@ -1,6 +1,4 @@
 plugins {
-    // Apply the java Plugin to add support for Java.
-    //id 'java'
     id 'jacoco'
 }
 
@@ -10,7 +8,7 @@ tasks.named('test') {
 }
 
 jacoco {
-//    toolVersion = "${jacoco_version}"
+    toolVersion = "${jacoco_version}"
     reportsDir = file("$buildDir/jacoco")
 }
 

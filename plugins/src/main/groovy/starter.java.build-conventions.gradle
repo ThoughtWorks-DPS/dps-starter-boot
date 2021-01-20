@@ -4,6 +4,8 @@ sourceCompatibility = '11'
 dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+    implementation "io.springfox:springfox-boot-starter"
+
     compileOnly 'org.projectlombok:lombok'
     implementation 'org.mapstruct:mapstruct'
 

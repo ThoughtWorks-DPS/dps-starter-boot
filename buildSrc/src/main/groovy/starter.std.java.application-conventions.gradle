@@ -5,7 +5,6 @@
 plugins {
     // Apply the java Plugin to add support for Java.
     id 'java'
-//    id "idea"
     id "org.ajoberstar.grgit"
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'

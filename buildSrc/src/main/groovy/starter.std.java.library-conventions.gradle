@@ -6,7 +6,6 @@ plugins {
     // Apply the java Plugin to add support for Java.
     id 'java'
     id 'java-library'
-//    id "idea"
     id "org.ajoberstar.grgit"
     id 'starter.java.repo-conventions'
     id 'starter.java.open-tracing-common-conventions'

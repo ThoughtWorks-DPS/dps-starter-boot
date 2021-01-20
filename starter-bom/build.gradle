@@ -22,6 +22,7 @@ dependencies {
         api "org.mapstruct:mapstruct:${mapstruct_version}"
         api "org.mapstruct:mapstruct-processor:${mapstruct_version}"
         api "org.spockframework:spock-core:${spock_core_version}"
+        api "io.springfox:springfox-boot-starter:${springfox_version}"
         // TODO:  Not sure if this exclusion should be in the BOM
 //        api "org.springframework.boot:spring-boot-starter-test:${spring_boot_version}" {
 //            exclude "org.junit.vintage:junit-vintage-engine"

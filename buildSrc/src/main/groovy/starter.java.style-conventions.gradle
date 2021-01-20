@@ -1,7 +1,6 @@
 plugins {
-    // Apply the java Plugin to add support for Java.
     id 'starter.java.checkstyle-conventions'
-    id "com.diffplug.spotless"
+//    id 'starter.java.spotless-conventions'
     id 'com.palantir.baseline-circleci'
 }
 

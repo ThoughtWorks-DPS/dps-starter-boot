@@ -23,14 +23,15 @@ dependencies {
         api "org.mapstruct:mapstruct-processor:${mapstruct_version}"
         api "org.spockframework:spock-core:${spock_core_version}"
         api "io.springfox:springfox-boot-starter:${springfox_version}"
+        api "com.tngtech.archunit:archunit:${arch_unit_version}"
+        api "io.opentracing:opentracing-mock:${opentracing_mock_version}"
+        api "org.mock-server:mockserver-netty:${mockserver_netty_version}"
         // TODO:  Not sure if this exclusion should be in the BOM
 //        api "org.springframework.boot:spring-boot-starter-test:${spring_boot_version}" {
 //            exclude "org.junit.vintage:junit-vintage-engine"
 //        }
 
         runtime "com.h2database:h2:${h2_version}"
-        runtime "io.opentracing:opentracing-mock:${opentracing_mock_version}"
-        runtime "org.mock-server:mockserver-netty:${mockserver_netty_version}"
         runtime "org.postgresql:postgresql:${postgresql_version}"
     }
 }

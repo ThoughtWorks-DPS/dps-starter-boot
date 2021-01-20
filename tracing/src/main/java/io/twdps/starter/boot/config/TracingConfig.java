@@ -26,9 +26,11 @@ import static zipkin2.codec.SpanBytesEncoder.JSON_V1;
 @ConditionalOnProperty(prefix = "opentracing.zipkin", name = "enabled", havingValue = "true")
 public class TracingConfig {
 
-  @Value("${spring.application.name:unknown-spring-boot}")
   private String serviceName;
 
+  public TracingConfig(  @Value("${spring.application.name:unknown-spring-boot}") String serviceName) {
+    this.serviceName = serviceName;
+  }
   /** create tracer config.
    *
    * @param spanHandler span handler implementation

@@ -20,6 +20,7 @@ dependencies {
     testCompile 'org.mockito:mockito-core'
 //    testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.assertj:assertj-core'
+    testImplementation 'com.tngtech.archunit:archunit'
     //since this is a spring boot starter, assume spring at all levels
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group:'org.junit.vintage', module: 'junit-vintage-engine'

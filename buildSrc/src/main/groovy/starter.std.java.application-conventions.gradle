@@ -22,5 +22,6 @@ plugins {
 dependencies {
     testImplementation 'org.mock-server:mockserver-netty'
     // open tracing testing/mock support
-    testCompile 'io.opentracing:opentracing-mock'
+    testImplementation 'io.opentracing:opentracing-mock'
+    testImplementation 'com.tngtech.archunit:archunit'
 }

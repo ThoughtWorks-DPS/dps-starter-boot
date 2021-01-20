@@ -2,7 +2,12 @@
 buildscript {
     repositories {
         mavenCentral()
+        gradlePluginPortal()
         jcenter()
+        maven { url  "http://palantir.bintray.com/releases" }
+    }
+    dependencies {
+        classpath "com.palantir.baseline:gradle-baseline-java:${palantir_baseline_plugin_version}"
     }
     // There's a conflict between versions of jgit between spotless and axion release plugin
     configurations.classpath {
@@ -21,6 +26,7 @@ plugins {
     id ("com.diffplug.spotless") version "${spotless_version}" apply false
 //    id ("com.palantir.docker") version "${palantir_docker_version}" apply false
 //    id ("com.palantir.docker-run") version "${palantir_docker_run_version}" apply false
+    id("com.palantir.baseline-circleci") version "${palantir_baseline_plugin_version}" apply false
     id("com.cdsap.talaiot") version "${talaiot_version}" apply false
     id("com.cdsap.talaiot.plugin.base") version "${talaiot_plugin_base_version}" apply false
     id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false

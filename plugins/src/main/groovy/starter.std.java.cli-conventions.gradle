@@ -1,0 +1,15 @@
+
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'java'
+    id "org.ajoberstar.grgit"
+    // Apply the application plugin to add support for building a CLI application in Java.
+    id 'application'
+    id 'starter.java.repo-conventions'
+    id 'starter.java.build-conventions'
+    id 'starter.java.container-conventions'
+    id 'starter.java.style-conventions'
+    id 'starter.java.test-conventions'
+    id 'starter.java.publish-jar-conventions'
+}
+

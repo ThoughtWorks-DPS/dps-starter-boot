@@ -15,13 +15,18 @@ This configuration also provides span/trace logging across calls to JPA persiste
 
 ## checkstyle
 
-Working on providing the checkstyle settings as an artifact for team consumption as a default starting point.
+Provides the checkstyle settings as an artifact for team consumption as a default starting point.
 Again, having central defaults aids governance when dealing with newly discovered CVEs or other issues that need to be surfaced.
 
+## checkstyle-bom
 
-## buildSrc
+Defines the version of checkstyle configurations, enables easy updates Provides the checkstyle settings as an artifact for team consumption as a default starting point.
+Again, having central defaults aids governance when dealing with newly discovered CVEs or other issues that need to be surfaced.
 
-Another goal is to be able to externalize the Gradle "mixins" that get created from the buildSrc as an artifact that can be used as easily overridable default behavior.   
+## plugins
+
+Externalizes the Gradle "mixins" that might live in the buildSrc as an artifact that can be used as easily overridable default behavior.
+This allows the starter kit to rely on the toplevel starter.std.* plugins, while giving teams domain-oriented components that can be overridden without requiring tons of duplication.
 See the [README.md](./buildSrc/README.md) in the buildSrc directory for more details.
 
 ## scientist

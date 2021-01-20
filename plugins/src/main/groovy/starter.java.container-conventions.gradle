@@ -1,0 +1,5 @@
+
+ext {
+    dockerRegistry =  project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
+    dockerImageVersion = project.hasProperty("buildNumber") ? "${project.version}-${project.buildNumber}" : project.version
+}

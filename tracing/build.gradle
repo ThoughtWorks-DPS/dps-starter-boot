@@ -8,12 +8,6 @@ dependencies {
     checkstyleRules platform(project(':checkstyle-bom'))
 
     implementation "org.springframework.boot:spring-boot-starter-web"
-//    implementation "io.opentracing.contrib:opentracing-spring-web-starter"
-
-    implementation 'io.opentracing.brave:brave-opentracing'
     implementation 'io.opentracing.contrib:opentracing-spring-web-starter'
-    implementation 'io.opentracing:opentracing-api'
-    implementation 'io.zipkin.reporter2:zipkin-reporter'
-    implementation 'io.zipkin.reporter2:zipkin-sender-okhttp3'
 }
 

@@ -1,0 +1,5 @@
+
+public static String getValueOrDefault(String value, String defaultValue) {
+
+    return !value ? defaultValue : value;
+}

@@ -18,7 +18,6 @@ buildscript {
     }
 }
 
-
 plugins {
     id("org.ajoberstar.grgit") version "${grgit_version}" apply false
     id("org.springframework.boot") version "${spring_boot_version}" apply false
@@ -38,4 +37,10 @@ plugins {
     id("starter.java.release-conventions")
     id("starter.java.versions-conventions")
 }
+
+ext {
+    jacoco_enforce_violations = false
+    jacoco_minimum_coverage = 0.8
+}
+
 

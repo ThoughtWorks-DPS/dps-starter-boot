@@ -7,25 +7,45 @@ javaPlatform {
     allowDependencies()
 }
 
+ext {
+    arch_unit_version = "0.15.0"
+    brave_opentracing_version = "1.0.0"
+    gradle_intellij_plugin_version = "0.4.14"
+    h2_version = "1.4.200"
+    mapstruct_version = "1.4.1.Final"
+    mockserver_netty_version = "5.11.2"
+    opentracing_api_version = "0.33.0"
+    opentracing_mock_version = "0.33.0"
+    opentracing_spring_cloud_jdbc_starter_version = "0.5.9"
+    opentracing_spring_web_starter_version = "4.1.0"
+    postgresql_version = "9.4-1206-jdbc42"
+    spock_core_version = "1.3-groovy-2.5"
+    spring_boot_version = "2.4.2"
+    springfox_version = "3.0.0"
+    zipkin_reporter_version = "2.16.3"
+    zipkin_sender_okhttp3_version = "2.16.3"
+
+}
+
 dependencies {
     api platform("org.springframework.boot:spring-boot-dependencies:${spring_boot_version}")
 
     constraints {
         api project(":tracing")
+        api "com.tngtech.archunit:archunit:${arch_unit_version}"
+        api "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:${gradle_intellij_plugin_version}"
         api "io.opentracing.brave:brave-opentracing:${brave_opentracing_version}"
-        api "io.opentracing.contrib:opentracing-spring-web-starter:${opentracing_spring_web_starter_version}"
         api "io.opentracing.contrib:opentracing-spring-cloud-jdbc-starter:${opentracing_spring_cloud_jdbc_starter_version}"
+        api "io.opentracing.contrib:opentracing-spring-web-starter:${opentracing_spring_web_starter_version}"
         api "io.opentracing:opentracing-api:${opentracing_api_version}"
+        api "io.opentracing:opentracing-mock:${opentracing_mock_version}"
+        api "io.springfox:springfox-boot-starter:${springfox_version}"
         api "io.zipkin.reporter2:zipkin-reporter:${zipkin_reporter_version}"
         api "io.zipkin.reporter2:zipkin-sender-okhttp3:${zipkin_sender_okhttp3_version}"
-        api "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:${gradle_intellij_plugin_version}"
         api "org.mapstruct:mapstruct:${mapstruct_version}"
         api "org.mapstruct:mapstruct-processor:${mapstruct_version}"
-        api "org.spockframework:spock-core:${spock_core_version}"
-        api "io.springfox:springfox-boot-starter:${springfox_version}"
-        api "com.tngtech.archunit:archunit:${arch_unit_version}"
-        api "io.opentracing:opentracing-mock:${opentracing_mock_version}"
         api "org.mock-server:mockserver-netty:${mockserver_netty_version}"
+        api "org.spockframework:spock-core:${spock_core_version}"
         // TODO:  Not sure if this exclusion should be in the BOM
 //        api "org.springframework.boot:spring-boot-starter-test:${spring_boot_version}" {
 //            exclude "org.junit.vintage:junit-vintage-engine"

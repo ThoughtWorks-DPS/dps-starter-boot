@@ -11,5 +11,6 @@ plugins {
     id 'starter.java.style-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.publish-jar-conventions'
+    id 'starter.java.versions-conventions'
 }
 

@@ -1,13 +1,14 @@
-
 buildscript {
     repositories {
         mavenCentral()
         gradlePluginPortal()
         jcenter()
-        maven { url  "http://palantir.bintray.com/releases" }
+        maven { url "http://palantir.bintray.com/releases" }
     }
     dependencies {
         classpath "com.palantir.baseline:gradle-baseline-java:${palantir_baseline_plugin_version}"
+        classpath "se.patrikerdes:gradle-use-latest-versions-plugin:${use_latest_versions_plugin_version}"
+        classpath "com.github.ben-manes:gradle-versions-plugin:${versions_plugin_version}"
     }
     // There's a conflict between versions of jgit between spotless and axion release plugin
     configurations.classpath {
@@ -20,10 +21,10 @@ buildscript {
 
 plugins {
 //    id ("io.spring.dependency-management") version "${spring_dependency_management_version}"
-    id ("org.ajoberstar.grgit") version "${grgit_version}" apply false
-    id ("org.springframework.boot") version "${spring_boot_version}" apply false
-    id ("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
-    id ("com.diffplug.spotless") version "${spotless_version}" apply false
+    id("org.ajoberstar.grgit") version "${grgit_version}" apply false
+    id("org.springframework.boot") version "${spring_boot_version}" apply false
+    id("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
+    id("com.diffplug.spotless") version "${spotless_version}" apply false
 //    id ("com.palantir.docker") version "${palantir_docker_version}" apply false
 //    id ("com.palantir.docker-run") version "${palantir_docker_run_version}" apply false
     id("com.palantir.baseline-circleci") version "${palantir_baseline_plugin_version}" apply false
@@ -31,7 +32,10 @@ plugins {
     id("com.cdsap.talaiot.plugin.base") version "${talaiot_plugin_base_version}" apply false
     id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
     id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}" apply false
+    id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
+    id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
     id("starter.metrics.build-time-tracker-conventions")
     id("starter.java.release-conventions")
+    id("starter.java.versions-conventions")
 }
 

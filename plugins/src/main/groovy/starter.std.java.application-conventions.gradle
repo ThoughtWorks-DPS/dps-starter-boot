@@ -13,7 +13,7 @@ plugins {
     id 'starter.java.swagger-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.publish-jar-conventions'
-
+    id 'starter.java.versions-conventions'
 }
 
 dependencies {

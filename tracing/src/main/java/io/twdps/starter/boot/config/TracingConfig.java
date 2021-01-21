@@ -28,10 +28,12 @@ public class TracingConfig {
 
   private String serviceName;
 
-  public TracingConfig(  @Value("${spring.application.name:unknown-spring-boot}") String serviceName) {
+  public TracingConfig(
+      @Value("${spring.application.name:unknown-spring-boot}") String serviceName) {
     this.serviceName = serviceName;
   }
-  /** create tracer config.
+  /**
+   * create tracer config.
    *
    * @param spanHandler span handler implementation
    * @param sampler sampler implementation
@@ -50,7 +52,8 @@ public class TracingConfig {
     return BraveTracer.create(braveTracing);
   }
 
-  /** create span handler config.
+  /**
+   * create span handler config.
    *
    * @param properties properties for configuring span handler
    * @return span handler
@@ -68,7 +71,8 @@ public class TracingConfig {
     return AsyncZipkinSpanHandler.create(OkHttpSender.create(url));
   }
 
-  /** configure sampler.
+  /**
+   * configure sampler.
    *
    * @param properties properties for configuring sampler
    * @return sampler
@@ -86,7 +90,8 @@ public class TracingConfig {
     return Sampler.ALWAYS_SAMPLE;
   }
 
-  /** customize tracer.
+  /**
+   * customize tracer.
    *
    * @return customizer for zipkin tracer
    */

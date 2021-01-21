@@ -1,0 +1,10 @@
+plugins {
+    id 'io.gatling.gradle'
+}
+
+sourceSets {
+    gatling {
+        scala.srcDirs = ["src/gatling/scala"]
+        resources.srcDirs = ["src/gatling/resources"]
+    }
+}

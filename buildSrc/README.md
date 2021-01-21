@@ -45,6 +45,10 @@ Provides docker container settings
 Provides shortcuts for overriding group and version.
 NOTE: Most likely obsolete, in favor of specifying group directly in the gradle.properties file, and using axion to supply version based on git tags.
 
+## starter.java.gatling-conventions.gradle
+
+Gatling configuration for running stress tests
+
 ## starter.java.open-tracing-common-conventions.gradle
 
 Typical dependencies to implement open tracing.

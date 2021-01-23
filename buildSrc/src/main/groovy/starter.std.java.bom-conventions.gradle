@@ -5,6 +5,7 @@
 plugins {
     id 'java-platform'
     id 'starter.java.repo-conventions'
+    id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-pom-conventions'
     id 'starter.java.versions-conventions'
 }

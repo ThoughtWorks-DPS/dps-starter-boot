@@ -4,6 +4,7 @@ buildscript {
         gradlePluginPortal()
         jcenter()
         maven { url "http://palantir.bintray.com/releases" }
+        maven { url  "https://dl.bintray.com/adesso/junit-insights" }
     }
     dependencies {
         classpath "com.palantir.baseline:gradle-baseline-java:${palantir_baseline_plugin_version}"

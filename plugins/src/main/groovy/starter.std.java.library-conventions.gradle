@@ -6,10 +6,14 @@ plugins {
     id "org.ajoberstar.grgit"
     id 'starter.java.repo-conventions'
     id 'starter.java.open-tracing-common-conventions'
-    id 'starter.java.build-conventions'
+    id 'starter.java.deps-build-conventions'
+    id 'starter.java.deps-test-conventions'
     id 'starter.java.style-conventions'
     id 'starter.java.swagger-conventions'
     id 'starter.java.test-conventions'
+    id 'starter.java.test-unit-conventions'
+    id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-jar-conventions'
     id 'starter.java.versions-conventions'
 }

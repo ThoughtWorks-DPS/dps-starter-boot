@@ -5,16 +5,8 @@ plugins {
 
 publishing {
     publications {
-        myPlatform(MavenPublication) {
+        myLib(MavenPublication) {
             from components.java
-        }
-    }
-    repositories {
-        maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            def releasesRepoUrl = "${mavenRepository}"
-            def snapshotsRepoUrl = "${mavenSnapshotRepository}"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
         }
     }
 }

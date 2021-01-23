@@ -8,9 +8,8 @@ plugins {
 
 publishing {
     publications {
-        myPlatform(MavenPublication) {
-            from components.javaPlatform
+        bootJava(MavenPublication) {
+            artifact bootJar
         }
     }
 }
-

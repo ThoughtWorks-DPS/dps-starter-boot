@@ -1,52 +1,12 @@
 plugins {
     id 'java'
-    id 'jacoco'
     id 'starter.java.property-conventions'
-}
-
-jacoco {
-    toolVersion = jacoco_version
-    reportsDir = file("$buildDir/jacoco")
 }
 
 test {
     useJUnitPlatform {
         excludeEngines 'junit-vintage'
     }
-    finalizedBy jacocoTestReport
-    finalizedBy jacocoTestCoverageVerification
 }
 
-
-jacocoTestReport {
-    reports {
-        html.enabled true
-        xml.enabled true
-        csv.enabled false
-    }
-
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['**/*MapperImpl.*'])
-        }))
-    }
-
-    dependsOn test
-}
-
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            enabled = jacoco_enforce_violations
-            limit {
-                minimum = jacoco_minimum_coverage
-            }
-            afterEvaluate {
-                classDirectories.setFrom(files(classDirectories.files.collect {
-                    fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*'])
-                }))
-            }
-        }
-    }
-}
 

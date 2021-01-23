@@ -9,5 +9,6 @@ dependencies {
 
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation 'io.opentracing.contrib:opentracing-spring-web-starter'
+//    testCompile 'de.adesso:junit-insights'
 }
 

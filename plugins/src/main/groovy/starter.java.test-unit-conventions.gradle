@@ -1,0 +1,4 @@
+plugins {
+    id 'starter.java.test-conventions'
+}
+

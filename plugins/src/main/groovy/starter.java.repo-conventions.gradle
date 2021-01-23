@@ -2,7 +2,10 @@
 buildscript {
     repositories {
         mavenCentral()
+        gradlePluginPortal()
         jcenter()
+        maven { url "http://palantir.bintray.com/releases" }
+        maven { url  "https://dl.bintray.com/adesso/junit-insights" }
     }
     // There's a conflict between versions of jgit between spotless and axion release plugin
     configurations.classpath {

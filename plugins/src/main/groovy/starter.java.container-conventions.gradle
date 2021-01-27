@@ -1,5 +1,38 @@
+plugins {
+    id 'com.palantir.docker'
+    id 'com.palantir.docker-run'
+}
 
 ext {
     dockerRegistry =  project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
     dockerImageVersion = project.hasProperty("buildNumber") ? "${project.version}-${project.buildNumber}" : project.version
+}
+
+docker {
+    dependsOn(assemble)
+    name "${dockerRegistry}/${rootProject.name}"
+    tag "Build", "${dockerRegistry}/${rootProject.name}:${dockerImageVersion}"
+    tag "Latest", "${dockerRegistry}/${rootProject.name}:latest"
+    noCache true
+    files "build/libs/${bootJar.archiveFileName.get()}", 'bin'
+    buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
+}
+
+dockerRun {
+    name project.name
+    image "${dockerRegistry}/${rootProject.name}"
+    ports '8080:8080'
+    env 'SECRETHUB_HELLO': (System.getenv('SECRETHUB_HELLO') == null
+            ? 'override-me'
+            : System.getenv('SECRETHUB_HELLO'))
+}
+
+task dockerPrune(type: Exec) {
+    dependsOn('dockerStop', 'dockerRemoveContainer')
+    dockerRemoveContainer.mustRunAfter('dockerStop')
+    commandLine './scripts/docker-prune.sh'
+}
+
+task dockerStart(type: GradleBuild) {
+    tasks = ["dockerPrune","clean", "dockerClean", "docker", "dockerRun"]
 }

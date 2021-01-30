@@ -3,7 +3,9 @@
  */
 
 plugins {
-    // Support convention plugins written in Groovy. Convention plugins are build scripts in 'src/main' that automatically become available as plugins in the main build.
+    // Support convention plugins written in Groovy. Convention plugins are build scripts in
+    // 'src/main' that automatically become available as plugins in the main build.
+    // TODO: see if this package can be externalized as gradle plugins
     id 'groovy-gradle-plugin'
     id 'java-library'
     id 'maven-publish'
@@ -11,14 +13,9 @@ plugins {
 
 repositories {
     // Use the plugin portal to apply community plugins in convention plugins.
+    mavenLocal()
     gradlePluginPortal()
     jcenter()
     mavenCentral()
-}
-
-dependencies {
-    //implementation project(":starter-bom")
-    implementation  "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:${gradle_intellij_plugin_version}"
-    testImplementation "org.spockframework:spock-core:${spock_core_version}"
 }
 

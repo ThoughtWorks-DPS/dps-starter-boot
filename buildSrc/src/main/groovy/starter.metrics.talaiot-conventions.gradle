@@ -6,19 +6,19 @@ plugins {
 talaiot {
     metrics {
         // You can add your own custom Metric objects:
-//        customMetrics(
+        customMetrics(
 //                MyCustomMetric(),
         // Including some of the provided metrics, individually.
-//                HostnameMetric()
-//        )
+                HostnameMetric()
+        )
 
         // Or define build or task metrics directly:
         customBuildMetrics(
                 kotlinVersion: $kotlinVersion,
                 javaVersion: $javaVersion
         )
-//        customTaskMetrics(a
-//                "customProperty" to $value
+//        customTaskMetrics(
+//                customProperty: $value
 //        )
     }
 

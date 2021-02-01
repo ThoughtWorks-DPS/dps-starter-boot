@@ -101,7 +101,7 @@ workflows:
           context: dps-va-di
           filters:
             branches:
-              - main
+              only: main
   release:
     jobs:
       - build-starter-boot:

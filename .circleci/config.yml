@@ -39,27 +39,27 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       # TODO: Why shouldn't the test-reporter be part of the build-agent image?
-      - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-      - secrethub/exec:
-          step-name: Run CodeClimate pre-build
-          command: |
-            ./cc-test-reporter before-build
+#      - run:
+#          name: Setup Code Climate test-reporter
+#          command: |
+#            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+#            chmod +x ./cc-test-reporter
+#      - secrethub/exec:
+#          step-name: Run CodeClimate pre-build
+#          command: |
+#            ./cc-test-reporter before-build
       - run:
           name: Run tests
           command: |
             ./gradlew clean test
-      - secrethub/exec:
-          step-name: Configure CodeClimate test-coverage formatting pre-upload
-          command: |
-            JACOCO_SOURCE_PATH=src/main/java ./cc-test-reporter format-coverage ./build/reports/jacoco/test/jacocoTestReport.xml --input-type jacoco -d
-      - secrethub/exec:
-          step-name: Upload CodeClimate test-coverage
-          command: |
-            ./cc-test-reporter upload-coverage -d
+#      - secrethub/exec:
+#          step-name: Configure CodeClimate test-coverage formatting pre-upload
+#          command: |
+#            JACOCO_SOURCE_PATH=src/main/java ./cc-test-reporter format-coverage ./build/reports/jacoco/test/jacocoTestReport.xml --input-type jacoco -d
+#      - secrethub/exec:
+#          step-name: Upload CodeClimate test-coverage
+#          command: |
+#            ./cc-test-reporter upload-coverage -d
 
   release-starter-boot:
     environment:

@@ -8,16 +8,16 @@ executors:
       - image: circleci/openjdk:11-jdk
   deploy-agent:
     docker:
-      - image: twdps/di-circleci-infra-image:stable
+      - image:  twdps/di-circleci-infra-image:stable
 
 defaults: &defaults
   working_directory: ~/repo
-  environment:
-    DOCKER_REGISTRY: twdps
-
 
 jobs:
-  build:
+
+  build-starter-boot:
+    environment:
+      CC_TEST_REPORTER_ID: secrethub://twdps/di/platform/env/build/starter-boot/codeclimate/test-reporter-id
     executor: build-agent
     <<: *defaults
 
@@ -26,7 +26,8 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "service/build.gradle" }}
+            # TODO: Is there a better way to do this?  perhaps based on git branch?
+            - v1-dependencies-{{ checksum "build.gradle" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
@@ -35,133 +36,78 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: v1-dependencies-{{ checksum "service/build.gradle" }}
+          key: v1-dependencies-{{ checksum "build.gradle" }}
 
+      # TODO: Why shouldn't the test-reporter be part of the build-agent image?
+      - run:
+          name: Setup Code Climate test-reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+      - secrethub/exec:
+          step-name: Run CodeClimate pre-build
+          command: |
+            ./cc-test-reporter before-build
       - run:
           name: Run tests
-          command: ./gradlew test
+          command: |
+            ./gradlew clean test
+      - secrethub/exec:
+          step-name: Configure CodeClimate test-coverage formatting pre-upload
+          command: |
+            JACOCO_SOURCE_PATH=src/main/java ./cc-test-reporter format-coverage ./build/reports/jacoco/test/jacocoTestReport.xml --input-type jacoco -d
+      - secrethub/exec:
+          step-name: Upload CodeClimate test-coverage
+          command: |
+            ./cc-test-reporter upload-coverage -d
 
-  publish:
-    executor: build-agent
+  release-starter-boot:
     environment:
-      DOCKER_REGISTRY: twdps
-      DOCKER_USER: secrethub://twdps/di/svc/dockerhub/username
-      DOCKER_PASSWORD: secrethub://twdps/di/svc/dockerhub/password
-
+      GITHUB_TOKEN: secrethub://dwdps/di/svc/github/access-token
+      GITHUB_USERNAME: secrethub://dwdps/di/svc/github/username
+      GITHUB_PACKAGES_TOKEN: secrethub://dwdps/di/svc/github/access-token
+      GITHUB_PACKAGES_USERNAME: secrethub://dwdps/di/svc/github/username
+    executor: build-agent
     <<: *defaults
+
     steps:
       - checkout
-      - setup_remote_docker
-      - secrethub/install
+
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "service/build.gradle" }}
+            # TODO: Is there a better way to do this?  perhaps based on git branch?
+            - v1-dependencies-{{ checksum "build.gradle" }}
+            # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run:
-          name: What's my build number?
-          command: echo $CIRCLE_BUILD_NUM
+      - run: ./gradlew dependencies
 
-      - run:
-          name: Build init container
-          command: docker build init-container -t twdps/dps-psql-init:lastest
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: v1-dependencies-{{ checksum "build.gradle" }}
 
+      # TODO: Why shouldn't the test-reporter be part of the build-agent image?
       - run:
-          name: Tag init container
-          command: docker tag twdps/dps-psql-init:lastest twdps/dps-psql-init:$CIRCLE_BUILD_NUM
-
-      - run:
-          name: Build Jar
-          command: ./gradlew build -x test
-
-      - run:
-          name: Build Image
-          command: docker build service -t twdps/dps-multi-module-starterkit-java:latest
-
-      - run:
-          name: Tag Main Image
-          command: docker tag twdps/dps-multi-module-starterkit-java:latest twdps/dps-multi-module-starterkit-java:$CIRCLE_BUILD_NUM
-
-      - run:
-          name: Docker authentication
-          shell: secrethub run -- /bin/sh -e
+          name: Publish jar packages to Github Packages repo
           command: |
-            echo $DOCKER_PASSWORD | docker login --username $DOCKER_USER --password-stdin
-
-      - run:
-          name: Push init container
-          command: docker push twdps/dps-psql-init:lastest
-
-      - run:
-          name: Publish Docker Image
-          command: docker push twdps/dps-multi-module-starterkit-java:latest
-
-  dev-deploy:
-    executor: deploy-agent
-    environment:
-      AWS_DEFAULT_REGION: us-east-2
-      DOCKER_REGISTRY: twdps
-      DOCKER_USER: secrethub://twdps/di/svc/dockerhub/username
-      DOCKER_PASSWORD: secrethub://twdps/di/svc/dockerhub/password
-      POSTGRES_ENDPOINT: secrethub://twdps/di/svc/aurora/psql/endpoint
-      POSTGRES_ROOT_USER: secrethub://twdps/di/svc/aurora/psql/username
-      POSTGRESS_ROOT_PASSWORD: secrethub://twdps/di/svc/aurora/psql/password
-      POSTGRES_USER: secrethub://twdps/di/svc/aurora/psql/starter/username
-      POSTGRES_PASSWORD: secrethub://twdps/di/svc/aurora/psql/starter/password
-    <<: *defaults
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: pull kubeconfig
-          shell: secrethub run -- /bin/sh -e
-          command: |
-            mkdir ~/.kube
-            SECRETHUB_VAR_ENV=sandbox secrethub inject -i tpl/kubeconfig.tpl -o ~/.kube/config
-      - run:
-          name: Create registry secrets
-          shell: secrethub run -- /bin/sh -e
-          command: |
-            kubectl create secret docker-registry docker-hub-pull-secret -n di-dev \
-                        --docker-username=$DOCKER_USER \
-                        --docker-password=$DOCKER_PASSWORD \
-                        --dry-run=client -o yaml | kubectl apply -f -
-      - run:
-          name: Create postgres secrets
-          shell: secrethub run -- /bin/sh -e
-          command: |
-            kubectl create secret generic psql-secret -n di-dev \
-                        --from-literal=psql-username=$POSTGRES_USER \
-                        --from-literal=psql-password=$POSTGRES_PASSWORD \
-                        --from-literal=psql_root_username=$POSTGRES_ROOT_USER \
-                        --from-literal=psql_root_password=$POSTGRESS_ROOT_PASSWORD \
-                        --from-literal=psql_endpoint=$POSTGRES_ENDPOINT \
-                        --dry-run=client -o yaml | kubectl apply -f -
-  # need something to combine the endpoint, the port and the db name
-  #  - run:
-  #        name: run helm chart
-  #        shell: secrethub run -- /bin/sh -eo pipefail
-  #        command: |
-  #          helm upgrade poc-va-starter-java helm \
-  #                        --install \
-  #                        --wait \
-  #                        -f helm/api-2-dev.yaml \
-  #                        -n api-2-dev \
-  #                        --set tag="latest" \
-  #                        --set env.name.SECRETHUB_HELLO="$SECRETHUB_HELLO"
+            ./gradlew publishAllPublicationsToMavenRepository -PgithubUsername=$GITHUB_PACKAGES_USERNAME -PgithubToken=$GITHUB_PACKAGES_TOKEN -PbuildNumber=$CIRCLE_SHA1
 
 workflows:
   version: 2
-
-  build_test_publish:
+  main:
     jobs:
-      - build
-      - publish:
-          context: twdps-di
+      - build-starter-boot:
+          context: dps-va-di
+          filters:
+            branches:
+              - main
+            tags:
+              only: /release-[0-9]+.[0-9]+.[0-9]+.*/
+      - release-starter-boot:
+          context: dps-va-di
           requires:
-            - build
-      - dev-deploy:
-          context: twdps-di
-          requires:
-            - build
-            - publish
+            - build-starter-boot
+          filters:
+            tags:
+              only: /release-[0-9]+.[0-9]+.[0-9]+.*/

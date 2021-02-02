@@ -17,7 +17,7 @@ scmVersion {
     }
 
     // doc: Dry run
-    localOnly = true // never connect to remote
+//    localOnly = true // never connect to remote
 
     // doc: Uncommitted changes
     ignoreUncommittedChanges = false // should uncommitted changes force version bump

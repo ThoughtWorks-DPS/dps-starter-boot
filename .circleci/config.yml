@@ -7,7 +7,7 @@ on-push-master: &on-push-master
   branches:
     only: /main/
   tags:
-    only: /release-[0-9]+\.[0-9]+\.[0-9]+.*/
+    ignore: /release-[0-9]+\.[0-9]+\.[0-9]+.*/
 
 on-tag-master: &on-tag-master
   branches:
@@ -104,7 +104,7 @@ jobs:
       - run:
           name: Publish jar packages to Github Packages repo
           command: |
-            ./gradlew publishAllPublicationsToMavenRepository -PgithubUsername=$GITHUB_PACKAGES_USERNAME -PgithubToken=$GITHUB_PACKAGES_TOKEN -PbuildNumber=$CIRCLE_SHA1
+            ./gradlew publishAllPublicationsToGithubPackagesRepository -PgithubUsername=$GITHUB_PACKAGES_USERNAME -PgithubToken=$GITHUB_PACKAGES_TOKEN -PbuildNumber=$CIRCLE_SHA1
 
 workflows:
   version: 2

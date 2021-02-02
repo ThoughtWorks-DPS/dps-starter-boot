@@ -1,0 +1,14 @@
+
+repositories {
+    maven {
+        name = "starterBootPkgs"
+        url = uri("https://maven.pkg.github.com/ThoughtWorks-DPS/dps-starter-boot")
+        credentials {
+            String result = "unknown"
+            result = System.getenv("STARTERBOOTPKGS_USERNAME")
+            username = !result ? "STARTERBOOTPKGS_USERNAME_FIXME" : result;
+            result = System.getenv("STARTERBOOTPKGS_TOKEN")
+            password = !result ? "STARTERBOOTPKGS_TOKEN_FIXME" : result;
+        }
+    }
+}

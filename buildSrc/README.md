@@ -65,9 +65,21 @@ Configurations for publishing BOM packages (java-platform).
 
 Configurations for axion-release-plugin.
 
-## starter.java.repo-conventions.gradle
+## starter.java.repo-altsource-conventions.gradle
 
-Configurations for specifying 
+Configurations for specifying a configurable repository (`mavenRepository`, `MAVEN_REPO_USERNAME`, `MAVEN_REPO_PASSWORD`)
+
+## starter.java.repo-default-conventions.gradle
+
+Configurations for specifying standard defaults (local, mavenCentral, JCenter)
+
+## starter.java.repo-local-conventions.gradle
+
+Configurations for specifying only local maven `~/.m2` repository
+
+## starter.java.repo-starter-conventions.gradle
+
+Configurations for specifying starter-bom Github Packages repository
 
 ## starter.java.style-conventions.gradle
 

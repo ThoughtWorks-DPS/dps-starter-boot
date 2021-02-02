@@ -4,7 +4,6 @@ plugins {
     id 'java'
     id 'java-library'
     id "org.ajoberstar.grgit"
-    id 'starter.java.repo-conventions'
     id 'starter.java.open-tracing-common-conventions'
     id 'starter.java.deps-build-conventions'
     id 'starter.java.deps-test-conventions'

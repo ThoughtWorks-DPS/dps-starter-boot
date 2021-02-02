@@ -248,7 +248,7 @@ scmVersion {
     }
 
     // doc: Dry run
-    localOnly = true // never connect to remote
+//    localOnly = true // never connect to remote
 
     // doc: Uncommitted changes
     ignoreUncommittedChanges = false // should uncommitted changes force version bump
@@ -299,7 +299,7 @@ scmVersion {
 //    ]
 
     // doc: Pre/post release hooks
-    createReleaseCommit true // should create empty commit to annotate release in commit history, false by default
+//    createReleaseCommit true // should create empty commit to annotate release in commit history, false by default
 //    releaseCommitMessage { version, position -> ... } // custom commit message if commits are created
 
     // doc: Pre-release checks
@@ -320,36 +320,59 @@ public static String getEnvOrDefault(String tagName, String defaultValue) {
 }
 ```
 
-## starter.java.repo-conventions.gradle
+## starter.java.repo-altsource-conventions.gradle
 
-Configurations for specifying repository configurations.
-
-NOTE: TODO: Not sure if this actually works as expected.  
+Configurations for specifying a configurable repository (`mavenRepository`, `MAVEN_REPO_USERNAME`, `MAVEN_REPO_PASSWORD`)
 
 ```groovy
-buildscript {
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-    // There's a conflict between versions of jgit between spotless and axion release plugin
-    configurations.classpath {
-        resolutionStrategy {
-            force 'org.eclipse.jgit:org.eclipse.jgit:5.7.0.202003110725-r'
-        }
-    }
-}
-
 repositories {
-
-    mavenLocal()
-    jcenter()
-    mavenCentral()
     maven {
         url findProperty('mavenRepository')
         credentials {
             username = System.getenv('MAVEN_REPO_USERNAME')
             password = System.getenv('MAVEN_REPO_PASSWORD')
+        }
+    }
+}
+```
+
+## starter.java.repo-default-conventions.gradle
+
+Configurations for specifying standard defaults (local, mavenCentral, JCenter)
+
+```groovy
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+```
+
+## starter.java.repo-local-conventions.gradle
+
+Configurations for specifying only local maven `~/.m2` repository
+
+```groovy
+repositories {
+    mavenLocal()
+}
+```
+
+## starter.java.repo-starter-conventions.gradle
+
+Configurations for specifying starter-bom Github Packages repository
+
+```groovy
+repositories {
+    maven {
+        name = "starterBootPkgs"
+        url = uri("https://maven.pkg.github.com/ThoughtWorks-DPS/dps-starter-boot")
+        credentials {
+            String result = "unknown"
+            result = System.getenv("STARTERBOOTPKGS_USERNAME")
+            username = !result ? "STARTERBOOTPKGS_USERNAME_FIXME" : result;
+            result = System.getenv("STARTERBOOTPKGS_TOKEN")
+            password = !result ? "STARTERBOOTPKGS_TOKEN_FIXME" : result;
         }
     }
 }

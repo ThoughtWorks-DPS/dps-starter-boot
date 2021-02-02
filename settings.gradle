@@ -1,3 +1,23 @@
+pluginManagement {
+    repositories {
+        mavenLocal()
+        gradlePluginPortal()
+        mavenCentral()
+        jcenter()
+        maven { url "http://palantir.bintray.com/releases" }
+        maven { url  "https://dl.bintray.com/adesso/junit-insights" }
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+}
+
+
 rootProject.name = 'starter-boot'
 include ':tracing'
 include ':springfox'

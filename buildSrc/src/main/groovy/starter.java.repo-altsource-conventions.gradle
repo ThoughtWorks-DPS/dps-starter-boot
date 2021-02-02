@@ -1,0 +1,11 @@
+
+
+repositories {
+    maven {
+        url findProperty('mavenRepository')
+        credentials {
+            username = System.getenv('MAVEN_REPO_USERNAME')
+            password = System.getenv('MAVEN_REPO_PASSWORD')
+        }
+    }
+}

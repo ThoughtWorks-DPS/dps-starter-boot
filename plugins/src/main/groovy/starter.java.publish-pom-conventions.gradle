@@ -5,7 +5,7 @@ plugins {
 
 publishing {
     publications {
-        platformJar(MavenPublication) {
+        platformJarArtifact(MavenPublication) {
             from components.javaPlatform
         }
     }

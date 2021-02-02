@@ -8,7 +8,7 @@ plugins {
 
 publishing {
     publications {
-        bootJar(MavenPublication) {
+        bootJarArtifact(MavenPublication) {
             artifact bootJar
         }
     }

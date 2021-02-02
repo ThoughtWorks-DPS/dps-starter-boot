@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'java-library'
     id 'starter.java.publish-jar-conventions'
+    id 'starter.java.publish-repo-conventions'
 }
 
 dependencies {

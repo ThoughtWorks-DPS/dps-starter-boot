@@ -8,7 +8,7 @@ plugins {
 
 publishing {
     publications {
-        myPlatform(MavenPublication) {
+        platformJar(MavenPublication) {
             from components.javaPlatform
         }
     }

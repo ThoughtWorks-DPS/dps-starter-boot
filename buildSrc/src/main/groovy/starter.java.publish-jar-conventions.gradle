@@ -8,7 +8,7 @@ plugins {
 
 publishing {
     publications {
-        myLib(MavenPublication) {
+        libJar(MavenPublication) {
             from components.java
         }
     }

@@ -68,7 +68,7 @@ scmVersion {
 //    ]
 
     // doc: Pre/post release hooks
-    createReleaseCommit true // should create empty commit to annotate release in commit history, false by default
+//    createReleaseCommit true // should create empty commit to annotate release in commit history, false by default
 //    releaseCommitMessage { version, position -> ... } // custom commit message if commits are created
 
     // doc: Pre-release checks

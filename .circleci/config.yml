@@ -111,15 +111,15 @@ workflows:
   snapshot:
     jobs:
       - build-starter-boot:
-          context: dps-va-di
+          context: twdps-di
           filters: *on-push-master
   release:
     jobs:
       - build-starter-boot:
-          context: dps-va-di
+          context: twdps-di
           filters: *on-tag-master
       - release-starter-boot:
-          context: dps-va-di
+          context: twdps-di
           requires:
             - build-starter-boot
           filters: *on-tag-master

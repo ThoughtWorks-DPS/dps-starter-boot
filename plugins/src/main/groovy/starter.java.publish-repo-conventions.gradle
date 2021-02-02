@@ -6,23 +6,15 @@ plugins {
     id 'maven-publish'
 }
 
-ext {
-    githubUsername = project.hasProperty("githubUsername") ? project.githubUsername : ""
-    githubToken = project.hasProperty("githubToken") ? project.githubToken : ""
-}
-
 publishing {
     repositories {
         maven {
-            name = "GithubPackages"
+            name = "githubPackages"
             // change to point to your repo, e.g. http://my.org/repo
             def releasesRepoUrl = "${mavenRepository}"
             def snapshotsRepoUrl = "${mavenSnapshotRepository}"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-            credentials {
-                username = githubUsername
-                password = githubToken
-            }
+            credentials(PasswordCredentials)
         }
     }
 }

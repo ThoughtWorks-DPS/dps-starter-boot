@@ -104,7 +104,7 @@ jobs:
       - run:
           name: Publish jar packages to Github Packages repo
           command: |
-            ./gradlew publishAllPublicationsToGithubPackagesRepository -PgithubUsername=$GITHUB_PACKAGES_USERNAME -PgithubToken=$GITHUB_PACKAGES_TOKEN -PbuildNumber=$CIRCLE_SHA1
+            ./gradlew publishAllPublicationsToGithubPackagesRepository -PgithubPackagesUsername=$GITHUB_PACKAGES_USERNAME -PgithubPackagesPassword=$GITHUB_PACKAGES_TOKEN -PbuildNumber=$CIRCLE_SHA1
 
 workflows:
   version: 2

@@ -102,7 +102,7 @@ jobs:
 
       # TODO: Why shouldn't the test-reporter be part of the build-agent image?
       - secrethub/exec:
-          name: Publish jar packages to Github Packages repo
+          step-name: Publish jar packages to Github Packages repo
           command: |
             ./gradlew publishAllPublicationsToGithubPackagesRepository -PgithubPackagesUsername=$GITHUB_PACKAGES_USERNAME -PgithubPackagesPassword=$GITHUB_PACKAGES_TOKEN -PbuildNumber=$CIRCLE_SHA1
 

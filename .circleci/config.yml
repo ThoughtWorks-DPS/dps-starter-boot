@@ -76,10 +76,10 @@ jobs:
 
   release-starter-boot:
     environment:
-      GITHUB_TOKEN: secrethub://dwdps/di/svc/github/access-token
-      GITHUB_USERNAME: secrethub://dwdps/di/svc/github/username
-      GITHUB_PACKAGES_TOKEN: secrethub://dwdps/di/svc/github/access-token
-      GITHUB_PACKAGES_USERNAME: secrethub://dwdps/di/svc/github/username
+      GITHUB_TOKEN: secrethub://twdps/di/svc/github/access-token
+      GITHUB_USERNAME: secrethub://twdps/di/svc/github/username
+      GITHUB_PACKAGES_TOKEN: secrethub://twdps/di/svc/github/access-token
+      GITHUB_PACKAGES_USERNAME: secrethub://twdps/di/svc/github/username
     executor: build-agent
     <<: *defaults
 

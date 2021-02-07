@@ -1,0 +1,32 @@
+{
+  "PROJECT_NAME" : "original",
+  "GITHUB_ORG_NAME": "ThoughtWorks-DPS",
+  "PACKAGE_NAME": "{{cookiecutter.PROJECT_NAME|lower|replace(' ', '-')|replace('_', '-')}}",
+  "PROJECT_DESCRIPTION": "Java API Starter from Template",
+  "PROJECT_OWNER": "starter-java@example.com",
+  "DOCKER_REGISTRY" : "docker.pkg.github.com/thoughtworks-dps/{{cookiecutter.PACKAGE_NAME}}",
+  "PKG_TL_NAME": "io",
+  "PKG_ORG_NAME": "twdps",
+  "PKG_GROUP_NAME": "starter",
+  "BASE_PACKAGE": "{{cookiecutter.PKG_TL_NAME}}.{{cookiecutter.PKG_ORG_NAME}}.{{cookiecutter.PKG_GROUP_NAME}}",
+  "SERVICE_NAME": "Example",
+  "PKG_SERVICE_NAME": "{{cookiecutter.SERVICE_NAME|lower}}",
+  "SERVICE_URL": "{{cookiecutter.SERVICE_NAME|lower}}",
+  "RESOURCE_NAME": "Foo",
+  "RESOURCE_TABLE_NAME": "{{cookiecutter.RESOURCE_NAME|lower}}",
+  "RESOURCE_NAME_PLURAL": "{{cookiecutter.RESOURCE_NAME}}s",
+  "RESOURCE_URL": "{{cookiecutter.RESOURCE_NAME_PLURAL|lower}}",
+  "PKG_RESOURCE_NAME": "{{cookiecutter.RESOURCE_NAME|lower}}",
+  "SUB_RESOURCE_NAME": "Sub{{cookiecutter.RESOURCE_NAME}}",
+  "SUB_RESOURCE_NAME_PLURAL": "{{cookiecutter.SUB_RESOURCE_NAME}}s",
+  "SUB_RESOURCE_URL": "{{cookiecutter.SUB_RESOURCE_NAME_PLURAL|lower}}",
+  "PKG_SUB_RESOURCE_NAME": "{{cookiecutter.SUB_RESOURCE_NAME|lower}}",
+  "_copy_without_render": [
+    ".circleci/config.yml",
+    "secrethub.env",
+    "helm/templates/*",
+    "helmchart/values.yaml",
+    "helmchart/templates/*",
+    "tpl/*"
+  ]
+}

@@ -1,0 +1,8 @@
+
+sourceCompatibility = '11'
+
+
+dependencies {
+    implementation gradleApi()
+}
+

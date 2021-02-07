@@ -1,0 +1,26 @@
+plugins {
+    id 'starter.std.java.plugin-conventions'
+}
+
+dependencies {
+    annotationBom platform(project(':starter-bom'))
+    checkstyleRules platform(project(':checkstyle-bom'))
+    implementation gradleApi()
+}
+
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = 'io.twdps.starter.plugin.cookiecutter'
+            implementationClass = 'io.twdps.starter.plugin.cookiecutter.CookieCutterPlugin'
+        }
+    }
+}
+
+dependencies {
+    annotationBom platform(project(":starter-bom"))
+    checkstyleRules platform(project(":checkstyle-bom"))
+}
+
+
+

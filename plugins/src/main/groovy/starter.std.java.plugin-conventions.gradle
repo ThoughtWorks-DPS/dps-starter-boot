@@ -16,7 +16,7 @@ plugins {
     id 'starter.java.test-conventions'
     id 'starter.java.test-jacoco-conventions'
     id 'starter.java.test-unit-conventions'
-    //id 'starter.java.publish-repo-conventions'
+    id 'starter.java.publish-repo-conventions'
     //id 'starter.java.publish-jar-conventions'
     id 'starter.java.versions-conventions'
 }

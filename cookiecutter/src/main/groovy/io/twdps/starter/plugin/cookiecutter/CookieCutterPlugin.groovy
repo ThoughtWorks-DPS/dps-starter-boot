@@ -18,6 +18,7 @@ class CookieCutterPlugin implements Plugin<Project> {
             executable('rm')
             args('-rf', "${project.buildDir}/${extension.outputPath.get()}")
         }
+
         project.task('generateTemplatesDebug', type: CookieCutterMultiGenerateTask) {
             doFirst {
                 println "f:gtd:template [${extension.template.get()}]"
@@ -47,6 +48,7 @@ class CookieCutterPlugin implements Plugin<Project> {
             outputPath = extension.outputPath;
             binary = extension.templateBinary
         }
+
         project.task('generateTemplates', type: CookieCutterMultiGenerateTask) {
             group = 'cookiecutter'
             description = "Generate multiple templates to the same output directory"
@@ -54,6 +56,7 @@ class CookieCutterPlugin implements Plugin<Project> {
             outputPath = extension.outputPath;
             binary = extension.templateBinary
         }
+
         project.task('generateTemplate', type: CookieCutterGenerateTask) {
             group = 'cookiecutter'
             description = "Generate a single template to an output directory"
@@ -61,6 +64,7 @@ class CookieCutterPlugin implements Plugin<Project> {
             outputPath = extension.outputPath;
             binary = extension.templateBinary
         }
+
         project.task('compareTemplate', type: CookieCutterCompareTask) {
             group = 'cookiecutter'
             description = "Compare a generated template with the original (non-template) source"
@@ -70,6 +74,7 @@ class CookieCutterPlugin implements Plugin<Project> {
             omitFiles = verifyExtension.omitFiles
             binary = verifyExtension.diffBinary
         }
+
         project.task('buildTemplate', type: Exec) {
             group = 'cookiecutter'
             description = "Build the generated template"
@@ -81,6 +86,7 @@ class CookieCutterPlugin implements Plugin<Project> {
                 args(buildExtension.args.get())
             }
         }
+
         /*
         project.task('testBuildTemplate', type: CookieCutterLaunchBuildTask) {
             group = 'cookiecutter'
@@ -92,6 +98,7 @@ class CookieCutterPlugin implements Plugin<Project> {
             generatedProjectName = verifyExtension.generatedProjectName;
         }
          */
+
         project.task('test') {
             group = 'cookiecutter'
             description = "Test template"

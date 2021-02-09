@@ -11,6 +11,13 @@ sourceSets {
             runtimeClasspath += test.output
             srcDir file('src/integration/java')
         }
+        groovy {
+            compileClasspath += main.output
+            compileClasspath += test.output
+            runtimeClasspath += main.output
+            runtimeClasspath += test.output
+            srcDir file('src/integration/groovy')
+        }
         resources.srcDir file('src/integration/resources')
     }
 }
@@ -29,7 +36,7 @@ task integrationTest(type: Test) {
     outputs.upToDateWhen { false }
     mustRunAfter test
     useJUnitPlatform {
-        excludeEngines 'junit-vintage'
+//        excludeEngines 'junit-vintage'
     }
 }
 

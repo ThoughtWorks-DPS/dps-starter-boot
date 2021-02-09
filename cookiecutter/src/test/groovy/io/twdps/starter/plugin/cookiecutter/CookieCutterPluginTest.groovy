@@ -1,40 +1,44 @@
 package io.twdps.starter.plugin.cookiecutter
 
 import org.gradle.api.Project
+import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.tasks.Exec
+import org.gradle.api.Task
+import org.gradle.api.tasks.GradleBuild
 import org.gradle.internal.impldep.org.junit.Test
+import spock.lang.Specification
+import spock.lang.Stepwise
 
-class CookieCutterPluginTest {
-    @Test
-    public void cookieCutterPluginAddsCleanTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
+class CookieCutterPluginTest extends Specification {
+
+    Project project
+
+    def setup() {
+        project = ProjectBuilder.builder().build()
         project.getPluginManager().apply('io.twdps.starter.plugin.cookiecutter')
-        assertTrue(project.getTasks().getByName('clean') instanceof Exec)
-        assertTrue(false)
     }
-    @Test
-    public void cookieCutterPluginAddsGenerateTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
-        project.getPluginManager().apply('io.twdps.starter.plugin.cookiecutter')
-        assertTrue(project.getTasks().getByName('generateTemplate') instanceof CookieCutterGenerateTask)
-        assertTrue(false)
+    def cookieCutterPluginAddsCleanTaskToProject() {
+        when: def t = project.getTasks().getByName('clean')
+        then: t instanceof Exec
     }
-    @Test
-    public void cookieCutterPluginAddsGenerateMultiTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
-        project.getPluginManager().apply('io.twdps.starter.plugin.cookiecutter')
-        assertTrue(project.getTasks().getByName('generateTemplates') instanceof CookieCutterMultiGenerateTask)
+    def cookieCutterPluginAddsGenerateTemplateTaskToProject() {
+        when: def t = project.getTasks().getByName('generateTemplate')
+        then: t instanceof CookieCutterGenerateTask
     }
-    @Test
-    public void cookieCutterPluginAddsCompareTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
-        project.getPluginManager().apply('io.twdps.starter.plugin.cookiecutter')
-        assertTrue(project.getTasks().getByName('compareTemplates') instanceof CookieCutterCompareTask)
+    def cookieCutterPluginAddsGenerateTemplatesTaskToProject() {
+        when: def t = project.getTasks().getByName('generateTemplates')
+        then: t instanceof CookieCutterMultiGenerateTask
     }
-    @Test
-    public void cookieCutterPluginAddsGenerateDebugTaskToProject() {
-        Project project = ProjectBuilder.builder().build()
-        project.getPluginManager().apply('io.twdps.starter.plugin.cookiecutter')
-        assertTrue(project.getTasks().getByName('generateTemplatesDebug') instanceof CookieCutterMultiGenerateTask)
+    def cookieCutterPluginAddsCompareTaskToProject() {
+        when: def t = project.getTasks().getByName('generateTemplates')
+        then: t instanceof CookieCutterMultiGenerateTask
+    }
+    def cookieCutterPluginAddsGenerateTemplatesDebugTaskToProject() {
+        when: def t = project.getTasks().getByName('generateTemplatesDebug')
+        then: t instanceof CookieCutterMultiGenerateTask
+    }
+    def cookieCutterPluginAddsBuildTemplateTaskToProject() {
+        when: def t = project.getTasks().getByName('buildTemplate')
+        then: t instanceof Exec
     }
 }

@@ -1,26 +1,42 @@
 plugins {
     id 'starter.std.java.plugin-conventions'
+
+/*
+    id 'groovy'
+    id 'java-library'
+    id 'java-gradle-plugin'
+    id 'starter.java.config-conventions'
+    id 'starter.java.deps-test-conventions'
+    id 'starter.java.publish-repo-conventions'
+ */
+
 }
 
 dependencies {
     annotationBom platform(project(':starter-bom'))
     checkstyleRules platform(project(':checkstyle-bom'))
-    implementation gradleApi()
+    implementation localGroovy()
+    testImplementation gradleTestKit()
+    testImplementation('org.spockframework:spock-core') {
+        exclude module: 'groovy-all'
+    }
+/*
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    //since this is a spring boot starter, assume spring at all levels
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+ */
 }
 
 gradlePlugin {
     plugins {
-        simplePlugin {
+        cookiecutterPlugin {
             id = 'io.twdps.starter.plugin.cookiecutter'
             implementationClass = 'io.twdps.starter.plugin.cookiecutter.CookieCutterPlugin'
         }
     }
 }
-
-dependencies {
-    annotationBom platform(project(":starter-bom"))
-    checkstyleRules platform(project(":checkstyle-bom"))
-}
-
-
-

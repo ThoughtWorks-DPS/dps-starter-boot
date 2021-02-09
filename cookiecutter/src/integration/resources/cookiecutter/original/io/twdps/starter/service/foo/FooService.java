@@ -1,4 +1,4 @@
-package io.twdps.starter.service.spi.account;
+package io.twdps.starter.service.spi.foo;
 
 import io.twdps.starter.model.foo.FooModel;
 

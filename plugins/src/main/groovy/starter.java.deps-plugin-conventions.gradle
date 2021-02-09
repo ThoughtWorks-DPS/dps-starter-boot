@@ -3,6 +3,13 @@ sourceCompatibility = '11'
 
 
 dependencies {
-    implementation gradleApi()
+    testImplementation('org.spockframework:spock-core') {
+        exclude module: 'groovy-all'
+    }
+    integrationTestImplementation('org.spockframework:spock-core') {
+        exclude module: 'groovy-all'
+    }
+    integrationTestImplementation gradleTestKit()
+
 }
 

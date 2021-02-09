@@ -1,15 +1,14 @@
 
-buildscript {
-    dependencies {
-        classpath project(":cookiecutter")
-    }
-}
-
 plugins {
     id 'io.twdps.starter.plugin.cookiecutter'
 }
 
 cookiecutter {
     template = 'template'
+}
+
+cookiecutterVerify {
+    generatedProjectName = 'original'
+    sourcePath = 'original'
 }
 

@@ -99,7 +99,7 @@ class CookieCutterPlugin implements Plugin<Project> {
         }
          */
 
-        project.task('test') {
+        project.task('testTemplate') {
             group = 'cookiecutter'
             description = "Test template"
             dependsOn('generateTemplate', 'buildTemplate')

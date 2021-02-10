@@ -27,6 +27,7 @@ plugins {
     id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
     id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
     id("io.gatling.gradle") version "${gatling_plugin_version}" apply false
+    id('org.barfuin.gradle.taskinfo') version "${taskinfo_plugin_version}"
     id("starter.metrics.build-time-tracker-conventions")
     id("starter.java.release-conventions")
     id("starter.java.versions-conventions")

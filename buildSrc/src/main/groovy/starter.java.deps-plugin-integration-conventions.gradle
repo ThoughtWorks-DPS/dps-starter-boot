@@ -1,0 +1,11 @@
+
+sourceCompatibility = '11'
+
+
+dependencies {
+    integrationTestImplementation('org.spockframework:spock-core') {
+        exclude module: 'groovy-all'
+    }
+    integrationTestImplementation gradleTestKit()
+}
+

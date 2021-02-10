@@ -7,7 +7,7 @@ dependencies {
     integrationTestImplementation 'org.assertj:assertj-core'
     integrationTestImplementation 'org.junit.jupiter:junit-jupiter-api'
     integrationTestImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
+        //exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
     }
 
     integrationTestRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'

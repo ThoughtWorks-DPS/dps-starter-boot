@@ -6,9 +6,5 @@ dependencies {
     testImplementation('org.spockframework:spock-core') {
         exclude module: 'groovy-all'
     }
-    integrationTestImplementation('org.spockframework:spock-core') {
-        exclude module: 'groovy-all'
-    }
-    integrationTestImplementation gradleTestKit()
 }
 

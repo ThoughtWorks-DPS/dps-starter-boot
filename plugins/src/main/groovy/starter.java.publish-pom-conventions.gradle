@@ -1,3 +1,6 @@
+/**
+ * Configurations for publishing BOM packages (java-platform).
+ */
 
 plugins {
     id 'maven-publish'

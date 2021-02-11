@@ -45,6 +45,34 @@ Provides docker container settings
 Provides shortcuts for overriding group and version.
 NOTE: Most likely obsolete, in favor of specifying group directly in the gradle.properties file, and using axion to supply version based on git tags.
 
+## starter.java.deps-build-conventions.gradle
+
+General library dependencies for common non-spring-boot libs.
+
+## starter.java.deps-integration-conventions.gradle
+
+General library dependencies for common integration tests.
+
+## starter.java.deps-plugin-conventions.gradle
+
+Library dependencies for developing gradle plugins
+
+## starter.java.deps-plugin-integration-conventions.gradle
+
+Library dependencies for integration testing gradle plugins
+
+## starter.java.deps-tests-conventions.gradle
+
+General library dependencies for unit testing.
+
+## starter.java.doc-springdoc-conventions.gradle
+
+SpringDoc configurations for generating OpenAPI specs
+
+## starter.java.doc-swagger-conventions.gradle
+
+Swaggerhub configurations
+
 ## starter.java.gatling-conventions.gradle
 
 Gatling configuration for running stress tests
@@ -85,13 +113,25 @@ Configurations for specifying starter-bom Github Packages repository
 
 Configuration for checkstyle and spotless
 
-## starter.java.swagger-conventions.gradle
-
-Swaggerhub configurations
-
 ## starter.java.test-conventions.gradle
 
+Configuration for test task, reporting
+
+## starter.java.test-gatling-conventions.gradle
+
+Configuration for gatling performance testing
+
+## starter.java.test-integration-conventions.gradle
+
+Configuration for integration testing
+
+## starter.java.test-jacoco-conventions.gradle
+
 Configuration for jacoco
+
+## starter.java.versions-conventions.gradle
+
+Configuration for finding dependencies with outdated versions
 
 ## starter.metrics.build-time-tracker-conventions.gradle
 
@@ -117,4 +157,8 @@ Top-level configuration of all the typical standard configurations for a java cl
 ## starter.std.java.library-conventions.gradle
 
 Top-level configuration of all the typical standard configurations for a normal Java jar.
+
+## starter.std.java.library-conventions.gradle
+
+Top-level configuration of all the typical standard configurations for developing Gradle plugins.
 

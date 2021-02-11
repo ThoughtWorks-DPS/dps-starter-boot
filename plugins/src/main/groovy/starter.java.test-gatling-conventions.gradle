@@ -1,3 +1,7 @@
+/**
+ * Gatling configuration for running stress tests
+ */
+
 plugins {
     id 'io.gatling.gradle'
 }

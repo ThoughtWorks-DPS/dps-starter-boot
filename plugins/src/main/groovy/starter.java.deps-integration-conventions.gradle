@@ -1,3 +1,6 @@
+/**
+ * Provides a set of common dependencies for typical integration test.
+ */
 
 sourceCompatibility = '11'
 

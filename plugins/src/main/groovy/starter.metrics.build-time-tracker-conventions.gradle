@@ -1,3 +1,7 @@
+/**
+ * Configuration for tracking how long a build takes, using `net.rdrei.android.buildtimetracker`
+ */
+
 plugins {
     id "net.rdrei.android.buildtimetracker"
 }

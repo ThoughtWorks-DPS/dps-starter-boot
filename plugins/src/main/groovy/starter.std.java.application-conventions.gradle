@@ -1,3 +1,6 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a Spring Boot application package.
+ */
 
 plugins {
     // Apply the java Plugin to add support for Java.
@@ -10,7 +13,7 @@ plugins {
     id 'starter.java.deps-test-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.style-conventions'
-    id 'starter.java.swagger-conventions'
+    id 'starter.java.doc-springdoc-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-integration-conventions'
     id 'starter.java.test-jacoco-conventions'

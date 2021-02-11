@@ -1,3 +1,7 @@
+/**
+ * Provides docker container settings
+ */
+
 plugins {
     id 'com.palantir.docker'
     id 'com.palantir.docker-run'

@@ -1,3 +1,7 @@
+/**
+ * Provides shortcuts for overriding group and version.
+ * NOTE: Most likely obsolete, in favor of specifying group directly in the gradle.properties file, and using axion to supply version based on git tags.
+ */
 
 /*
 group = "${module_group}"

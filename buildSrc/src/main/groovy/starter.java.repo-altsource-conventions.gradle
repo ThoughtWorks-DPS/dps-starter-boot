@@ -1,4 +1,6 @@
-
+/**
+ * Configurations for specifying a configurable repository (`mavenRepository`, `MAVEN_REPO_USERNAME`, `MAVEN_REPO_PASSWORD`)
+ */
 
 repositories {
     maven {

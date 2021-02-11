@@ -1,3 +1,6 @@
+/**
+ * Configurations for publishing jar files
+ */
 
 plugins {
     id 'maven-publish'

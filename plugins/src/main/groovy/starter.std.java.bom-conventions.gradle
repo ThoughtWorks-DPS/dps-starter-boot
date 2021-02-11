@@ -1,3 +1,6 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a Bill of Materials package
+ */
 
 plugins {
     id 'java-platform'

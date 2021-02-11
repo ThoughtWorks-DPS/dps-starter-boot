@@ -1,5 +1,8 @@
 # Gradle Mixins
 
+NOTE: This readme is generated from the plugin source files.
+Do not edit directly.
+
 The mixins are meant to provide snippets of Gradle configuration based on specific functional groupings.
 The groups are identified as starter scripts, and roughly grouped:
 
@@ -22,46 +25,14 @@ If 'spotless' gets more complicated, then these two should be split and propagat
 
 
 
-## starter.java.build-conventions.gradle
-
-Provides a set of common dependencies for typical build and test.
-Includes proper dependencies for lombok and mapstruct annotation processing.
-Also includes typical dependencies for unit testing with junit jupiter.
-
-```groovy
-sourceCompatibility = '11'
-
-dependencies {
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-
-    compileOnly 'org.projectlombok:lombok'
-    implementation 'org.mapstruct:mapstruct'
-
-    annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'org.mapstruct:mapstruct-processor'
-
-    testCompileOnly 'org.projectlombok:lombok'
-    testAnnotationProcessor 'org.projectlombok:lombok'
-
-    // Use JUnit Jupiter API for testing.
-    testImplementation 'org.junit.jupiter:junit-jupiter-api'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-
-    testCompile 'org.mockito:mockito-core'
-    testImplementation 'org.assertj:assertj-core'
-    //since this is a spring boot starter, assume spring at all levels
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-}
-```
-
 ## starter.java.checkstyle-conventions.gradle
 
-Setting for running checkstyle, pulls configuration from the checkstyle jar.
 ```groovy
+/**
+ * Setting for running checkstyle, pulls configuration from the checkstyle jar.
+ */
+
 plugins {
-    // Apply the java Plugin to add support for Java.
     id 'checkstyle'
 }
 
@@ -76,8 +47,8 @@ dependencies {
 
 checkstyle {
     toolVersion "${checkstyle_version}"
-//    configFile = rootProject.file('config/checkstyle/checkstyle.xml')
-    config project.resources.text.fromArchiveEntry(configurations.checkstyleRules, 'config/checkstyle/checkstyle.xml')
+//    configFile = rootProject.file('settings/checkstyle/checkstyle.xml')
+    config project.resources.text.fromArchiveEntry(configurations.checkstyleRules, 'settings/checkstyle/checkstyle.xml')
     configProperties = [
             'checkstyle.cache.file': "${buildDir}/checkstyle.cache",
     ]
@@ -92,13 +63,16 @@ checkstyleMain {
 checkstyleTest {
     source = "src/test/java"
 }
+
 ```
 
 ## starter.java.config-conventions.gradle
 
-Provides configurations for platform (BOM) dependencies, to ensure non-api/runtime configurations are set properly.
-
 ```groovy
+/**
+ * Provides configurations for platform (BOM) dependencies, to ensure non-api/runtime configurations are set properly.
+ */
+
 configurations {
     springBom
     compileOnly.extendsFrom(springBom)
@@ -113,45 +87,229 @@ configurations {
 
     checkstyleRules
 }
+
 ```
+
 ## starter.java.container-conventions.gradle
 
-Provides docker container settings
-
 ```groovy
+/**
+ * Provides docker container settings
+ */
+
+plugins {
+    id 'com.palantir.docker'
+    id 'com.palantir.docker-run'
+}
+
 ext {
     dockerRegistry =  project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
     dockerImageVersion = project.hasProperty("buildNumber") ? "${project.version}-${project.buildNumber}" : project.version
+}
+
+docker {
+    dependsOn(assemble)
+    name "${dockerRegistry}/${rootProject.name}"
+    tag "Build", "${dockerRegistry}/${rootProject.name}:${dockerImageVersion}"
+    tag "Latest", "${dockerRegistry}/${rootProject.name}:latest"
+    noCache true
+    files "build/libs/${bootJar.archiveFileName.get()}", 'bin'
+    buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
+}
+
+dockerRun {
+    name project.name
+    image "${dockerRegistry}/${rootProject.name}"
+    ports '8080:8080'
+    env 'SECRETHUB_HELLO': (System.getenv('SECRETHUB_HELLO') == null
+            ? 'override-me'
+            : System.getenv('SECRETHUB_HELLO'))
+}
+
+task dockerPrune(type: Exec) {
+    dependsOn('dockerStop', 'dockerRemoveContainer')
+    dockerRemoveContainer.mustRunAfter('dockerStop')
+    commandLine './scripts/docker-prune.sh'
+}
+
+task dockerStart(type: GradleBuild) {
+    tasks = ["dockerPrune","clean", "dockerClean", "docker", "dockerRun"]
 }
 ```
 
 ## starter.java.coordinate-conventions.gradle
 
-Provides shortcuts for overriding group and version.
-NOTE: Most likely obsolete, in favor of specifying group directly in the gradle.properties file, and using axion to supply version based on git tags.
+```groovy
+/**
+ * Provides shortcuts for overriding group and version.
+ * NOTE: Most likely obsolete, in favor of specifying group directly in the gradle.properties file, and using axion to supply version based on git tags.
+ */
 
-## starter.java.gatling-conventions.gradle
+/*
+group = "${module_group}"
+version getTagOrDefault("${module_version}")
 
-Gatling configuration for running stress tests
+public static String getTagOrDefault(String defaultValue) {
+    String ref = System.getenv('GITHUB_REF')
+
+    if (ref && ref.startsWith('refs/tags/')) {
+        return ref.substring('refs/tags/'.length())
+    }
+
+    return defaultValue
+}
+*/
+```
+
+## starter.java.deps-build-conventions.gradle
 
 ```groovy
-plugins {
-    id 'io.gatling.gradle'
+/**
+ * Provides a set of common dependencies for typical build.
+ * Includes proper dependencies for lombok and mapstruct annotation processing.
+ */
+
+sourceCompatibility = '11'
+
+dependencies {
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+    implementation "org.springdoc:springdoc-openapi-ui"
+    implementation "org.springdoc:springdoc-openapi-webmvc-core"
+    //implementation "org.springdoc:springdoc-openapi-security"
+    implementation "org.springdoc:springdoc-openapi-data-rest"
+    implementation 'org.mapstruct:mapstruct'
+
+    compileOnly 'org.projectlombok:lombok'
+
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor'
+
 }
 
-sourceSets {
-    gatling {
-        scala.srcDirs = ["src/gatling/scala"]
-        resources.srcDirs = ["src/gatling/resources"]
+```
+
+## starter.java.deps-integration-conventions.gradle
+
+```groovy
+/**
+ * Provides a set of common dependencies for typical integration test.
+ */
+
+sourceCompatibility = '11'
+
+
+dependencies {
+
+    integrationTestImplementation 'org.assertj:assertj-core'
+    integrationTestImplementation 'org.junit.jupiter:junit-jupiter-api'
+    integrationTestImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+
+    integrationTestRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+```
+
+## starter.java.deps-plugin-conventions.gradle
+
+```groovy
+/**
+ * Provides a set of common dependencies for typical gradle plugin unit test .
+ */
+
+sourceCompatibility = '11'
+
+
+dependencies {
+    testImplementation('org.spockframework:spock-core') {
+        exclude module: 'groovy-all'
     }
 }
+
+```
+
+## starter.java.deps-plugin-integration-conventions.gradle
+
+```groovy
+/**
+ * Provides a set of common dependencies for typical gradle plugin integration test .
+ */
+
+sourceCompatibility = '11'
+
+dependencies {
+    integrationTestImplementation('org.spockframework:spock-core') {
+        exclude module: 'groovy-all'
+    }
+    integrationTestImplementation gradleTestKit()
+}
+
+```
+
+## starter.java.deps-test-conventions.gradle
+
+```groovy
+/**
+ * Provides a set of common dependencies for typical unit testing.
+ */
+
+sourceCompatibility = '11'
+
+dependencies {
+    testCompile 'org.mockito:mockito-core'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'com.tngtech.archunit:archunit'
+    testImplementation 'org.assertj:assertj-core'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api'
+    //since this is a spring boot starter, assume spring at all levels
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group:'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    // Use JUnit Jupiter Engine for testing.
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+}
+
+```
+
+## starter.java.doc-springdoc-conventions.gradle
+
+```groovy
+/**
+ * plugins supporting generation of OpenAPI docs from code
+ */
+
+plugins {
+    id "com.github.johnrengelman.processes"
+    id "org.springdoc.openapi-gradle-plugin"
+}
+
+```
+
+## starter.java.doc-swagger-conventions.gradle
+
+```groovy
+/**
+ * Swaggerhub configurations
+ */
+
+plugins {
+    id "io.swagger.swaggerhub"
+}
+
 ```
 
 ## starter.java.open-tracing-common-conventions.gradle
 
-Typical dependencies to implement open tracing.
-
 ```groovy
+/**
+ * Typical dependencies to implement open tracing.
+ */
+
 dependencies {
     // Tracing support ==========================================================
     api 'io.opentracing.brave:brave-opentracing'
@@ -163,36 +321,55 @@ dependencies {
 
 ## starter.java.property-conventions.gradle
 
-Utility function for choosing between a team-defined configuration and a default core-define value.
-
 ```groovy
+/**
+ * Utility function for choosing between a team-defined configuration and a default core-define value.
+
+ * @param value variable (or null)
+ * @param defaultValue  return value if null
+ * @return one or the other value
+ */
 public static String getValueOrDefault(String value, String defaultValue) {
 
     return !value ? defaultValue : value;
 }
 ```
 
-## starter.java.publish-jar-conventions.gradle
-
-Configurations for publishing jar files
+## starter.java.publish-bootjar-conventions.gradle
 
 ```groovy
+/**
+ * Configuration for publishing fat jar for spring-boot application
+ */
+
 plugins {
     id 'maven-publish'
 }
 
 publishing {
     publications {
-        myPlatform(MavenPublication) {
-            from components.java
+        bootJarArtifact(MavenPublication) {
+            artifact bootJar
         }
     }
-    repositories {
-        maven {
-            // change to point to your repo, e.g. http://my.org/repo
-            def releasesRepoUrl = "${mavenRepository}"
-            def snapshotsRepoUrl = "${mavenSnapshotRepository}"
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+}
+```
+
+## starter.java.publish-jar-conventions.gradle
+
+```groovy
+/**
+ * Configurations for publishing jar files
+ */
+
+plugins {
+    id 'maven-publish'
+}
+
+publishing {
+    publications {
+        libJarArtifact(MavenPublication) {
+            from components.java
         }
     }
 }
@@ -200,25 +377,45 @@ publishing {
 
 ## starter.java.publish-pom-conventions.gradle
 
-Configurations for publishing BOM packages (java-platform).
-
 ```groovy
+/**
+ * Configurations for publishing BOM packages (java-platform).
+ */
+
 plugins {
     id 'maven-publish'
 }
 
 publishing {
     publications {
-        myPlatform(MavenPublication) {
+        platformJarArtifact(MavenPublication) {
             from components.javaPlatform
         }
     }
+}
+
+```
+
+## starter.java.publish-repo-conventions.gradle
+
+```groovy
+/**
+ * Definition of publishing repository for any packages
+ */
+
+plugins {
+    id 'maven-publish'
+}
+
+publishing {
     repositories {
         maven {
+            name = "githubPackages"
             // change to point to your repo, e.g. http://my.org/repo
             def releasesRepoUrl = "${mavenRepository}"
             def snapshotsRepoUrl = "${mavenSnapshotRepository}"
             url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials(PasswordCredentials)
         }
     }
 }
@@ -226,13 +423,14 @@ publishing {
 
 ## starter.java.release-conventions.gradle
 
-Configurations for axion-release-plugin.
-
 ```groovy
+/**
+ * Configurations for axion-release-plugin.
+ */
+
 plugins {
     id 'pl.allegro.tech.build.axion-release'
 }
-
 
 scmVersion {
 
@@ -322,9 +520,11 @@ public static String getEnvOrDefault(String tagName, String defaultValue) {
 
 ## starter.java.repo-altsource-conventions.gradle
 
-Configurations for specifying a configurable repository (`mavenRepository`, `MAVEN_REPO_USERNAME`, `MAVEN_REPO_PASSWORD`)
-
 ```groovy
+/**
+ * Configurations for specifying a configurable repository (`mavenRepository`, `MAVEN_REPO_USERNAME`, `MAVEN_REPO_PASSWORD`)
+ */
+
 repositories {
     maven {
         url findProperty('mavenRepository')
@@ -338,9 +538,11 @@ repositories {
 
 ## starter.java.repo-default-conventions.gradle
 
-Configurations for specifying standard defaults (local, mavenCentral, JCenter)
-
 ```groovy
+/**
+ * Configurations for specifying standard defaults (local, mavenCentral, JCenter)
+ */
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -350,9 +552,11 @@ repositories {
 
 ## starter.java.repo-local-conventions.gradle
 
-Configurations for specifying only local maven `~/.m2` repository
-
 ```groovy
+/**
+ * Configurations for specifying only local maven `~/.m2` repository
+ */
+
 repositories {
     mavenLocal()
 }
@@ -360,9 +564,11 @@ repositories {
 
 ## starter.java.repo-starter-conventions.gradle
 
-Configurations for specifying starter-bom Github Packages repository
-
 ```groovy
+/**
+ * Configurations for specifying starter-bom Github Packages repository
+ */
+
 repositories {
     maven {
         name = "starterBootPkgs"
@@ -378,40 +584,139 @@ repositories {
 }
 ```
 
-## starter.java.style-conventions.gradle
-
-Configuration for checkstyle and spotless
+## starter.java.spotless-conventions.gradle
 
 ```groovy
+/**
+ * Configuration for spotless code formatting
+ */
+
 plugins {
-    // Apply the java Plugin to add support for Java.
-    id 'starter.java.checkstyle-conventions'
     id "com.diffplug.spotless"
+}
+
+spotless {
+    java {
+        googleJavaFormat()
+    }
 }
 ```
 
-## starter.java.swagger-conventions.gradle
-
-Swaggerhub configurations
+## starter.java.style-conventions.gradle
 
 ```groovy
+/**
+ * Configuration for checkstyle code analysis
+ */
+
 plugins {
-    id "io.swagger.swaggerhub"
+    id 'starter.java.checkstyle-conventions'
+//    id 'starter.java.spotless-conventions'
 }
+
 ```
 
 ## starter.java.test-conventions.gradle
 
-Configuration for jacoco
-
 ```groovy
+/**
+ * Configuration for test task
+ */
+
 plugins {
-    id 'jacoco'
+    id 'java'
 }
 
-tasks.named('test') {
-    // Use junit platform for unit tests.
-    useJUnitPlatform()
+test {
+    useJUnitPlatform {
+        //excludeEngines 'junit-vintage'
+    }
+    testLogging {
+        showStandardStreams = true
+        events "passed", "skipped", "failed"
+    }
+}
+
+
+```
+
+## starter.java.test-gatling-conventions.gradle
+
+```groovy
+/**
+ * Gatling configuration for running stress tests
+ */
+
+plugins {
+    id 'io.gatling.gradle'
+}
+
+sourceSets {
+    gatling {
+        scala.srcDirs = ["src/gatling/scala"]
+        resources.srcDirs = ["src/gatling/resources"]
+    }
+}
+```
+
+## starter.java.test-integration-conventions.gradle
+
+```groovy
+/**
+ * Configurations for testing
+ */
+
+plugins {
+    id 'starter.java.property-conventions'
+}
+
+sourceSets {
+    integrationTest {
+        java {
+            compileClasspath += main.output
+            compileClasspath += test.output
+            runtimeClasspath += main.output
+            runtimeClasspath += test.output
+            srcDir file('src/integration/java')
+        }
+        resources.srcDir file('src/integration/resources')
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom implementation
+    integrationTestRuntimeOnly.extendsFrom runtimeOnly
+}
+
+task integrationTest(type: Test) {
+    description = 'Runs integration tests.'
+    group = 'verification'
+
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    outputs.upToDateWhen { false }
+    mustRunAfter test
+    useJUnitPlatform {
+        excludeEngines 'junit-vintage'
+    }
+}
+
+check.dependsOn integrationTest
+
+
+```
+
+## starter.java.test-jacoco-conventions.gradle
+
+```groovy
+/**
+ * Configuration for jacoco
+ */
+
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'starter.java.property-conventions'
 }
 
 jacoco {
@@ -421,25 +726,68 @@ jacoco {
 
 test {
     finalizedBy jacocoTestReport
+    finalizedBy jacocoTestCoverageVerification
 }
 
+
 jacocoTestReport {
+    reports {
+        html.enabled true
+        xml.enabled true
+        csv.enabled false
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*'] )
+        }))
+    }
+
     dependsOn test
 }
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            enabled = jacoco_enforce_violations
+            limit {
+                minimum = jacoco_minimum_coverage
+            }
+            afterEvaluate {
+                classDirectories.setFrom(files(classDirectories.files.collect {
+                    fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*'] )
+                }))
+            }
+        }
+    }
+}
+
+
+
+```
+
+## starter.java.test-unit-conventions.gradle
+
+```groovy
+plugins {
+    id 'starter.java.test-conventions'
+}
+
 ```
 
 ## starter.java.versions-conventions.gradle
 
-Configuration for ben-manes/gradle-versions-plugin and patrikerdes/gradle-use-latest-versions-plugin.
-
-These plugins will display a list of all the (direct) dependencies in your project, along with the version.
-It will also determine if a newer version of the package is available, depending on the rules you set up.
-For example, the default configuration specifies that if the current package is stable, then it will not suggest non-stable version updates.
-
-The gradle-use-latest-versions-plugin will use the information provided by the versions plugin to make changes to`build.gradle` and `gradle.properties` files to update dependency versions.
-
-
 ```groovy
+/**
+ * Configuration for ben-manes/gradle-versions-plugin and patrikerdes/gradle-use-latest-versions-plugin.
+ *
+ * These plugins will display a list of all the (direct) dependencies in your project, along with the version.
+ * It will also determine if a newer version of the package is available, depending on the rules you set up.
+ * For example, the default configuration specifies that if the current package is stable, then it will not suggest non-stable version updates.
+ *
+ * The gradle-use-latest-versions-plugin will use the information provided by the versions plugin to make changes to`build.gradle` and `gradle.properties` files to update dependency versions.
+ */
+
 plugins {
     id("com.github.ben-manes.versions")
     id("se.patrikerdes.use-latest-versions")
@@ -509,9 +857,11 @@ useLatestVersions {
 
 ## starter.metrics.build-time-tracker-conventions.gradle
 
-Configuration for tracking how long a build takes, using `net.rdrei.android.buildtimetracker`
-
 ```groovy
+/**
+ * Configuration for tracking how long a build takes, using `net.rdrei.android.buildtimetracker`
+ */
+
 plugins {
     id "net.rdrei.android.buildtimetracker"
 }
@@ -535,14 +885,17 @@ buildtimetracker {
         }
     }
 }
+
 ```
 
 ## starter.metrics.talaiot-conventions.gradle
 
-Configuration for tracking how long a build takes, using talaiot.
-NOTE: No configuration set for shipping metrics to an aggregator, but the capability exists.
-
 ```groovy
+/**
+ * Configuration for tracking how long a build takes, using talaiot.
+ * NOTE: No configuration set for shipping metrics to an aggregator, but the capability exists.
+ */
+
 plugins {
     id "com.cdsap.talaiot"
     id "com.cdsap.talaiot.plugin.base"
@@ -603,15 +956,19 @@ talaiot {
         taskDependencyPublisher {
             html = true
         }
+
     }
+
 }
 ```
 
 ## starter.std.java.application-conventions.gradle
 
-Top-level configuration of all the typical standard configurations for a Spring Boot application package.
-
 ```groovy
+/**
+ * Top-level configuration of all the typical standard configurations for a Spring Boot application package.
+ */
+
 plugins {
     // Apply the java Plugin to add support for Java.
     id 'java'
@@ -619,73 +976,122 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
     id "org.springframework.boot" apply true
-    id 'starter.java.repo-conventions'
-    id 'starter.java.build-conventions'
+    id 'starter.java.deps-build-conventions'
+    id 'starter.java.deps-test-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.style-conventions'
-    id 'starter.java.swagger-conventions'
+    id 'starter.java.doc-springdoc-conventions'
     id 'starter.java.test-conventions'
-    id 'starter.java.gatling-conventions'
-    id 'starter.java.publish-jar-conventions'
-
+    id 'starter.java.test-integration-conventions'
+    id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.test-gatling-conventions'
+    id 'starter.java.deps-integration-conventions'
+    id 'starter.java.publish-repo-conventions'
+    id 'starter.java.publish-bootjar-conventions'
+    id 'starter.java.versions-conventions'
 }
 
 dependencies {
     testImplementation 'org.mock-server:mockserver-netty'
     // open tracing testing/mock support
-    testCompile 'io.opentracing:opentracing-mock'
+    testImplementation 'io.opentracing:opentracing-mock'
+    testImplementation 'com.tngtech.archunit:archunit'
 }
 ```
 
 ## starter.std.java.bom-conventions.gradle
 
-Top-level configuration of all the typical standard configurations for a Bill of Materials package
-
 ```groovy
+/**
+ * Top-level configuration of all the typical standard configurations for a Bill of Materials package
+ */
+
 plugins {
     id 'java-platform'
-    id 'starter.java.repo-conventions'
+    id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-pom-conventions'
+    id 'starter.java.versions-conventions'
 }
+
+
 ```
 
 ## starter.std.java.cli-conventions.gradle
 
-Top-level configuration of all the typical standard configurations for a java cli (untested)
-
 ```groovy
+/**
+ * Top-level configuration of all the typical standard configurations for a java cli (untested)
+ */
+
 plugins {
     // Apply the java Plugin to add support for Java.
     id 'java'
     id "org.ajoberstar.grgit"
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
-    id 'starter.java.repo-conventions'
-    id 'starter.java.build-conventions'
+    id 'starter.java.deps-build-conventions'
+    id 'starter.java.deps-test-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.style-conventions'
     id 'starter.java.test-conventions'
+    id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.test-unit-conventions'
+    id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-jar-conventions'
+    id 'starter.java.versions-conventions'
 }
+
 ```
 
 ## starter.std.java.library-conventions.gradle
 
-Top-level configuration of all the typical standard configurations for a normal Java jar.
-
 ```groovy
+/**
+ * Top-level configuration of all the typical standard configurations for a normal Java jar.
+ */
+
 plugins {
     // Apply the java Plugin to add support for Java.
     id 'java'
     id 'java-library'
     id "org.ajoberstar.grgit"
-    id 'starter.java.repo-conventions'
     id 'starter.java.open-tracing-common-conventions'
-    id 'starter.java.build-conventions'
+    id 'starter.java.deps-build-conventions'
+    id 'starter.java.deps-test-conventions'
     id 'starter.java.style-conventions'
-    id 'starter.java.swagger-conventions'
+    id 'starter.java.doc-swagger-conventions'
     id 'starter.java.test-conventions'
+    id 'starter.java.test-unit-conventions'
+    id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-jar-conventions'
+    id 'starter.java.versions-conventions'
 }
+
 ```
 
+## starter.std.java.plugin-conventions.gradle
+
+```groovy
+/**
+ * Top-level configuration of all the typical standard configurations for a gradle plugin
+ */
+
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'groovy'
+    id 'java'
+    id 'java-library'
+    id 'java-gradle-plugin'
+    id "org.ajoberstar.grgit"
+    id 'starter.java.config-conventions'
+    id 'starter.java.style-conventions'
+    id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.test-unit-conventions'
+    id 'starter.java.deps-plugin-conventions'
+    id 'starter.java.deps-test-conventions'
+    id 'starter.java.publish-repo-conventions'
+    id 'starter.java.versions-conventions'
+}
+
+```

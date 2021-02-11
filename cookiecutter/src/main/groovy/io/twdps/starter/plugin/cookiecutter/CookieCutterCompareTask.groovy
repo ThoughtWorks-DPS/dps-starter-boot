@@ -6,8 +6,11 @@ import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class CookieCutterCompareTask extends DefaultTask {
+    Logger log = LoggerFactory.getLogger(CookieCutterCompareTask.class)
 
     @Input
     final Property<String> sourcePath = project.objects.property(String)
@@ -29,10 +32,10 @@ class CookieCutterCompareTask extends DefaultTask {
     final Provider<String> fullInputPath = sourcePath.map { "${project.projectDir}/${it}" }
 
     CookieCutterCompareTask() {
-        outputPath.set('cookiecutter')
-        sourcePath.set('cookiecutter')
-        binary.set('diff')
-        taskTimeout.set(10000L)
+        outputPath.convention('cookiecutter')
+        sourcePath.convention('cookiecutter')
+        binary.convention('diff')
+        taskTimeout.convention(10000L)
         stdOmitFiles.addAll('.git',
                 '.idea',
                 '.gradle',
@@ -51,27 +54,27 @@ class CookieCutterCompareTask extends DefaultTask {
                 'verify-generated-proj.sh',
                 'out')
         doLast {
-            println "l:task [${generatedProjectName.get()}]"
-            println "l:task [${outputPath.get()}]"
-            println "l:task [${sourcePath.get()}]"
-            println "l:task [${taskTimeout.get()}]"
-            println "l:task [${stdOmitFiles.get().size()}]"
-            println "l:task [${omitFiles.get().size()}]"
+            log.debug("l:task:generatedProjectName [{}]", generatedProjectName.get())
+            log.debug("l:task:outputPath [{}]", outputPath.get())
+            log.debug("l:task:sourcePath [{}]", sourcePath.get())
+            log.debug("l:task:taskTimeout [{}]", taskTimeout.get())
+            log.debug("l:task:stdOmitFiles [{}]", stdOmitFiles.get().size())
+            log.debug("l:task:omitFiles [{}]", omitFiles.get().size())
 
             StringBuilder omit = new StringBuilder()
             omitFiles.get().each { p -> omit.append(' -x ').append(p) }
             stdOmitFiles.get().each { p -> omit.append(' -x ').append(p) }
             def cmdLine = "${binary.get()} -r  ${omit.toString()} ${fullOutputPath.get()} ${fullInputPath.get()} "
-            println "[${project.projectDir}]: ${cmdLine}"
+            log.debug("[{}]: {}", project.projectDir, cmdLine)
             def proc = cmdLine.execute(null, project.projectDir)
 
             StringBuilder sout = new StringBuilder()
             StringBuilder serr = new StringBuilder()
             //proc.consumeProcessOutput(sout, serr)
             proc.waitForOrKill(taskTimeout.get())
-            println "Exit code: ${proc.exitValue()}"
-            println "Std err: ${proc.err.text}" //sout.toString()
-            println "Std out: ${proc.in.text}" //serr.toString()
+            log.quiet("Exit code: [{}]", proc.exitValue())
+            log.quiet("Std err: [{}]", proc.err.text)
+            log.quiet("Std out: [{}]", proc.in.text)
 
         }
     }

@@ -1,3 +1,6 @@
+/**
+ * Configuration for test task
+ */
 plugins {
     id 'java'
 }

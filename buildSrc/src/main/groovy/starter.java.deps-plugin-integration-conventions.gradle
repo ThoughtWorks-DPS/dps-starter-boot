@@ -1,6 +1,8 @@
+/**
+ * Provides a set of common dependencies for typical gradle plugin integration test .
+ */
 
 sourceCompatibility = '11'
-
 
 dependencies {
     integrationTestImplementation('org.spockframework:spock-core') {

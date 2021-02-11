@@ -1,3 +1,8 @@
+/**
+ * Configuration for tracking how long a build takes, using talaiot.
+ * NOTE: No configuration set for shipping metrics to an aggregator, but the capability exists.
+ */
+
 plugins {
     id "com.cdsap.talaiot"
     id "com.cdsap.talaiot.plugin.base"

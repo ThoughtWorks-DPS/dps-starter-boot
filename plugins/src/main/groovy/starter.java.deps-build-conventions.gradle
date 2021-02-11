@@ -1,10 +1,17 @@
+/**
+ * Provides a set of common dependencies for typical build.
+ * Includes proper dependencies for lombok and mapstruct annotation processing.
+ */
 
 sourceCompatibility = '11'
 
 dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-    implementation "io.springfox:springfox-boot-starter"
+    implementation "org.springdoc:springdoc-openapi-ui"
+    implementation "org.springdoc:springdoc-openapi-webmvc-core"
+    //implementation "org.springdoc:springdoc-openapi-security"
+    implementation "org.springdoc:springdoc-openapi-data-rest"
     implementation 'org.mapstruct:mapstruct'
 
     compileOnly 'org.projectlombok:lombok'

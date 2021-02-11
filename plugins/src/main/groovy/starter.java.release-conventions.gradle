@@ -1,7 +1,10 @@
+/**
+ * Configurations for axion-release-plugin.
+ */
+
 plugins {
     id 'pl.allegro.tech.build.axion-release'
 }
-
 
 scmVersion {
 

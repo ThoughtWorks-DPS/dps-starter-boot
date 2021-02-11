@@ -21,6 +21,7 @@ dependencyResolutionManagement {
 rootProject.name = 'starter-boot'
 include ':tracing'
 include ':springfox'
+include ':springdoc'
 include ':starter-bom'
 include ':checkstyle-bom'
 include ':checkstyle'

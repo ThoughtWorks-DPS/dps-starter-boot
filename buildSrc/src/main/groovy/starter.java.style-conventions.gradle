@@ -1,6 +1,9 @@
+/**
+ * Configuration for checkstyle code analysis
+ */
+
 plugins {
     id 'starter.java.checkstyle-conventions'
-//    id 'starter.java.spotless-conventions'
-    id 'com.palantir.baseline-circleci'
+//    id 'com.palantir.baseline-circleci'
 }
 

@@ -1,3 +1,7 @@
+/**
+ * Configuration for jacoco
+ */
+
 plugins {
     id 'java'
     id 'jacoco'

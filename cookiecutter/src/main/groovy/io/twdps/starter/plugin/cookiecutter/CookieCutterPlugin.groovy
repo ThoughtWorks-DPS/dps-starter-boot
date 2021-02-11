@@ -5,9 +5,11 @@ import org.gradle.api.Project
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.GradleBuild
+import org.slf4j.LoggerFactory
 
 
 class CookieCutterPlugin implements Plugin<Project> {
+    def logger = LoggerFactory.getLogger(CookieCutterPlugin.class)
     void apply(Project project) {
         def extension = project.extensions.create('cookiecutter', CookieCutterPluginExtension)
         def verifyExtension = project.extensions.create('cookiecutterVerify', CookieCutterCompareTaskExtension)
@@ -19,42 +21,25 @@ class CookieCutterPlugin implements Plugin<Project> {
             args('-rf', "${project.buildDir}/${extension.outputPath.get()}")
         }
 
-        project.task('generateTemplatesDebug', type: CookieCutterMultiGenerateTask) {
-            doFirst {
-                println "f:gtd:template [${extension.template.get()}]"
-                println "f:gtd:outputPath [${extension.outputPath.get()}]"
-                println "f:gtd:binary [${extension.templateBinary.get()}]"
-                extension.templates.each { p ->
-                    println "f:templates [${p.get()}]"
-                }
-            }
-            doLast {
-                println "l:gtd:template [${extension.template.get()}]"
-                println "l:gtd:outputPath [${extension.outputPath.get()}]"
-                println "l:gtd:binary [${extension.templateBinary.get()}]"
-                extension.templates.each { p ->
-                    println "l:templates [${p.get()}]"
-                }
-            }
-            group = 'cookiecutter'
-            description = "Clean up oookiecutter template output directory"
-            println "c:gtd:template [${extension.template.get()}]"
-            println "c:gtd:outputPath [${extension.outputPath.get()}]"
-            println "c:gtd:binary [${extension.templateBinary.get()}]"
-            extension.templates.each { p ->
-                println "templates [${p.get()}]"
-            }
-            templates = extension.templates;
-            outputPath = extension.outputPath;
-            binary = extension.templateBinary
-        }
-
         project.task('generateTemplates', type: CookieCutterMultiGenerateTask) {
             group = 'cookiecutter'
             description = "Generate multiple templates to the same output directory"
+            doFirst {
+                logger.debug("f:gt:template [{}]", extension.template.get())
+                logger.debug("f:gt:outputPath [{}]", extension.outputPath.get())
+                logger.debug("f:gt:binary [{}]", extension.templateBinary.get())
+            }
+            logger.debug("c:gt:template [{}]", extension.template.get())
+            logger.debug("c:gt:outputPath [{}]", extension.outputPath.get())
+            logger.debug("c:gt:binary [{}]", extension.templateBinary.get())
             templates = extension.templates;
             outputPath = extension.outputPath;
             binary = extension.templateBinary
+            doLast {
+                logger.debug("l:gt:template [{}]", extension.template.get())
+                logger.debug("l:gt:outputPath [{}]", extension.outputPath.get())
+                logger.debug("l:gt:binary [{}]", extension.templateBinary.get())
+            }
         }
 
         project.task('generateTemplate', type: CookieCutterGenerateTask) {
@@ -73,14 +58,16 @@ class CookieCutterPlugin implements Plugin<Project> {
             generatedProjectName = verifyExtension.generatedProjectName;
             omitFiles = verifyExtension.omitFiles
             binary = verifyExtension.diffBinary
+            mustRunAfter('generateTemplate', 'generateTemplates')
         }
 
         project.task('buildTemplate', type: Exec) {
             group = 'cookiecutter'
             description = "Build the generated template"
             executable(buildExtension.buildBinary.get()) // set this upfront, update in closure
+            mustRunAfter('generateTemplate', 'generateTemplates')
             doFirst {
-                println "f:dir [${project.buildDir}/${buildExtension.outputPath.get()}/${buildExtension.generatedProjectName.get()}]"
+                logger.debug("f:dir [${project.buildDir}/${buildExtension.outputPath.get()}/${buildExtension.generatedProjectName.get()}]")
                 executable(buildExtension.buildBinary.get())
                 workingDir = "${project.buildDir}/${buildExtension.outputPath.get()}/${buildExtension.generatedProjectName.get()}"
                 args(buildExtension.args.get())
@@ -101,8 +88,13 @@ class CookieCutterPlugin implements Plugin<Project> {
 
         project.task('testTemplate') {
             group = 'cookiecutter'
-            description = "Test template"
+            description = "Test one template"
             dependsOn('generateTemplate', 'buildTemplate')
+        }
+        project.task('testTemplates') {
+            group = 'cookiecutter'
+            description = "Test collection of templates"
+            dependsOn('generateTemplates', 'buildTemplate')
         }
     }
 }

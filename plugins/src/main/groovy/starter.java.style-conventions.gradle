@@ -1,3 +1,7 @@
+/**
+ * Configuration for checkstyle code analysis
+ */
+
 plugins {
     id 'starter.java.checkstyle-conventions'
 //    id 'starter.java.spotless-conventions'

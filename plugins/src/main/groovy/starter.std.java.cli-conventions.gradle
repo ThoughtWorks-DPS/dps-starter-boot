@@ -1,3 +1,6 @@
+/**
+ * Top-level configuration of all the typical standard configurations for a java cli (untested)
+ */
 
 plugins {
     // Apply the java Plugin to add support for Java.

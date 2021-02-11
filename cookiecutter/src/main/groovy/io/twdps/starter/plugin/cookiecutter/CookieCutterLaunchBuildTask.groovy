@@ -6,8 +6,11 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Internal
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class CookieCutterLaunchBuildTask extends Exec {
+    Logger log = LoggerFactory.getLogger(CookieCutterLaunchBuildTask.class)
 
     @Input
     final Property<String> outputPath = project.objects.property(String)
@@ -26,10 +29,10 @@ class CookieCutterLaunchBuildTask extends Exec {
     CookieCutterLaunchBuildTask() {
 //        executable(binary.get())
         doFirst {
-            println "f:task [${generatedProjectName.get()}]"
-            println "f:task [${outputPath.get()}]"
-            println "f:task [${binary.get()}]"
-            println "f:task [${fullOutputPath.get()}]"
+            log.debug("f:task [{}]", generatedProjectName.get())
+            log.debug("f:task [{}]", outputPath.get())
+            log.debug("f:task [{}]", binary.get())
+            log.debug("f:task [{}]", fullOutputPath.get())
             executable(binary.get())
             workingDir = fullOutputPath.get()
             args(argList.get())

@@ -1,6 +1,8 @@
+/**
+ * Provides a set of common dependencies for typical unit testing.
+ */
 
 sourceCompatibility = '11'
-
 
 dependencies {
     testCompile 'org.mockito:mockito-core'

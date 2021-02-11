@@ -1,3 +1,6 @@
+/**
+ * Provides configurations for platform (BOM) dependencies, to ensure non-api/runtime configurations are set properly.
+ */
 
 configurations {
     springBom

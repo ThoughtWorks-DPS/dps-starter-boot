@@ -1,3 +1,7 @@
+/**
+ * Swaggerhub configurations
+ */
+
 plugins {
     id "io.swagger.swaggerhub"
 }

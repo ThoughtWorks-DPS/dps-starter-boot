@@ -1,3 +1,7 @@
+/**
+ * Configurations for testing
+ */
+
 plugins {
     id 'starter.java.property-conventions'
 }

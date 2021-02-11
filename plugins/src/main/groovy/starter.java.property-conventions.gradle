@@ -1,4 +1,10 @@
+/**
+ * Utility function for choosing between a team-defined configuration and a default core-define value.
 
+ * @param value variable (or null)
+ * @param defaultValue  return value if null
+ * @return one or the other value
+ */
 public static String getValueOrDefault(String value, String defaultValue) {
 
     return !value ? defaultValue : value;

@@ -1,3 +1,7 @@
+/**
+ * Configuration for spotless code formatting
+ */
+
 plugins {
     id "com.diffplug.spotless"
 }

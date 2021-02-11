@@ -1,3 +1,6 @@
+/**
+ * Configurations for specifying starter-bom Github Packages repository
+ */
 
 repositories {
     maven {

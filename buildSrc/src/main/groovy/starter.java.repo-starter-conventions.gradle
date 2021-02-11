@@ -1,6 +1,8 @@
+/**
+ * Configurations for specifying starter-bom Github Packages repository
+ */
 
 repositories {
-
     maven {
         name = "starterBootPkgs"
         url = uri("https://maven.pkg.github.com/ThoughtWorks-DPS/dps-starter-boot")

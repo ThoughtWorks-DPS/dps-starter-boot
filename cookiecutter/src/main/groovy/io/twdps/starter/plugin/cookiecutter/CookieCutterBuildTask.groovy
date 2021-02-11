@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory
 // kicking off a sub-build of the generated templates.  There may be cases where the generated
 // code isn't a complete project, and might benefit from a dynamic multi-module build
 class CookieCutterBuildTask extends GradleBuild {
+    @Internal
     Logger log = LoggerFactory.getLogger(CookieCutterBuildTask.class)
 
     @Input

@@ -64,7 +64,7 @@ jobs:
       - run:
           name: Run tests
           command: |
-            ./gradlew clean test --debug
+            ./gradlew clean test
 #      - secrethub/exec:
 #          step-name: Configure CodeClimate test-coverage formatting pre-upload
 #          command: |

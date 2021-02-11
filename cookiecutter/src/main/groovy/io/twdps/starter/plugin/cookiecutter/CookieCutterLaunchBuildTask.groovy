@@ -10,6 +10,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 class CookieCutterLaunchBuildTask extends Exec {
+    @Internal
     Logger log = LoggerFactory.getLogger(CookieCutterLaunchBuildTask.class)
 
     @Input

@@ -33,10 +33,6 @@ class CookieCutterPluginTest extends Specification {
         when: def t = project.getTasks().getByName('generateTemplates')
         then: t instanceof CookieCutterMultiGenerateTask
     }
-    def cookieCutterPluginAddsGenerateTemplatesDebugTaskToProject() {
-        when: def t = project.getTasks().getByName('generateTemplatesDebug')
-        then: t instanceof CookieCutterMultiGenerateTask
-    }
     def cookieCutterPluginAddsBuildTemplateTaskToProject() {
         when: def t = project.getTasks().getByName('buildTemplate')
         then: t instanceof Exec

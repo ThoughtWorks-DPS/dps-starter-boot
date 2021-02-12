@@ -4,13 +4,14 @@ runpath=$(dirname $0)
 script=
 file=""
 tree=""
-path="."
+path=""
 preserve=""
 
 function usage {
   echo "$0 [--sed <script>] [--file <file>] [--path <path>] [--tree <tree>] [--preserve]"
   echo "  --sed         sed script to execute (${script})"
   echo "  --file        file to process (${file})"
+  echo "  --path        process all files in path non-recursively (${path})"
   echo "  --tree        process all files in tree recursively (${tree})"
   echo "  --preserve    preserve translated files with this extension for debugging ($preserve)"
   echo "  --help        display this help"

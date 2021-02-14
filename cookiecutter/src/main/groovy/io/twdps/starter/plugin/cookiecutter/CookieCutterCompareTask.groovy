@@ -72,10 +72,13 @@ class CookieCutterCompareTask extends DefaultTask {
             StringBuilder sout = new StringBuilder()
             StringBuilder serr = new StringBuilder()
             //proc.consumeProcessOutput(sout, serr)
-            proc.waitForOrKill(taskTimeout.get())
+            proc.in.eachLine { line -> log.quiet(line) }
+            proc.out.close()
+            proc.waitFor()
+            //proc.waitForOrKill(taskTimeout.get())
             log.quiet("Exit code: [{}]", proc.exitValue())
-            log.quiet("Std err: [{}]", proc.err.text)
-            log.quiet("Std out: [{}]", proc.in.text)
+            //log.quiet("Std err: [{}]", proc.err.text)
+            //log.quiet("Std out: [{}]", proc.in.text)
 
         }
     }

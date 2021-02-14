@@ -32,9 +32,11 @@ class CookieCutterPlugin implements Plugin<Project> {
             logger.debug("c:gt:template [{}]", extension.template.get())
             logger.debug("c:gt:outputPath [{}]", extension.outputPath.get())
             logger.debug("c:gt:binary [{}]", extension.templateBinary.get())
-            templates = extension.templates;
-            outputPath = extension.outputPath;
+            templates = extension.templates
+            outputPath = extension.outputPath
             binary = extension.templateBinary
+            context = extension.context
+            taskTimeout = extension.taskTimeout
             doLast {
                 logger.debug("l:gt:template [{}]", extension.template.get())
                 logger.debug("l:gt:outputPath [{}]", extension.outputPath.get())
@@ -45,17 +47,19 @@ class CookieCutterPlugin implements Plugin<Project> {
         project.task('generateTemplate', type: CookieCutterGenerateTask) {
             group = 'cookiecutter'
             description = "Generate a single template to an output directory"
-            template = extension.template;
-            outputPath = extension.outputPath;
+            template = extension.template
+            outputPath = extension.outputPath
             binary = extension.templateBinary
+            context = extension.context
+            taskTimeout = extension.taskTimeout
         }
 
         project.task('compareTemplate', type: CookieCutterCompareTask) {
             group = 'cookiecutter'
             description = "Compare a generated template with the original (non-template) source"
-            outputPath = verifyExtension.outputPath;
-            sourcePath = verifyExtension.sourcePath;
-            generatedProjectName = verifyExtension.generatedProjectName;
+            outputPath = verifyExtension.outputPath
+            sourcePath = verifyExtension.sourcePath
+            generatedProjectName = verifyExtension.generatedProjectName
             omitFiles = verifyExtension.omitFiles
             binary = verifyExtension.diffBinary
             mustRunAfter('generateTemplate', 'generateTemplates')

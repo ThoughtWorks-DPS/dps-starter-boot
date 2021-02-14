@@ -12,6 +12,8 @@ class CookieCutterPluginExtension {
     final Property<String> inputPath
     final Property<String> templateBinary
     final Property<String> diffBinary
+    final Property<Long> taskTimeout
+    final ListProperty<String> context
     final ListProperty<String> omitCompare
 
     CookieCutterPluginExtension(ObjectFactory objects) {
@@ -22,12 +24,15 @@ class CookieCutterPluginExtension {
         diffBinary = objects.property(String)
         templates = objects.listProperty(String)
         omitCompare = objects.listProperty(String)
+        context = objects.listProperty(String)
+        taskTimeout = objects.property(Long)
         // set defaults
-        template.set('.')
-        outputPath.set('cookiecutter')
-        templateBinary.set('cookiecutter')
-        diffBinary.set('diff')
-        inputPath.set('..')
+        template.convention('.')
+        outputPath.convention('cookiecutter')
+        templateBinary.convention('cookiecutter')
+        diffBinary.convention('diff')
+        inputPath.convention('..')
+        taskTimeout.convention(10000L)
     }
 }
 

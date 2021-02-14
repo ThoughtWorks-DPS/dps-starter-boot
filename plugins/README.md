@@ -632,7 +632,7 @@ test {
         //excludeEngines 'junit-vintage'
     }
     testLogging {
-        showStandardStreams = true
+//        showStandardStreams = true
         events "passed", "skipped", "failed"
     }
 }

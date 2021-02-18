@@ -10,8 +10,13 @@ test {
 //        excludeEngines 'junit-vintage'
     }
     testLogging {
-        showStandardStreams = true
-        events "passed", "skipped", "failed"
+        // showStandardStreams = true
+        // events "passed", "skipped", "failed"
+        showExceptions true
+        showCauses true
+        minGranularity 2
+        minGranularity 4
+        displayGranularity 0
     }
 }
 

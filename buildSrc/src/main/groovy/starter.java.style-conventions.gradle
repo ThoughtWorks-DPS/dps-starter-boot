@@ -4,6 +4,5 @@
 
 plugins {
     id 'starter.java.checkstyle-conventions'
-//    id 'com.palantir.baseline-circleci'
 }
 

@@ -9,6 +9,12 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 public class SpringFoxConfig {
+
+  /**
+   * configure the Docket object for generating OpenAPI specs.
+   *
+   * @return documentation generation object
+   */
   @Bean
   public Docket api() {
     return new Docket(DocumentationType.OAS_30)

@@ -52,6 +52,7 @@ class CookieCutterPlugin implements Plugin<Project> {
             binary = extension.templateBinary
             context = extension.context
             taskTimeout = extension.taskTimeout
+            outputs.upToDateWhen { false }
         }
 
         project.task('compareTemplate', type: CookieCutterCompareTask) {

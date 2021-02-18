@@ -10,16 +10,16 @@ sourceSets {
     integrationTest {
         java {
             compileClasspath += main.output
-            compileClasspath += test.output
+            //compileClasspath += test.output
             runtimeClasspath += main.output
-            runtimeClasspath += test.output
+            //runtimeClasspath += test.output
             srcDir file('src/integration/java')
         }
         groovy {
             compileClasspath += main.output
-            compileClasspath += test.output
+            //compileClasspath += test.output
             runtimeClasspath += main.output
-            runtimeClasspath += test.output
+            //runtimeClasspath += test.output
             srcDir file('src/integration/groovy')
         }
         resources.srcDir file('src/integration/resources')

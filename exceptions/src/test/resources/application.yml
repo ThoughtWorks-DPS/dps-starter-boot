@@ -1,0 +1,67 @@
+info:
+  app:
+    name: TWDPS Example API
+    description: Starter Kit Example
+management:
+  server:
+    port: 8081
+  endpoint:
+    health:
+      probes:
+        enabled: true
+# Setting up K8 health probes - with health probs set to true you can use
+# the paths in your config like the snippet below
+
+#livenessProbe:
+#  httpGet:
+#    path: /actuator/health/liveness
+#    port: 8081
+#  failureThreshold: ...
+#  periodSeconds: ...
+#
+#readinessProbe:
+#  httpGet:
+#    path: /actuator/health/readiness
+#    port: 8081
+#  failureThreshold: ...
+
+server:
+  tomcat:
+    basedir: build/tomcat
+    max-threads: 100
+  ssl:
+    enabled: false
+  port: 8080
+
+spring:
+  application:
+    name: "starter-api"
+
+  #TODO: integrate with secrets mgmt and integrate flyway
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/skdb"
+    username: skuser
+    password: localT3st!
+  jpa:
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      org.hibernate.envers.audit_table_suffix: _audit
+      org.hibernate.envers.revision_field_name: revision_id
+      org.hibernate.envers.revision_type_field_name: type
+      org.hibernate.envers.global_with_modified_flag: true
+      org.hibernate.envers.store_data_at_delete: true
+      hibernate:
+        generate_statistics: false
+        implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+        jdbc:
+          lob:
+            non_contextual_creation=true:
+
+opentracing:
+  zipkin:
+    enabled: true
+    http-sender.baseUrl: http://zipkin.istio-system.svc.cluster.local:9411

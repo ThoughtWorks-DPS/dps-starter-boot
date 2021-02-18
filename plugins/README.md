@@ -25,6 +25,30 @@ If 'spotless' gets more complicated, then these two should be split and propagat
 
 
 
+## starter.java.build-utils-conventions.gradle
+
+```groovy
+/**
+ * Tasks for debugging build problems
+ */
+
+task printSourceSetInformation(){
+
+    doLast{
+        sourceSets.each { srcSet ->
+            println "["+srcSet.name+"]"
+            print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
+            print "-->Output directories: "+srcSet.output.classesDirs.files+"\n"
+            print "-->Compile classpath:\n"
+            srcSet.compileClasspath.files.each {
+                print "  "+it.path+"\n"
+            }
+            println ""
+        }
+    }
+}
+```
+
 ## starter.java.checkstyle-conventions.gradle
 
 ```groovy
@@ -174,6 +198,7 @@ sourceCompatibility = '11'
 dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
+    implementation "org.zalando:problem-spring-web"
     implementation "org.springdoc:springdoc-openapi-ui"
     implementation "org.springdoc:springdoc-openapi-webmvc-core"
     //implementation "org.springdoc:springdoc-openapi-security"
@@ -632,8 +657,13 @@ test {
         //excludeEngines 'junit-vintage'
     }
     testLogging {
-//        showStandardStreams = true
-        events "passed", "skipped", "failed"
+        //showStandardStreams true
+        //events "passed", "skipped", "failed"
+        showExceptions true
+        showCauses true
+        minGranularity 2
+        minGranularity 4
+        displayGranularity 0
     }
 }
 
@@ -674,9 +704,9 @@ sourceSets {
     integrationTest {
         java {
             compileClasspath += main.output
-            compileClasspath += test.output
+            //compileClasspath += test.output
             runtimeClasspath += main.output
-            runtimeClasspath += test.output
+            //runtimeClasspath += test.output
             srcDir file('src/integration/java')
         }
         resources.srcDir file('src/integration/resources')

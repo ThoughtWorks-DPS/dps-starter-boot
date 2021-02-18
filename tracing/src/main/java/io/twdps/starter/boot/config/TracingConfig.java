@@ -32,6 +32,7 @@ public class TracingConfig {
       @Value("${spring.application.name:unknown-spring-boot}") String serviceName) {
     this.serviceName = serviceName;
   }
+
   /**
    * create tracer config.
    *

@@ -65,6 +65,7 @@ fi
 
 githubOrgOrigLower=$(echo "${githubOrgOrig}" | tr '[:upper:]' '[:lower:]')
 sedFile=`mktemp /tmp/sed.XXXXXX` || exit 1
+echo "s:${orgOrig}\.${tlOrig}:${org}.${tl}:g" >> "${sedFile}"
 echo "s:${tlOrig}\.${orgOrig}:${tl}.${org}:g" >> "${sedFile}"
 echo "s:${tlOrig}/${orgOrig}:${tl}/${org}:g" >> "${sedFile}"
 echo "s:${githubOrgOrig}:${githubOrg}:g" >> "${sedFile}"

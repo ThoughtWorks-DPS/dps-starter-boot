@@ -13,7 +13,7 @@ ext {
     gradle_intellij_plugin_version = "0.4.14"
     h2_version = "1.4.200"
     junit_insights_version = "1.1.0"
-    mapstruct_version = "1.4.1.Final"
+    mapstruct_version = "1.4.2.Final"
     mockserver_netty_version = "5.11.2"
     opentracing_api_version = "0.33.0"
     opentracing_mock_version = "0.33.0"
@@ -37,6 +37,7 @@ dependencies {
         api project(":tracing")
         api project(":error-handling")
         api project(":exceptions")
+        api project(":istio-security-config")
         api project(":springdoc")
         api "com.tngtech.archunit:archunit:${arch_unit_version}"
         api "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:${gradle_intellij_plugin_version}"

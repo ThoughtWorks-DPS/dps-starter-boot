@@ -1,7 +1,9 @@
 package io.twdps.starter.boot.config;
 
+import brave.Tracer;
 import io.twdps.starter.boot.exception.RequestValidationException;
 import org.apiguardian.api.API;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,7 +36,7 @@ public interface TraceableAdviceTrait extends AdviceTrait {
 
   @API(status = INTERNAL)
   default String getTraceHeaderName() {
-    return "traceparent";
+    return "X-B3-TraceId";
   }
 
   /**
@@ -48,9 +50,11 @@ public interface TraceableAdviceTrait extends AdviceTrait {
   default URI extractInstance(final NativeWebRequest request, final HttpHeaders headers) {
     // TODO
     try {
-      String trace = "FIXME-opentracing/span";
+      String trace = "NOTRACE";
       if (null != request) {
-        trace = request.getHeaderValues(getTraceHeaderName())[0];
+        String[] traceHeaders = request.getHeaderValues(getTraceHeaderName());
+        if (null != traceHeaders)
+          trace = traceHeaders[0];
       }
       return new URI(String.format("%s/%s", getUriRoot(), trace));
     } catch (URISyntaxException ex) {

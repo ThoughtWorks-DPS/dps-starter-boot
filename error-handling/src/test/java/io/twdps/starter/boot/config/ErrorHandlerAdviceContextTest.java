@@ -50,7 +50,7 @@ public class ErrorHandlerAdviceContextTest {
     MockHttpServletResponse response =
         mockMvc
             .perform(get("/v1/example/test/foo")
-                .header("traceparent", traceparent)
+                .header("X-B3-TraceId", traceparent)
                 .accept(MediaType.APPLICATION_JSON))
             .andReturn()
             .getResponse();
@@ -75,7 +75,7 @@ public class ErrorHandlerAdviceContextTest {
         mockMvc
             .perform(
                 post("/v1/example/test")
-                    .header("traceparent", traceparent)
+                    .header("X-B3-TraceId", traceparent)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"userName\": null}"))
             .andReturn()
@@ -103,7 +103,7 @@ public class ErrorHandlerAdviceContextTest {
         mockMvc
             .perform(
                 post("/v1/example/test")
-                    .header("traceparent", traceparent)
+                    .header("X-B3-TraceId", traceparent)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content("{\"userName\": \"user\"}"))
             .andReturn()
@@ -129,7 +129,7 @@ public class ErrorHandlerAdviceContextTest {
         mockMvc
             .perform(
                 post("/v1/example/test")
-                    .header("traceparent", traceparent)
+                    .header("X-B3-TraceId", traceparent)
                     .contentType(MediaType.APPLICATION_JSON))
             .andReturn()
             .getResponse();
@@ -142,6 +142,30 @@ public class ErrorHandlerAdviceContextTest {
     assertThat(error.getStatus().getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     assertThat(error.getType().toString()).isEqualTo("https://starter.twdps.io/request-validation");
     assertThat(error.getInstance().toString()).isEqualTo(String.format("https://starter.twdps.io/%s", traceparent));
+    assertThat(error.getDetail()).contains("Required request body is missing");
+    // assertThat(error.getReference()).isEqualTo("/v1/example/test");
+  }
+
+  @Test
+  void whenTraceHeaderIsMissing_thenReturnsNoTrace() throws Exception {
+
+    // when
+    MockHttpServletResponse response =
+        mockMvc
+            .perform(
+                post("/v1/example/test")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andReturn()
+            .getResponse();
+
+    // then
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+    String content = response.getContentAsString();
+    Problem error = objectMapper.readValue(content, Problem.class);
+    assertThat(error.getStatus().getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    assertThat(error.getType().toString()).isEqualTo("https://starter.twdps.io/request-validation");
+    assertThat(error.getInstance().toString()).isEqualTo(String.format("https://starter.twdps.io/%s", "NOTRACE"));
     assertThat(error.getDetail()).contains("Required request body is missing");
     // assertThat(error.getReference()).isEqualTo("/v1/example/test");
   }

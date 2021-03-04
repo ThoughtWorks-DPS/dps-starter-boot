@@ -31,38 +31,39 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
 @WebMvcTest(TestResource.class)
-@ContextConfiguration(classes = {ErrorHandlerAdvice.class, ErrorHandlerConfig.class, IstioDisableSecurityConfig.class})
+@ContextConfiguration(classes =
+    {ErrorHandlerAdvice.class, ErrorHandlerConfig.class, IstioDisableSecurityConfig.class})
 public class IstioDisableSecurityConfigTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+  @Autowired
+  private ObjectMapper objectMapper;
 
-    @MockBean
-    private TestResource controller;
+  @MockBean
+  private TestResource controller;
 
-    private final String message = "message";
-    private final String traceparent = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
+  private final String message = "message";
+  private final String traceparent = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
 
-    // TODO: Figure out testing, no csrf, no issues
-    @Test
-    void whenResourceFound_thenReturns200() throws Exception {
-        Mockito.when(controller.findEntityById("foo"))
-                .thenReturn(new ResponseEntity<>(new TestResponse(message), HttpStatus.OK));
+  // TODO: Figure out testing, no csrf, no issues
+  @Test
+  void whenResourceFoundAndIstioEnabled_thenReturns200() throws Exception {
+    Mockito.when(controller.findEntityById("foo"))
+        .thenReturn(new ResponseEntity<>(new TestResponse(message), HttpStatus.OK));
 
-        // when
-        MockHttpServletResponse response =
-                mockMvc
-                        .perform(get("/v1/example/test/foo")
-                                .header("traceparent", traceparent)
-                                .accept(MediaType.APPLICATION_JSON))
-                        .andReturn()
-                        .getResponse();
+    // when
+    MockHttpServletResponse response =
+        mockMvc
+            .perform(get("/v1/example/test/foo")
+                .header("traceparent", traceparent)
+                .accept(MediaType.APPLICATION_JSON))
+            .andReturn()
+            .getResponse();
 
-        // then
-        assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
-    }
+    // then
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+  }
 
 }

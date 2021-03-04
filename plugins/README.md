@@ -124,10 +124,12 @@ configurations {
 plugins {
     id 'com.palantir.docker'
     id 'com.palantir.docker-run'
+    id 'com.palantir.docker-compose'
+    id 'starter.java.property-conventions'
 }
 
 ext {
-    dockerRegistry =  project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
+    dockerRegistry = project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
     dockerImageVersion = project.hasProperty("buildNumber") ? "${project.version}-${project.buildNumber}" : project.version
 }
 
@@ -137,28 +139,89 @@ docker {
     tag "Build", "${dockerRegistry}/${rootProject.name}:${dockerImageVersion}"
     tag "Latest", "${dockerRegistry}/${rootProject.name}:latest"
     noCache true
-    files "build/libs/${bootJar.archiveFileName.get()}", 'bin'
-    buildArgs([JAR_FILE: bootJar.archiveFileName.get()])
+    dockerfile file('src/docker/Dockerfile')
 }
 
 dockerRun {
     name project.name
     image "${dockerRegistry}/${rootProject.name}"
     ports '8080:8080'
-    env 'SECRETHUB_HELLO': (System.getenv('SECRETHUB_HELLO') == null
-            ? 'override-me'
-            : System.getenv('SECRETHUB_HELLO'))
+    env 'SECRETHUB_HELLO': getEnvOrDefault('SECRETHUB_HELLO', 'override-me')
+}
+
+dockerCompose {
+    dockerComposeFile 'src/docker/docker-compose.yml'
+}
+
+task dockerStart(type: GradleBuild) {
+    tasks = ["dockerPrune", "clean", "dockerClean", "docker", "dockerRun"]
 }
 
 task dockerPrune(type: Exec) {
     dependsOn('dockerStop', 'dockerRemoveContainer')
     dockerRemoveContainer.mustRunAfter('dockerStop')
-    commandLine './scripts/docker-prune.sh'
+    executable "${project.rootDir}/scripts/docker-prune.sh"
+    args "--container", "--image"
 }
 
-task dockerStart(type: GradleBuild) {
-    tasks = ["dockerPrune","clean", "dockerClean", "docker", "dockerRun"]
+task dockerVolumePrune(type: Exec) {
+    dependsOn('dockerStop', 'dockerRemoveContainer', 'dockerPrune')
+    dockerRemoveContainer.mustRunAfter('dockerStop')
+    dockerPrune.mustRunAfter('dockerRemoveContainer')
+    executable "${project.rootDir}/scripts/docker-prune.sh"
+    args "--volume"
 }
+
+task dcPrune(type: Exec) {
+    dependsOn('dockerComposeDown')
+    executable "${project.rootDir}/scripts/docker-prune.sh"
+    args "--container", "--image"
+}
+
+task dcVolumePrune(type: Exec) {
+    dependsOn('dockerComposeDown', 'dcPrune')
+    dcPrune.mustRunAfter('dockerComposeDown')
+    executable "${project.rootDir}/scripts/docker-prune.sh"
+    args "--volume"
+}
+
+/*
+task dockerSterilize(type: GradleBuild) {
+    tasks = ["dockerComposeDown",
+             "dockerStop",
+             "dockerRemoveContainer",
+             "clean",
+             "dockerClean",
+             "dockerPrune",
+             "dockerVolumePrune"]
+}
+
+ */
+
+```
+
+## starter.java.container-spring-conventions.gradle
+
+```groovy
+/**
+ * Provides docker container settings
+ */
+
+plugins {
+    id 'starter.java.container-conventions'
+}
+
+
+docker {
+    files "build/libs/${bootJar.archiveFileName.get()}", "bin/entrypoint.sh"
+    buildArgs([JAR_FILE: bootJar.archiveFileName.get(), ENTRYPOINT_FILE: "entrypoint.sh"])
+}
+
+dockerRun {
+    env 'SECRETHUB_HELLO': getEnvOrDefault('SECRETHUB_HELLO', 'override-me'),
+            'JAVA_PROFILE': '-Dspring.profiles.include=docker'
+}
+
 ```
 
 ## starter.java.coordinate-conventions.gradle
@@ -347,17 +410,32 @@ dependencies {
 ## starter.java.property-conventions.gradle
 
 ```groovy
-/**
- * Utility function for choosing between a team-defined configuration and a default core-define value.
+ext {
+    /**
+     * Utility function for choosing between a team-defined configuration and a default core-define value.
+     *
+     * @param value variable (or null)
+     * @param defaultValue return value if null
+     * @return one or the other value
+     */
+    getValueOrDefault = { String value, String defaultValue ->
+        return !value ? defaultValue : value;
+    }
 
- * @param value variable (or null)
- * @param defaultValue  return value if null
- * @return one or the other value
- */
-public static String getValueOrDefault(String value, String defaultValue) {
 
-    return !value ? defaultValue : value;
+    /**
+     * Utility function for choosing between a team-defined configuration and a default core-define value.
+     *
+     * @param tagName environment variable name (or null)
+     * @param defaultValue return value if environment value is null or doesn't exist
+     * @return environment value or default
+     */
+    getEnvOrDefault = { String tagName, String defaultValue ->
+        String ref = System.getenv(tagName)
+        return !ref ? defaultValue : ref;
+    }
 }
+
 ```
 
 ## starter.java.publish-bootjar-conventions.gradle
@@ -454,6 +532,7 @@ publishing {
  */
 
 plugins {
+    id 'starter.java.property-conventions'
     id 'pl.allegro.tech.build.axion-release'
 }
 
@@ -537,10 +616,6 @@ allprojects {
     project.version = scmVersion.version
 }
 
-public static String getEnvOrDefault(String tagName, String defaultValue) {
-    String ref = System.getenv(tagName)
-    return !ref ? defaultValue : ref;
-}
 ```
 
 ## starter.java.repo-altsource-conventions.gradle
@@ -1009,6 +1084,7 @@ plugins {
     id 'starter.java.deps-build-conventions'
     id 'starter.java.deps-test-conventions'
     id 'starter.java.container-conventions'
+    id 'starter.java.container-spring-conventions'
     id 'starter.java.style-conventions'
     id 'starter.java.doc-springdoc-conventions'
     id 'starter.java.test-conventions'

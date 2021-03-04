@@ -29,7 +29,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
 @WebMvcTest(TestResource.class)
-@ContextConfiguration(classes = {ErrorHandlerAdvice.class, ErrorHandlerConfig.class, SecurityAllowConfig.class})
+@ContextConfiguration(classes =
+        {ErrorHandlerAdvice.class, ErrorHandlerConfig.class, SecurityAllowConfig.class})
 public class ErrorHandlerAdviceContextTest {
 
   @Autowired private MockMvc mockMvc;

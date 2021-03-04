@@ -74,4 +74,5 @@ opentracing:
     enabled: true
     http-sender.baseUrl: http://zipkin.istio-system.svc.cluster.local:9411
 
-
+starter:
+  istio-security-config: true

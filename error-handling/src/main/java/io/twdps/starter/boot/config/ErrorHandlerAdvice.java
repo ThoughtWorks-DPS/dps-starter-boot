@@ -1,8 +1,5 @@
 package io.twdps.starter.boot.config;
 
-import static org.apiguardian.api.API.Status.INTERNAL;
-
-import java.net.URI;
 import org.apiguardian.api.API;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +10,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
 import org.zalando.problem.spring.web.advice.ProblemHandling;
+
+import java.net.URI;
+
+import static org.apiguardian.api.API.Status.INTERNAL;
 
 @ControllerAdvice
 public class ErrorHandlerAdvice

@@ -53,8 +53,9 @@ public interface TraceableAdviceTrait extends AdviceTrait {
       String trace = "NOTRACE";
       if (null != request) {
         String[] traceHeaders = request.getHeaderValues(getTraceHeaderName());
-        if (null != traceHeaders)
+        if (null != traceHeaders) {
           trace = traceHeaders[0];
+        }
       }
       return new URI(String.format("%s/%s", getUriRoot(), trace));
     } catch (URISyntaxException ex) {

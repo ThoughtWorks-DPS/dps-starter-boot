@@ -3,6 +3,7 @@
  */
 
 plugins {
+    id 'starter.java.property-conventions'
     id 'pl.allegro.tech.build.axion-release'
 }
 
@@ -86,7 +87,3 @@ allprojects {
     project.version = scmVersion.version
 }
 
-public static String getEnvOrDefault(String tagName, String defaultValue) {
-    String ref = System.getenv(tagName)
-    return !ref ? defaultValue : ref;
-}

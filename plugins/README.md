@@ -122,6 +122,7 @@ configurations {
  */
 
 plugins {
+    id 'base'
     id 'com.palantir.docker'
     id 'com.palantir.docker-run'
     id 'com.palantir.docker-compose'

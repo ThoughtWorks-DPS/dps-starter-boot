@@ -4,8 +4,10 @@ import io.twdps.starter.boot.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.apiguardian.api.API;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.zalando.problem.Problem;
 import org.zalando.problem.Status;
@@ -33,6 +35,7 @@ public interface ResourceNotFoundAdviceTrait extends TraceableAdviceTrait {
    */
   @API(status = INTERNAL)
   @ExceptionHandler
+  @ResponseStatus(HttpStatus.NOT_FOUND)
   default ResponseEntity<Problem> handleResourceNotFound(
       final ResourceNotFoundException exception, final NativeWebRequest request) {
 

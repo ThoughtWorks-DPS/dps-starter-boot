@@ -38,7 +38,7 @@ repositories {
 }
 
 // TODO: Write task to copy code into README
-task generateReadme(type: Exec) {
+def generateReadme = tasks.register('generateReadme', Exec) {
     executable('sh')
     args('-c', 'cp intro.md README.md; for i in `ls src/main/groovy`; do cat src/main/resources/gradle/header; echo $i; cat src/main/resources/gradle/toptick; cat src/main/groovy/$i; cat src/main/resources/gradle/bottomtick; done >> README.md')
     workingDir = project.projectDir

@@ -2,7 +2,7 @@
  * Tasks for debugging build problems
  */
 
-task printSourceSetInformation(){
+tasks.register('printSourceSetInformation'){
 
     doLast{
         sourceSets.each { srcSet ->

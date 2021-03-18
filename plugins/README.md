@@ -32,7 +32,7 @@ If 'spotless' gets more complicated, then these two should be split and propagat
  * Tasks for debugging build problems
  */
 
-task printSourceSetInformation(){
+tasks.register('printSourceSetInformation'){
 
     doLast{
         sourceSets.each { srcSet ->
@@ -154,37 +154,38 @@ dockerCompose {
     dockerComposeFile 'src/docker/docker-compose.yml'
 }
 
-task dockerStart(type: GradleBuild) {
+def dockerStart = tasks.register('dockerStart', GradleBuild) {
     tasks = ["dockerPrune", "clean", "dockerClean", "docker", "dockerRun"]
 }
 
-task dockerPrune(type: Exec) {
-    dependsOn('dockerStop', 'dockerRemoveContainer')
-    dockerRemoveContainer.mustRunAfter('dockerStop')
+def dockerPrune = tasks.register('dockerPrune', Exec) {
+    mustRunAfter('dockerStop', 'dockerRemoveContainer')
     executable "${project.rootDir}/scripts/docker-prune.sh"
     args "--container", "--image"
 }
 
-task dockerVolumePrune(type: Exec) {
-    dependsOn('dockerStop', 'dockerRemoveContainer', 'dockerPrune')
-    dockerRemoveContainer.mustRunAfter('dockerStop')
-    dockerPrune.mustRunAfter('dockerRemoveContainer')
+def dockerVolumePrune = tasks.register('dockerVolumePrune', Exec) {
+    mustRunAfter('dockerStop', 'dockerRemoveContainer', 'dockerPrune')
     executable "${project.rootDir}/scripts/docker-prune.sh"
     args "--volume"
 }
 
-task dcPrune(type: Exec) {
-    dependsOn('dockerComposeDown')
+def dcPrune = tasks.register('dcPrune', Exec) {
+    mustRunAfter('dockerComposeDown')
     executable "${project.rootDir}/scripts/docker-prune.sh"
     args "--container", "--image"
 }
 
-task dcVolumePrune(type: Exec) {
-    dependsOn('dockerComposeDown', 'dcPrune')
-    dcPrune.mustRunAfter('dockerComposeDown')
+def dcVolumePrune = tasks.register('dcVolumePrune', Exec) {
+    mustRunAfter('dockerComposeDown', 'dcPrune')
     executable "${project.rootDir}/scripts/docker-prune.sh"
     args "--volume"
 }
+
+dockerRemoveContainer.configure {
+    mustRunAfter('dockerStop')
+}
+
 
 /*
 task dockerSterilize(type: GradleBuild) {
@@ -794,20 +795,22 @@ configurations {
     integrationTestRuntimeOnly.extendsFrom runtimeOnly
 }
 
-task integrationTest(type: Test) {
+def integrationTest = tasks.register('integrationTest', Test) {
     description = 'Runs integration tests.'
     group = 'verification'
 
     testClassesDirs = sourceSets.integrationTest.output.classesDirs
     classpath = sourceSets.integrationTest.runtimeClasspath
     outputs.upToDateWhen { false }
-    mustRunAfter test
+    mustRunAfter tasks.named('test')
     useJUnitPlatform {
         excludeEngines 'junit-vintage'
     }
 }
 
-check.dependsOn integrationTest
+check.configure {
+    dependsOn integrationTest
+}
 
 
 ```

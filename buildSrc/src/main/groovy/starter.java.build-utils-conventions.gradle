@@ -3,7 +3,7 @@
  * - printSourceSetInformation  outputs source set content and classpath info for each type
  */
 
-task printSourceSetInformation(){
+tasks.register('printSourceSetInformation'){
     doLast{
         sourceSets.each { srcSet ->
             println "["+srcSet.name+"]"

@@ -812,6 +812,36 @@ check.dependsOn integrationTest
 
 ```
 
+## starter.java.test-jacoco-aggregation-conventions.gradle
+
+```groovy
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'org.barfuin.gradle.jacocolog'
+}
+
+jacocoLogTestCoverage {
+    logAlways = true
+    counters {
+        showComplexityCoverage = true
+        showClassCoverage = true
+        showLineCoverage = true
+    }
+}
+
+def cleanReports = tasks.register('cleanReports', Exec) {
+    group = 'Verification'
+    description = "Clean up aggregate jacoco reports"
+    executable('rm')
+    args('-rf', "${project.buildDir}/{reports,jacoco}")
+}
+
+clean.configure {
+    dependsOn cleanReports
+}
+```
+
 ## starter.java.test-jacoco-conventions.gradle
 
 ```groovy

@@ -13,28 +13,28 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class IstioDisableSecurityConditionalOnPropertyTest {
 
-    /*
-    private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
-            // to print out conditional config report to log
-            .withInitializer(new ConditionEvaluationReportLoggingListener())
-            // .withUserConfiguration(ErrorHandlerAdvice.class, ErrorHandlerConfig.class)
-            .withUserConfiguration(IstioDisableSecurityConfig.class);
+  /*
+  private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
+      // to print out conditional config report to log
+      .withInitializer(new ConditionEvaluationReportLoggingListener())
+      // .withUserConfiguration(ErrorHandlerAdvice.class, ErrorHandlerConfig.class)
+      .withUserConfiguration(IstioDisableSecurityConfig.class);
 
-    @Test
-    void istioSecurityConfigIsDisabledProperly() {
-        contextRunner
-                .withPropertyValues("starter.istio-security-config=false")
-                .run(context -> assertAll(
-                        () -> assertThat(context).doesNotHaveBean(IstioDisableSecurityConfig.class)));
-    }
+  @Test
+  void istioSecurityConfigIsDisabledProperly() {
+    contextRunner
+        .withPropertyValues("starter.istio-security-config=false")
+        .run(context -> assertAll(
+            () -> assertThat(context).doesNotHaveBean(IstioDisableSecurityConfig.class)));
+  }
 
-    @Test
-    void istioSecurityConfigIsEnabledProperly() {
-        contextRunner
-                .withPropertyValues("starter.istio-security-config=true")
-                .run(context -> assertAll(
-                        () -> assertThat(context).hasSingleBean(IstioDisableSecurityConfig.class)));
-    }
+  @Test
+  void istioSecurityConfigIsEnabledProperly() {
+    contextRunner
+        .withPropertyValues("starter.istio-security-config=true")
+        .run(context -> assertAll(
+            () -> assertThat(context).hasSingleBean(IstioDisableSecurityConfig.class)));
+  }
 
      */
 }

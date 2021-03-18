@@ -30,15 +30,16 @@ plugins {
     id("io.gatling.gradle") version "${gatling_plugin_version}" apply false
     id("com.github.johnrengelman.processes") version "${processes_plugin_version}" apply false
     id("org.springdoc.openapi-gradle-plugin") version "${openapi_gradle_plugin_version}" apply false
+    id 'org.barfuin.gradle.jacocolog' version "${jacocolog_plugin_version}" apply false
     id('org.barfuin.gradle.taskinfo') version "${taskinfo_plugin_version}"
     id("starter.metrics.build-time-tracker-conventions")
     id("starter.java.release-conventions")
     id("starter.java.versions-conventions")
+    id("starter.java.test-jacoco-aggregation-conventions")
 }
 
 ext {
     jacoco_enforce_violations = false
     jacoco_minimum_coverage = 0.8
 }
-
 

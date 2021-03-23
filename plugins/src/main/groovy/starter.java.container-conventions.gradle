@@ -67,6 +67,13 @@ dockerRemoveContainer.configure {
     mustRunAfter('dockerStop')
 }
 
+tasks.named("dockerComposeUp").configure {
+    dependsOn tasks.named("docker")
+}
+
+tasks.named("dockerRun").configure {
+    dependsOn tasks.named("docker")
+}
 
 /*
 task dockerSterilize(type: GradleBuild) {

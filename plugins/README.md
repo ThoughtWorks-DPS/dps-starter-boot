@@ -186,6 +186,13 @@ dockerRemoveContainer.configure {
     mustRunAfter('dockerStop')
 }
 
+tasks.named("dockerComposeUp").configure {
+    dependsOn tasks.named("docker")
+}
+
+tasks.named("dockerRun").configure {
+    dependsOn tasks.named("docker")
+}
 
 /*
 task dockerSterilize(type: GradleBuild) {
@@ -1199,7 +1206,7 @@ plugins {
     id 'starter.java.deps-build-conventions'
     id 'starter.java.deps-test-conventions'
     id 'starter.java.style-conventions'
-    id 'starter.java.doc-swagger-conventions'
+//    id 'starter.java.doc-swagger-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-unit-conventions'
     id 'starter.java.test-jacoco-conventions'

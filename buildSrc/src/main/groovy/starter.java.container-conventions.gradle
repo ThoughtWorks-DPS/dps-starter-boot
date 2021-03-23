@@ -29,6 +29,7 @@ dockerRun {
     image "${dockerRegistry}/${rootProject.name}"
     ports '8080:8080'
     env 'SECRETHUB_HELLO': getEnvOrDefault('SECRETHUB_HELLO', 'override-me')
+    dependsOn tasks.named("docker")
 }
 
 dockerCompose {
@@ -65,6 +66,10 @@ def dcVolumePrune = tasks.register('dcVolumePrune', Exec) {
 
 dockerRemoveContainer.configure {
     mustRunAfter('dockerStop')
+}
+
+tasks.named("dockerComposeUp").configure {
+    dependsOn tasks.named("docker")
 }
 
 /*

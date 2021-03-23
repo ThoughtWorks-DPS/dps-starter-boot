@@ -40,6 +40,7 @@ dependencies {
         api project(":exceptions")
         api project(":istio-security-config")
         api project(":springdoc")
+        api project(":open-api")
         api "com.tngtech.archunit:archunit:${arch_unit_version}"
         api "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:${gradle_intellij_plugin_version}"
         api "io.opentracing.brave:brave-opentracing:${brave_opentracing_version}"

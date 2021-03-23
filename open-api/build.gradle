@@ -1,0 +1,16 @@
+plugins {
+    id 'starter.std.java.library-conventions'
+    id 'starter.java.config-conventions'
+}
+
+dependencies {
+    annotationBom platform(project(':starter-bom'))
+    checkstyleRules platform(project(':checkstyle-bom'))
+
+    implementation "org.springdoc:springdoc-openapi-ui"
+    implementation "org.springdoc:springdoc-openapi-webmvc-core"
+    implementation "org.springdoc:springdoc-openapi-security"
+    implementation "org.springdoc:springdoc-openapi-data-rest"
+    testImplementation project(':test-example')
+}
+

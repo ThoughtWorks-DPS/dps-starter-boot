@@ -11,8 +11,10 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation 'io.opentracing.contrib:opentracing-spring-web-starter'
+    testImplementation "org.springframework.boot:spring-boot-starter-validation"
     testImplementation project(':test-example')
-    testCompile project(':error-handling')
+    testImplementation "org.zalando:problem-spring-web"
+//    testCompile project(':error-handling')
     testCompile project(':exceptions')
 //    testCompile 'de.adesso:junit-insights'
 }

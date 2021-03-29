@@ -18,7 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -26,10 +25,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @ExtendWith(SpringExtension.class)
 @AutoConfigureJsonTesters
-@WebMvcTest(TestResource.class)
-@ContextConfiguration(classes =
-    {IstioDisableSecurityConfig.class})
-public class IstioDisableSecurityConfigTest {
+@WebMvcTest(
+    controllers = {TestResource.class},
+    properties = {"starter.istio-security-config=false"}
+)
+@ContextConfiguration(classes = {IstioDisableSecurityConfig.class})
+public class IstioDisableSecurityConfigConditionalOnPropertyFalseTest {
 
   @Autowired
   private MockMvc mockMvc;
@@ -59,7 +60,7 @@ public class IstioDisableSecurityConfigTest {
             .getResponse();
 
     // then
-    assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
+    assertThat(response.getStatus()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
   }
 
 }

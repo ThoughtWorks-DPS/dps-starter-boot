@@ -1,64 +1,65 @@
 package io.twdps.starter.boot.config;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.media.ArraySchema;
-import io.swagger.v3.oas.models.media.Schema;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.Page;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @OpenAPIDefinition
-@SecurityScheme(
-    name = "oauth2",
-    scheme = "OAuth2",
-    type = SecuritySchemeType.OAUTH2,
-    in = SecuritySchemeIn.HEADER)
 @Configuration
+@ConfigurationProperties(prefix = "starter.openapi")
+
 public class OpenApiConfiguration {
 
-  @Value("${starter.openapi.license:MIT License}")
+  @Value("${license:MIT License}")
   private String license;
 
-  @Value("${starter.openapi.title:Example service}")
+  @Value("${title:Example service}")
   private String title;
 
-  @Value("${starter.openapi.description:Example service providing Account info}")
+  @Value("${description:Example service providing Account info}")
   private String description;
 
-  @Value("${starter.openapi.version:v1}")
+  @Value("${version:v1}")
   private String version;
 
   @Value(
-      "${starter.openapi.licenseUrl:https://github.com/thoughtworks-dps/dps-multi-module-starterkit-java/blob/master/LICENSE}")
+      "${licenseUrl:https://github.com/thoughtworks-dps/dps-multi-module-starterkit-java/blob/master/LICENSE}")
   private String licenseUrl;
 
-  @Value("${starter.openapi.contactEmail:FIXME@twdps.io}")
+  @Value("${contactEmail:FIXME@twdps.io}")
   private String contactEmail;
 
-  @Value("${starter.openapi.contactUrl:https://example.twdps.io/}")
+  @Value("${contactUrl:https://example.twdps.io/}")
   private String contactUrl;
 
-  @Value("${starter.openapi.contactName:Example}")
+  @Value("${contactName:Example}")
   private String contactName;
 
-  @Value("${starter.openapi.serverUrl:http://localhost:8080}")
+  @Value("${serverUrl:http://localhost:8080}")
   private String serverUrl;
+
+  @Value("${oauthUrl:http://idp.twdps.io/}")
+  private String oauthUrl;
 
   @Autowired(required = false)
   private List<CustomSchemaProvider> schemaProviders;
+
+  @Autowired(required = false)
+  private List<CustomSecuritySchemeProvider> securitySchemeProviders;
 
   /**
    * Configure OpenAPI processor.
@@ -75,14 +76,54 @@ public class OpenApiConfiguration {
                     .title(title)
                     .description(description)
                     .version(version)
-                    .license(new License().name(license).url(licenseUrl))
-                    .contact(new Contact().name(contactName).url(contactUrl).email(contactEmail)))
-            .servers(Arrays.asList(new Server().url(serverUrl)));
+                    .license(new License().name(license)
+                        .url(licenseUrl))
+                    .contact(new Contact().name(contactName)
+                        .url(contactUrl)
+                        .email(contactEmail)))
+            .servers(Arrays.asList(new Server().url(serverUrl)))
+            /*
+            .components(new Components()
+                .addSecuritySchemes("bearer-jwt",
+                    new SecurityScheme().type(SecurityScheme.Type.HTTP)
+                        .scheme("bearer")
+                        .bearerFormat("JWT")
+                        .in(SecurityScheme.In.HEADER)
+                        .name("Authorization"))
+                .addSecuritySchemes("oauth2",
+                    new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
+                        .flows(new OAuthFlows()
+                            .implicit(new OAuthFlow()
+                                .authorizationUrl(oauthUrl)
+                                .scopes(scopes)))))
+             */
+            .addSecurityItem(
+                new SecurityRequirement()
+                    .addList("bearer-jwt", Arrays.asList("read", "write"))
+                    .addList("oauth2", Arrays.asList("read", "write")));
+
+    if (null != securitySchemeProviders && securitySchemeProviders.size() > 0) {
+      Components securitySchemes = new Components();
+      securitySchemeProviders.forEach(
+          p -> {
+            log.info("Adding SecurityScheme [{}]", p.getName());
+            securitySchemes.addSecuritySchemes(p.getName(), p.create());
+          });
+      config.components(securitySchemes);
+    } else {
+      log.warn("No SecuritySchemeProviders defined.");
+    }
 
     if (null != schemaProviders && schemaProviders.size() > 0) {
-      Components components = new Components();
-      schemaProviders.stream().forEach(p -> components.addSchemas(p.getName(), p.create()));
-      config.components(components);
+      Components schemas = new Components();
+      schemaProviders.stream()
+          .forEach(p -> {
+            log.info("Adding Schema [{}]", p.getName());
+            schemas.addSchemas(p.getName(), p.create());
+          });
+      config.components(schemas);
+    } else {
+      log.info("No SchemaProviders defined.");
     }
 
     return config;

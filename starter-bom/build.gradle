@@ -15,6 +15,7 @@ ext {
     junit_insights_version = "1.1.0"
     mapstruct_version = "1.4.2.Final"
     mockserver_netty_version = "5.11.2"
+    opa_filter_starter_version = "1.2.0"
     opentracing_api_version = "0.33.0"
     opentracing_mock_version = "0.33.0"
     opentracing_spring_cloud_jdbc_starter_version = "0.5.9"
@@ -63,6 +64,7 @@ dependencies {
         api "org.springdoc:springdoc-openapi-data-rest:${springdoc_version}"
         api "org.zalando:problem-spring-web:${problem_spring_web_version}"
         api "de.adesso:junit-insights:${junit_insights_version}"
+        api "com.bisnode.opa:opa-filter-spring-boot-starter:${opa_filter_starter_version}"
 
         runtime "com.h2database:h2:${h2_version}"
         runtime "org.postgresql:postgresql:${postgresql_version}"

@@ -40,6 +40,8 @@ dependencies {
         api project(":error-handling")
         api project(":exceptions")
         api project(":istio-security-config")
+        api project(":entity-lifecycle-notifier")
+        api project(":kafka-entity-lifecycle-notifier")
         api project(":open-policy-agent-config")
         api project(":springdoc")
         api project(":open-api")
@@ -66,6 +68,7 @@ dependencies {
         api "org.zalando:problem-spring-web:${problem_spring_web_version}"
         api "de.adesso:junit-insights:${junit_insights_version}"
         api "com.bisnode.opa:opa-filter-spring-boot-starter:${opa_filter_starter_version}"
+        api "org.testcontainers:kafka:${test_containers_version}"
 
         runtime "com.h2database:h2:${h2_version}"
         runtime "org.postgresql:postgresql:${postgresql_version}"

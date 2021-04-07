@@ -21,15 +21,15 @@ class IstioDisableSecurityConditionalOnPropertyTest {
   private ApplicationContextRunner context = new ApplicationContextRunner()
       .withUserConfiguration(IstioDisableSecurityConfig.class)
       .withUserConfiguration(ErrorMvcAutoConfiguration.class)
-//      .withUserConfiguration(ErrorHandlerAdvice.class)
-//      .withUserConfiguration(ErrorHandlerConfig.class)
+      //      .withUserConfiguration(ErrorHandlerAdvice.class)
+      //      .withUserConfiguration(ErrorHandlerConfig.class)
       ;
 
 
   @Test
   void istioSecurityConfigIsDisabledProperly() {
     context
-        .withPropertyValues("starter.istio-security-config=false")
+        .withPropertyValues("starter.istio-security-config.enabled=false")
         .run(context -> assertAll(
             () -> assertThat(context).doesNotHaveBean(IstioDisableSecurityConfig.class)));
   }
@@ -41,7 +41,7 @@ class IstioDisableSecurityConditionalOnPropertyTest {
   @Test
   void istioSecurityConfigIsEnabledProperly() {
     context
-        .withPropertyValues("starter.istio-security-config=true")
+        .withPropertyValues("starter.istio-security-config.enabled=true")
         .run(context -> assertAll(
             () -> assertThat(context).hasSingleBean(IstioDisableSecurityConfig.class)));
   }

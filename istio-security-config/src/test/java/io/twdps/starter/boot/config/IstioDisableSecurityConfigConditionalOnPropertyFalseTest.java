@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @AutoConfigureJsonTesters
 @WebMvcTest(
     controllers = {TestResource.class},
-    properties = {"starter.istio-security-config=false"}
+    properties = {"starter.istio-security-config.enabled=false"}
 )
 @ContextConfiguration(classes = {IstioDisableSecurityConfig.class})
 public class IstioDisableSecurityConfigConditionalOnPropertyFalseTest {

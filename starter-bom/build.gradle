@@ -27,6 +27,7 @@ ext {
     spring_boot_version = "2.4.4"
     springdoc_version =  "1.5.4"
     springfox_version = "3.0.0"
+    test_containers_version = "1.15.2"
     zipkin_reporter_version = "2.16.3"
     zipkin_sender_okhttp3_version = "2.16.3"
 

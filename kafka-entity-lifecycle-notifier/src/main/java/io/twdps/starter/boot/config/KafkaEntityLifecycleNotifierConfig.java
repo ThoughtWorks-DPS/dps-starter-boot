@@ -1,7 +1,5 @@
 package io.twdps.starter.boot.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.twdps.starter.boot.kafka.KafkaProducer;
 import io.twdps.starter.boot.notifier.CurrentTimestampProvider;
 import io.twdps.starter.boot.notifier.EntityLifecycleNotification;
 import io.twdps.starter.boot.notifier.EntityLifecycleNotifier;

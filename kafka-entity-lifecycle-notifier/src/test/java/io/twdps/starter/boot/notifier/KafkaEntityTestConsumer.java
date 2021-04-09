@@ -1,9 +1,7 @@
 package io.twdps.starter.boot.notifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.twdps.starter.boot.notifier.Foo;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;

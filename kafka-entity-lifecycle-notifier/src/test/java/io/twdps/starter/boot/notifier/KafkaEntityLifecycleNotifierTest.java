@@ -1,16 +1,19 @@
 package io.twdps.starter.boot.notifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.twdps.starter.boot.config.KafkaEntityLifecycleNotifierConfig;
 import io.twdps.starter.boot.notifier.EntityLifecycleNotification.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
@@ -28,10 +31,29 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(
     properties = "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}"
 )
-@ContextConfiguration(classes = {TestConfig.class})
+//@ContextConfiguration(classes = {TestConfig.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
 class KafkaEntityLifecycleNotifierTest {
+
+  @TestConfiguration
+  static class TestConfig {
+    private final Logger log = LoggerFactory.getLogger(TestConfig.class);
+
+    public ZonedDateTime now;
+
+    public TestConfig() {
+      log.warn("TestConfig constructor");
+      this.now = ZonedDateTime.now();
+    }
+
+    @Bean
+    public TimestampProvider timestampProvider() {
+      log.warn("Configuring Timestamp Provider");
+      return new MemoizedTimestampProvider(now);
+    }
+
+  }
 
   private BlockingQueue<ConsumerRecord<String, String>> records;
 

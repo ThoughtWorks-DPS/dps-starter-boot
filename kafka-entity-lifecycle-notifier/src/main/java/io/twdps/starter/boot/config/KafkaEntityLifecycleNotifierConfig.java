@@ -75,24 +75,6 @@ public class KafkaEntityLifecycleNotifierConfig {
   }
 
   /**
-   * Configure ObjectMapper to serialize dates as strings. This autowired setter will configure an
-   * existing ObjectMapper to (de)serialize dates as strings.
-   *
-   * @param mapper ObjectMapper bean to configure
-   */
-  @Autowired(required = true)
-  public void configureObjectMapper(ObjectMapper mapper) {
-    log.warn("Configuring Object Mapper");
-
-    SimpleModule module = new SimpleModule();
-    module.addDeserializer(EntityDescriptor.class, new EntityDescriptorDeserializer());
-    mapper.registerModule(module);
-
-    mapper.registerModule(new JavaTimeModule());
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-  }
-
-  /**
    * Create the required topic in kafka.
    *
    * @return NewTopic bean

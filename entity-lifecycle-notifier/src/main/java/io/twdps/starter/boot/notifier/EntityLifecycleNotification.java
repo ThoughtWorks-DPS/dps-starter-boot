@@ -16,7 +16,9 @@ import java.util.Map;
 @Builder
 @Getter
 @ToString
-@Schema(name = "EntityLifecycleNotification", description = "Metadata describing an entity mutation")
+@Schema(
+    name = "EntityLifecycleNotification",
+    description = "Metadata describing an entity mutation")
 public class EntityLifecycleNotification {
 
   public enum Operation {
@@ -48,10 +50,10 @@ public class EntityLifecycleNotification {
   /**
    * constructor, for serialization to/from JSON.
    *
-   * @param version version string
-   * @param operation operation being performed
-   * @param timestamp when the operation took place
-   * @param actor the agent performing the operation
+   * @param version          version string
+   * @param operation        operation being performed
+   * @param timestamp        when the operation took place
+   * @param actor            the agent performing the operation
    * @param entityDescriptor the resulting state of the entity
    */
   @JsonCreator
@@ -81,7 +83,9 @@ public class EntityLifecycleNotification {
   private final ZonedDateTime timestamp;
 
   @NonNull
-  @Schema(description = "URI identifying the Actor (user / service) making the change", example = "user:uuid")
+  @Schema(
+      description = "URI identifying the Actor (user / service) making the change",
+      example = "user:uuid")
   private final URI actor;
 
   @NonNull

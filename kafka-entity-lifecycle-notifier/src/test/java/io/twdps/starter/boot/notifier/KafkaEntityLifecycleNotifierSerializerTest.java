@@ -4,12 +4,12 @@ import io.twdps.starter.boot.notifier.EntityLifecycleNotification.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -25,16 +25,21 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Disabled
 @EmbeddedKafka
 @SpringBootTest(
-    properties = "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}"
-)
+    properties = {
+        "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}",
+        "starter.boot.kafka-lifecycle-notifier.queue-name=raw-queue-name",
+        "spring.kafka.consumer.value-deserializer=org.apache.kafka.common.serialization.StringDeserializer"
+    })
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
-class KafkaEntityLifecycleNotifierTest {
+class KafkaEntityLifecycleNotifierSerializerTest {
 
   @TestConfiguration
   static class TestConfig {
+
     private final Logger log = LoggerFactory.getLogger(TestConfig.class);
 
     public ZonedDateTime now;
@@ -57,7 +62,7 @@ class KafkaEntityLifecycleNotifierTest {
   private KafkaMessageListenerContainer<String, String> container;
 
   @Autowired
-  private KafkaEntityTestConsumer consumer;
+  private KafkaRawTestConsumer consumer;
 
   @Autowired
   private KafkaTemplate<String, EntityLifecycleNotification> kafkaTemplate;
@@ -114,15 +119,14 @@ class KafkaEntityLifecycleNotifierTest {
     assertThat(consumer.getLatch()
         .getCount()).isEqualTo(0L);
 
-    EntityLifecycleNotification obj = consumer.getPayload();
-    assertThat(obj).isNotNull();
-    log.info("Received [{}]", obj);
-    assertThat(obj.getVersion()).isEqualTo(expectedVersion);
-    assertThat(obj.getOperation()).isEqualTo(expectedOp);
-    assertThat(obj.getActor()).isEqualTo(user);
-    assertThat(((Foo) obj.getEntityDescriptor()
-        .getEntity()).data).isEqualTo(entity.data);
-    assertThat(obj.getTimestamp()).isEqualTo(now);
+    String payload = consumer.getPayload();
+    assertThat(payload).isNotNull();
+    log.info("Received [{}]", payload);
+    assertThat(payload).contains(expectedVersion);
+    assertThat(payload).contains(expectedOp.label);
+    assertThat(payload).contains(user.toString());
+    assertThat(payload).contains(entity.data);
+    assertThat(payload).contains(now.toString());
   }
 
   @Test

@@ -2,10 +2,15 @@ package io.twdps.starter.boot.notifier;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.twdps.starter.boot.config.EntityLifecycleNotifierConfig;
 import io.twdps.starter.boot.config.EntityLifecycleObjectMapperConfig;
 import io.twdps.starter.boot.notifier.EntityLifecycleNotification.Operation;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.json.JsonTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.net.URI;
 import java.time.ZonedDateTime;
@@ -13,10 +18,16 @@ import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class EntityLifecycleNotificationSerializationTest {
+@ExtendWith(SpringExtension.class)
+@JsonTest
+@ContextConfiguration(classes = {
+    EntityLifecycleNotifierConfig.class,
+    EntityLifecycleObjectMapperConfig.class
+})
+public class EntityLifecycleNotificationSerializationAutowireTest {
 
+  @Autowired
   private ObjectMapper mapper;
-  private EntityLifecycleObjectMapperConfig configurer = new EntityLifecycleObjectMapperConfig();
 
   String timeString = "2021-04-04T18:38:20.956276-04:00";
   ZonedDateTime timestamp = ZonedDateTime.parse(timeString, DateTimeFormatter.ISO_DATE_TIME);
@@ -32,17 +43,11 @@ public class EntityLifecycleNotificationSerializationTest {
   String typename = "io.twdps.starter.boot.notifier.Foo";
 
 
-  @BeforeEach
-  void configureObjectMapper() {
-    mapper = new ObjectMapper();
-
-    configurer.configureObjectMapper(mapper);
-  }
-
   @Test
   public void serializeTest() throws JsonProcessingException {
     String notificationJson = mapper.writeValueAsString(notification);
     assertThat(notificationJson).isEqualTo(json);
+    assertThat(notificationJson).contains(timeString);
   }
 
   @Test

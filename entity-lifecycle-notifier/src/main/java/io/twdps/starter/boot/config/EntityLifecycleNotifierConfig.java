@@ -22,4 +22,5 @@ public class EntityLifecycleNotifierConfig {
   public EntityLifecycleNotifier lifecycleNotifier() {
     return new NoopEntityLifecycleNotifier(timestampProvider());
   }
+
 }

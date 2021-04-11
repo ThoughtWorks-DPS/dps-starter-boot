@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 
 import java.time.ZonedDateTime;
 
-@TestConfiguration
+//@TestConfiguration
 public class TestConfig {
 
   private String time = "2021-04-10T19:00:30.123456-04:00";

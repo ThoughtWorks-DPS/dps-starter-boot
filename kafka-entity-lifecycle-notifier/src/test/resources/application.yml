@@ -83,12 +83,14 @@ spring:
       auto-offset-reset: earliest
       group-id: starter
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: io.twdps.starter.boot.notifier.CustomJsonDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties.spring.json.value.default.type: io.twdps.starter.boot.notifier.EntityLifecycleNotification
       level:
         concurrency: 5
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-deserializer: io.twdps.starter.boot.notifier.CustomJsonDeserializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties.spring.json.value.default.type: io.twdps.starter.boot.notifier.EntityLifecycleNotification
 

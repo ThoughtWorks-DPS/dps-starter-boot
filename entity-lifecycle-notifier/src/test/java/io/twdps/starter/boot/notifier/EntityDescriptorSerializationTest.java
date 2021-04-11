@@ -12,7 +12,8 @@ public class EntityDescriptorSerializationTest {
   private ObjectMapper mapper = new ObjectMapper();
 
   EntityDescriptor wrapper = EntityDescriptor.create(new Foo("foo"));
-  String json = "{\"typename\":\"io.twdps.starter.boot.notifier.Foo\",\"entity\":{\"data\":\"foo\"}}";
+  String json =
+      "{\"typename\":\"io.twdps.starter.boot.notifier.Foo\",\"entity\":{\"data\":\"foo\"}}";
   String fooJson = "{\"data\":\"foo\"}";
   String typename = "io.twdps.starter.boot.notifier.Foo";
 

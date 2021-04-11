@@ -11,10 +11,10 @@ import java.util.concurrent.CountDownLatch;
 
 @Component
 @Slf4j
-public class KafkaEntityTestConsumer {
+public class KafkaRawTestConsumer {
 
   private CountDownLatch latch = new CountDownLatch(1);
-  private EntityLifecycleNotification payload = null;
+  private String payload = null;
 
   /**
    * receive messages from Kafka topic.
@@ -26,7 +26,7 @@ public class KafkaEntityTestConsumer {
    */
   @KafkaListener(topics = "${starter.boot.kafka-lifecycle-notifier.queue-name}",
       concurrency = "${spring.kafka.consumer.level.concurrency:3}")
-  public void logKafkaMessages(@Payload EntityLifecycleNotification payload,
+  public void logKafkaMessages(@Payload String payload,
       @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
       @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
       @Header(KafkaHeaders.OFFSET) Long offset) {
@@ -44,11 +44,11 @@ public class KafkaEntityTestConsumer {
     latch = new CountDownLatch(1);
   }
 
-  public EntityLifecycleNotification getPayload() {
+  public String getPayload() {
     return payload;
   }
 
-  public void setPayload(EntityLifecycleNotification payload) {
+  public void setPayload(String payload) {
     this.payload = payload;
   }
 }

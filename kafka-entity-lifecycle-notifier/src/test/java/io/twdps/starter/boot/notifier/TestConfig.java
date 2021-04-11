@@ -27,24 +27,5 @@ public class TestConfig {
     log.warn("Configuring Timestamp Provider");
     return new MemoizedTimestampProvider(now);
   }
-
-  /**
-   * Configure ObjectMapper to serialize dates as strings.
-   *
-   * @return configured ObjectMapper
-   */
-  @Bean
-  public ObjectMapper configureObjectMapper() {
-    log.warn("Configuring Object Mapper");
-    ObjectMapper mapper = new ObjectMapper();
-
-    SimpleModule module = new SimpleModule();
-    module.addDeserializer(EntityDescriptor.class, new EntityDescriptorDeserializer());
-    mapper.registerModule(module);
-
-    mapper.registerModule(new JavaTimeModule());
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    return mapper;
-  }
-
+  
 }

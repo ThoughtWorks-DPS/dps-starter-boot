@@ -8,10 +8,12 @@ dependencies {
     annotationBom platform(project(':starter-bom'))
     checkstyleRules platform(project(':checkstyle-bom'))
 
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     implementation project(':entity-lifecycle-notifier')
     implementation 'org.springframework.kafka:spring-kafka'
     testImplementation 'org.springframework.kafka:spring-kafka-test'
     testImplementation 'org.testcontainers:kafka'
     testImplementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation project(':error-handling')
 }
 

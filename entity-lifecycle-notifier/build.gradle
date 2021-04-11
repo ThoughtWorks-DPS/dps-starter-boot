@@ -7,5 +7,7 @@ plugins {
 dependencies {
     annotationBom platform(project(':starter-bom'))
     checkstyleRules platform(project(':checkstyle-bom'))
+
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
 }
 

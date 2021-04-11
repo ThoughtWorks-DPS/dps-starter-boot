@@ -76,7 +76,7 @@ spring:
     topic:
       name: notifier-test-topic
     replication:
-      factor: 3
+      factor: 1
     partition:
       number: 2
     consumer:

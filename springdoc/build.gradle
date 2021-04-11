@@ -7,6 +7,7 @@ dependencies {
     annotationBom platform(project(':starter-bom'))
     checkstyleRules platform(project(':checkstyle-bom'))
 
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
     implementation "org.springdoc:springdoc-openapi-ui"
     implementation "org.springdoc:springdoc-openapi-webmvc-core"
     implementation "org.springdoc:springdoc-openapi-security"

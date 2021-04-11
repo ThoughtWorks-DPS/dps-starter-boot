@@ -7,68 +7,82 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.twdps.starter.boot.notifier.CurrentTimestampProvider;
 import io.twdps.starter.boot.notifier.EntityDescriptor;
 import io.twdps.starter.boot.notifier.EntityDescriptorDeserializer;
+import io.twdps.starter.boot.notifier.EntityLifecycleNotification;
 import io.twdps.starter.boot.notifier.EntityLifecycleNotifier;
 import io.twdps.starter.boot.notifier.KafkaEntityLifecycleNotifier;
 import io.twdps.starter.boot.notifier.TimestampProvider;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.kafka.core.KafkaTemplate;
 
 @Configuration
 @ConditionalOnProperty(prefix = "starter.boot.kafka-lifecycle-notifier",
     name = "enabled",
     havingValue = "true",
     matchIfMissing = true)
+@AutoConfigureBefore(name = {"io.twdps.starter.boot.config.EntityLifecycleNotifierConfig"})
 public class KafkaEntityLifecycleNotifierConfig {
 
   private final Logger log = LoggerFactory.getLogger(KafkaEntityLifecycleNotifierConfig.class);
 
   private final KafkaEntityLifecycleNotifierConfigProperties configProperties;
+  private final KafkaTemplate<String, EntityLifecycleNotification> kafkaTemplate;
+  private final TimestampProvider provider;
+  private final String queueName;
   private final KafkaEntityLifecycleNotifier notifier;
 
   /**
    * Constructor for configuration provider.
    *
-   * @param properties entity lifecycle notifier config bean
-   * @param notifier   kafka notifier bean
+   * @param properties    entity lifecycle notifier config bean
+   * @param kafkaTemplate KafkaTemplate<> for sending the notifications
+   * @param provider      Timestamp Provider (for testing)
+   * @param queueName     name of the kafka queue
    */
   public KafkaEntityLifecycleNotifierConfig(
-      KafkaEntityLifecycleNotifier notifier,
+      KafkaTemplate<String, EntityLifecycleNotification> kafkaTemplate,
+      TimestampProvider provider,
+      @Value("${starter.boot.kafka-lifecycle-notifier.queue-name:entity-lifecycle-notifier}") String queueName,
       KafkaEntityLifecycleNotifierConfigProperties properties) {
     log.warn("Constructing KafkaEntityLifecycleNotifierConfig");
     this.configProperties = properties;
-    this.notifier = notifier;
+    this.kafkaTemplate = kafkaTemplate;
+    this.provider = provider;
+    this.queueName = queueName;
+    this.notifier = new KafkaEntityLifecycleNotifier(this.kafkaTemplate, this.provider,
+        this.queueName);
   }
 
   /**
-   * Provide KafkaEntityLifecycleNotifier.
-   * This function just returns the ctor-autowired notifier. Create a derived configuration class
-   * and override the function to provide your own Kafka notifier bean.
+   * Provide KafkaEntityLifecycleNotifier. This function just returns the ctor-autowired notifier.
+   * Create a derived configuration class and override the function to provide your own Kafka
+   * notifier bean.
    *
    * @return autowired notifier bean
    */
   @Bean
-  public EntityLifecycleNotifier lifecycleNotifier() {
+  public EntityLifecycleNotifier kafkaEntityLifecycleNotifierBean() {
     return notifier;
   }
 
   /**
-   * Configure ObjectMapper to serialize dates as strings.
-   * This only occurs if there are no other ObjectMapper beans configured. If you provide your own
-   * bean, you must also configure it to (de)serialize dates as expected.
+   * Configure ObjectMapper to serialize dates as strings. This autowired setter will configure an
+   * existing ObjectMapper to (de)serialize dates as strings.
    *
-   * @return configured ObjectMapper
+   * @param mapper ObjectMapper bean to configure
    */
-  @ConditionalOnMissingBean
-  @Bean
-  public ObjectMapper configureObjectMapper() {
+  @Autowired(required = true)
+  public void configureObjectMapper(ObjectMapper mapper) {
     log.warn("Configuring Object Mapper");
-    ObjectMapper mapper = new ObjectMapper();
 
     SimpleModule module = new SimpleModule();
     module.addDeserializer(EntityDescriptor.class, new EntityDescriptorDeserializer());
@@ -76,7 +90,6 @@ public class KafkaEntityLifecycleNotifierConfig {
 
     mapper.registerModule(new JavaTimeModule());
     mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    return mapper;
   }
 
   /**

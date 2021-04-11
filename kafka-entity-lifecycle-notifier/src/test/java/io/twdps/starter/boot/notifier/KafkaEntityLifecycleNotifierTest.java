@@ -1,6 +1,7 @@
 package io.twdps.starter.boot.notifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.twdps.starter.boot.config.KafkaEntityLifecycleNotifierConfig;
 import io.twdps.starter.boot.notifier.EntityLifecycleNotification.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -14,15 +15,14 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.net.URI;
 import java.time.ZonedDateTime;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
-import org.springframework.test.context.ContextConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
 @EmbeddedKafka
 @SpringBootTest(

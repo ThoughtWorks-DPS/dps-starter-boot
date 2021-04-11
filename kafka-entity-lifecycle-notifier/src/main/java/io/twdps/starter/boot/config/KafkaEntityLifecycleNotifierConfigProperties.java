@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -12,6 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@AutoConfigureBefore(name = {"io.twdps.starter.boot.config.KafkaEntityLifecycleNotifierConfig"})
 public class KafkaEntityLifecycleNotifierConfigProperties {
 
   @Value("${starter.boot.kafka-lifecycle-notifier.queue-name:entity-lifecycle-notifier}")

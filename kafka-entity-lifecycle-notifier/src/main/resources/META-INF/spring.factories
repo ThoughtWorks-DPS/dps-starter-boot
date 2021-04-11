@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.twdps.starter.boot.config.KafkaEntityLifecycleNotifierConfigProperties,\
+io.twdps.starter.boot.config.KafkaEntityLifecycleNotifierConfig,\
+io.twdps.starter.boot.config.TimestampProviderConfig

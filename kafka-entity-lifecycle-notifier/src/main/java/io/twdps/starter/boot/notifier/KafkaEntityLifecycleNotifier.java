@@ -6,7 +6,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
 public class KafkaEntityLifecycleNotifier implements EntityLifecycleNotifier {
 
   private TimestampProvider provider;

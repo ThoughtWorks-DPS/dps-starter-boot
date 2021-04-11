@@ -21,19 +21,6 @@ public class KafkaEntityTestConsumer {
   public KafkaEntityTestConsumer(ObjectMapper objectMapper) {
     this.mapper = objectMapper;
   }
-  /**
-   * receive messages from Kafka topic.
-   *
-   * @param consumerRecord kafka consumer record from queue
-   */
-//  @KafkaListener(topics = "${test.topic}")
-  /*
-  @KafkaListener(topics = "embedded-test-topic")
-  public void receive(ConsumerRecord<?, ?> consumerRecord) {
-    log.info("received payload='{}'", consumerRecord.toString())
-    setPayload(consumerRecord.toString());
-    latch.countDown();
-  }*/
 
   /**
    * receive messages from Kafka topic.
@@ -43,7 +30,7 @@ public class KafkaEntityTestConsumer {
    * @param partition partition number
    * @param offset    offset position in queue
    */
-  @KafkaListener(topics = "${test.topic}",
+  @KafkaListener(topics = "${starter.boot.kafka-lifecycle-notifier.queue-name}",
       concurrency = "${spring.kafka.consumer.level.concurrency:3}")
   public void logKafkaMessages(@Payload EntityLifecycleNotification payload,
       @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
@@ -57,6 +44,10 @@ public class KafkaEntityTestConsumer {
 
   public CountDownLatch getLatch() {
     return latch;
+  }
+
+  public void resetLatch() {
+    latch = new CountDownLatch(1);
   }
 
   public EntityLifecycleNotification getPayload() {

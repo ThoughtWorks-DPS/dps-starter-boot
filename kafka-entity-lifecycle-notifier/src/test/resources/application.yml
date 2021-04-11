@@ -91,8 +91,6 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties.spring.json.value.default.type: io.twdps.starter.boot.notifier.EntityLifecycleNotification
-test:
-  topic: notifier-secondary-test-topic
 
 #  kafka:
 #    consumer:
@@ -109,4 +107,7 @@ opentracing:
 
 starter:
   istio-security-config: true
-
+  boot:
+    kafka-lifecycle-notifier:
+      enabled: true
+      queue-name: test-queue-name

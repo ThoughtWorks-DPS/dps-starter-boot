@@ -14,6 +14,12 @@ import lombok.NonNull;
 @JsonDeserialize(using = EntityDescriptorDeserializer.class)
 public class EntityDescriptor {
 
+  /**
+   * constructor, initializes the internal typename property.
+   *
+   * @param obj the object in its new state
+   * @return entity descriptor
+   */
   public static EntityDescriptor create(Object obj) {
     return EntityDescriptor.builder()
         .typename(obj.getClass().getTypeName())

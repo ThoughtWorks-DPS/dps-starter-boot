@@ -3,10 +3,10 @@ package io.twdps.starter.boot.notifier;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 
 import java.net.URI;
 import java.time.ZonedDateTime;
@@ -15,6 +15,7 @@ import java.util.Map;
 
 @Builder
 @Getter
+@ToString
 @Schema(name = "EntityLifecycleNotification", description = "Metadata describing an entity mutation")
 public class EntityLifecycleNotification {
 
@@ -44,6 +45,15 @@ public class EntityLifecycleNotification {
     }
   }
 
+  /**
+   * constructor, for serialization to/from JSON.
+   *
+   * @param version version string
+   * @param operation operation being performed
+   * @param timestamp when the operation took place
+   * @param actor the agent performing the operation
+   * @param entityDescriptor the resulting state of the entity
+   */
   @JsonCreator
   public EntityLifecycleNotification(
       @NonNull @JsonProperty("version") String version,
@@ -57,11 +67,6 @@ public class EntityLifecycleNotification {
     this.actor = actor;
     this.entityDescriptor = entityDescriptor;
   }
-
-
-//  @NonNull
-//  @Schema(description = "Typename of the entity object", example = "Account")
-//  private final String typename;
 
   @NonNull
   @Schema(description = "Schema version of the entity object", example = "0.0.1")
@@ -78,10 +83,6 @@ public class EntityLifecycleNotification {
   @NonNull
   @Schema(description = "URI identifying the Actor (user / service) making the change", example = "user:uuid")
   private final URI actor;
-
-//  @NonNull
-//  @Schema(description = "Current state of the entity")
-//  private final T entity;
 
   @NonNull
   @Schema(description = "Data detailing the state of the entity")

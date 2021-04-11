@@ -32,7 +32,7 @@ public class EntityDescriptorSerializationTest {
     EntityDescriptor entity = mapper.readValue(json, EntityDescriptor.class);
     assertThat(entity.getTypename()).isEqualTo(typename);
     assertThat(entity.getEntity()).isNotNull();
-    assertThat(((Foo)entity.getEntity()).data).isEqualTo("foo");
+    assertThat(((Foo) entity.getEntity()).data).isEqualTo("foo");
   }
 
   @Test

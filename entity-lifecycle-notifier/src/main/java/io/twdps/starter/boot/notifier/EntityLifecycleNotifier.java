@@ -51,7 +51,6 @@ public interface EntityLifecycleNotifier {
   default void notify(Object obj, Class<? extends Object> type, String version,
       EntityLifecycleNotification.Operation operation, URI actor, ZonedDateTime ts) {
     notify(EntityLifecycleNotification.builder()
-//        .typename(type.getTypeName())
         .version(version)
         .operation(operation)
         .timestamp(ts)

@@ -1,14 +1,10 @@
 package io.twdps.starter.boot.notifier;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.twdps.starter.boot.notifier.EntityLifecycleNotification.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +17,18 @@ import org.springframework.kafka.test.context.EmbeddedKafka;
 
 import java.net.URI;
 import java.time.ZonedDateTime;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+import org.springframework.test.context.ContextConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.type;
 
 @EmbeddedKafka
 @SpringBootTest(
-//    classes = {KafkaEntityLifecycleNotifierConfig.class},
     properties = "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}"
 )
+@ContextConfiguration(classes = {TestConfig.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
 class KafkaEntityLifecycleNotifierTest {
@@ -43,188 +41,131 @@ class KafkaEntityLifecycleNotifierTest {
   private KafkaEntityTestConsumer consumer;
 
   @Autowired
-  private KafkaTemplate<String, EntityLifecycleNotification> producer;
+  private KafkaTemplate<String, EntityLifecycleNotification> kafkaTemplate;
 
   @Autowired
   private ObjectMapper mapper;
 
-  @Value("${test.topic}")
+  @Value("${starter.boot.kafka-lifecycle-notifier.queue-name}")
   private String topic;
 
-  private ZonedDateTime now = ZonedDateTime.now();
-  private URI user = URI.create("user:uuid");
-  private String version = "0.0.1";
-  private Foo entity = new Foo("foo");
-  private String typename = "io.twdps.starter.boot.notifier.Foo";
-  private String queueName = "test-queue";
-
-//  @Autowired
-  KafkaEntityLifecycleNotifier notifier;
-
   @Autowired
-  private KafkaTemplate<String, EntityLifecycleNotification> kafkaTemplate;
-
-  public KafkaEntityLifecycleNotifier lifecycleNotifier() {
-    return new KafkaEntityLifecycleNotifier(kafkaTemplate, new CurrentTimestampProvider(),
-        topic);
-  }
-
-
-  EntityLifecycleNotification notification = EntityLifecycleNotification.builder()
-      .timestamp(now)
-      .actor(user)
-      .version(version)
-      .entityDescriptor(EntityDescriptor.builder()
-          .entity(entity)
-          .typename(typename)
-          .build())
-      .operation(Operation.CREATED)
-      .build();
-
-
-//  @Value("${test.topic}")
-//  private String topicName;
+  TimestampProvider ts;
 
   @Autowired
   private EmbeddedKafkaBroker embeddedKafkaBroker;
 
-  /*
-  @BeforeAll
-  void setUp() {
-    DefaultKafkaConsumerFactory<String, String> consumerFactory = new DefaultKafkaConsumerFactory<>(
-        getConsumerProperties());
-    ContainerProperties containerProperties = new ContainerProperties(topicName);
-    container = new KafkaMessageListenerContainer<>(consumerFactory, containerProperties);
-    records = new LinkedBlockingQueue<>();
-    container.setupMessageListener((MessageListener<String, String>) records::add);
-    container.start();
-    ContainerTestUtils.waitForAssignment(container, embeddedKafkaBroker.getPartitionsPerTopic());
-  }
+  @Autowired
+  KafkaEntityLifecycleNotifier notifier;
 
-  private Map<String, Object> getConsumerProperties() {
-    return Map.of(
-        ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, embeddedKafkaBroker.getBrokersAsString(),
-        ConsumerConfig.GROUP_ID_CONFIG, "consumer",
-        ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true",
-        ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "10",
-        ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "60000",
-        ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
-        ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
-        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-  }
 
-  @AfterAll
-  void tearDown() {
-    container.stop();
-  }
+  private URI user = URI.create("user:uuid");
+  private String version = "0.0.1";
+  private Foo entity = new Foo("foo");
+  private String typename = "io.twdps.starter.boot.notifier.Foo";
+  private ZonedDateTime now;
 
-  //  @Disabled
-  @Test
-  void testWriteToKafka() throws InterruptedException, JsonProcessingException {
-    // Create a user and write to Kafka
-    String message = "Hello world!";
-    producer.send(topicName, message);
 
-    // Read the message (John Wick user) with a test consumer from Kafka and assert its properties
-    ConsumerRecord<String, String> response = records.poll(5000, TimeUnit.MILLISECONDS);
-    assertThat(response).isNotNull();
-    assertThat(response.key()).isEqualTo("key");
-    assertThat(response.value()).isEqualTo(message);
-//    User result = objectMapper.readValue(response.value(), User.class);
-//    assertNotNull(result);
-//    assertEquals("John", result.getFirstName());
-//    assertEquals("Wick", result.getLastName());
-  }
-
-*/
-
-  void configureObjectMapper() {
-    mapper = new ObjectMapper();
-
-    SimpleModule module = new SimpleModule();
-    module.addDeserializer(EntityDescriptor.class, new EntityDescriptorDeserializer());
-    mapper.registerModule(module);
-
-    mapper.registerModule(new JavaTimeModule());
-    mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-  }
+  EntityLifecycleNotification notification;
 
   @BeforeEach
   public void setup() {
-    notifier = lifecycleNotifier();
-    configureObjectMapper();
+    this.now = ts.now();
+    notification = EntityLifecycleNotification.builder()
+        .timestamp(now)
+        .actor(user)
+        .version(version)
+        .entityDescriptor(EntityDescriptor.builder()
+            .entity(entity)
+            .typename(typename)
+            .build())
+        .operation(Operation.CREATED)
+        .build();
   }
 
- /*  */
+  private EntityLifecycleNotification from(EntityLifecycleNotification src, String version) {
+    return EntityLifecycleNotification.builder()
+        .timestamp(src.getTimestamp())
+        .actor(src.getActor())
+        .version(version)
+        .entityDescriptor(src.getEntityDescriptor())
+        .operation(src.getOperation())
+        .build();
+  }
 
-  private void verify() throws Exception {
+  private void verify(Operation expectedOp, String expectedVersion) throws Exception {
+    log.info("Waiting for message [{}:{}] to appear...", expectedOp, expectedVersion);
     consumer.getLatch()
         .await(10000, TimeUnit.MILLISECONDS);
 
     assertThat(consumer.getLatch()
         .getCount()).isEqualTo(0L);
-//    assertThat(consumer.getPayload()).containsPattern("embedded-test-topic");
 
-//    EntityLifecycleNotification obj = objectMapper.convertValue(consumer.getPayload(),
-//        EntityLifecycleNotification.class);
     EntityLifecycleNotification obj = consumer.getPayload();
     assertThat(obj).isNotNull();
-    assertThat(obj.getOperation()).isEqualTo(Operation.CREATED);
-
-    /*
+    log.info("Received [{}]", obj);
+    assertThat(obj.getVersion()).isEqualTo(expectedVersion);
+    assertThat(obj.getOperation()).isEqualTo(expectedOp);
     assertThat(obj.getActor()).isEqualTo(user);
-    assertThat(obj.getEntity()).isEqualTo(entity);
+    assertThat(((Foo) obj.getEntityDescriptor()
+        .getEntity()).data).isEqualTo(entity.data);
     assertThat(obj.getTimestamp()).isEqualTo(now);
-    assertThat(obj.getVersion()).isEqualTo(version);
-    */
   }
 
   @Test
   public void notifyIsCalled() throws Exception {
-    notifier.notify(notification);
-    verify();
+    String v = "0.0.0";
+    consumer.resetLatch();
+    notifier.notify(from(notification, v));
+    verify(Operation.CREATED, v);
   }
 
-  @Disabled
   @Test
   public void notifyIsCalledWhenCreated() throws Exception {
-    notifier.created(entity, version, user);
-    verify();
+    String v = "0.1.0";
+    consumer.resetLatch();
+    notifier.created(entity, v, user);
+    verify(Operation.CREATED, v);
   }
 
-  @Disabled
   @Test
   public void notifyIsCalledWhenUpdated() throws Exception {
-    notifier.updated(entity, version, user);
-    verify();
+    String v = "0.2.0";
+    consumer.resetLatch();
+    notifier.updated(entity, v, user);
+    verify(Operation.UPDATED, v);
   }
 
-  @Disabled
   @Test
   public void notifyIsCalledWhenDeleted() throws Exception {
-    notifier.deleted(entity, version, user);
-    verify();
+    String v = "0.3.0";
+    consumer.resetLatch();
+    notifier.deleted(entity, v, user);
+    verify(Operation.DELETED, v);
   }
 
-  @Disabled
   @Test
   public void notifyIsCalledWhenCreatedLong() throws Exception {
-    notifier.created(entity, entity.getClass(), version, user, now);
-    verify();
+    String v = "0.1.1";
+    consumer.resetLatch();
+    notifier.created(entity, entity.getClass(), v, user, now);
+    verify(Operation.CREATED, v);
   }
 
-  @Disabled
   @Test
   public void notifyIsCalledWhenUpdatedLong() throws Exception {
-    notifier.updated(entity, entity.getClass(), version, user, now);
-    verify();
+    String v = "0.2.1";
+    consumer.resetLatch();
+    notifier.updated(entity, entity.getClass(), v, user, now);
+    verify(Operation.UPDATED, v);
   }
 
-  @Disabled
   @Test
   public void notifyIsCalledWhenDeletedLong() throws Exception {
-    notifier.deleted(entity, entity.getClass(), version, user, now);
-    verify();
+    String v = "0.3.1";
+    consumer.resetLatch();
+    notifier.deleted(entity, entity.getClass(), v, user, now);
+    verify(Operation.DELETED, v);
   }
 
 }

@@ -49,7 +49,6 @@ public class EntityLifecycleNotifierTest {
 
   MemoizedEntityLifecycleNotifier notifier;
   EntityLifecycleNotification notification = EntityLifecycleNotification.builder()
-  //    .typename("Data")
       .timestamp(now)
       .actor(user)
       .version(version)
@@ -64,7 +63,8 @@ public class EntityLifecycleNotifierTest {
 
   private void verify(EntityLifecycleNotification obj) {
     assertThat(obj.getActor()).isEqualTo(user);
-    assertThat(obj.getEntityDescriptor().getEntity()).isEqualTo(entity);
+    assertThat(obj.getEntityDescriptor()
+        .getEntity()).isEqualTo(entity);
     assertThat(obj.getTimestamp()).isEqualTo(now);
     assertThat(obj.getVersion()).isEqualTo(version);
 

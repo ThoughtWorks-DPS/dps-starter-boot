@@ -26,22 +26,21 @@ public class EntityDescriptorDeserializer extends
       throws IOException, JsonProcessingException {
     JsonNode node = jp.getCodec()
         .readTree(jp);
-    log.info("Descriptor tree: [{}]", node.toPrettyString());
+    log.trace("Descriptor tree: [{}]", node);
 
     String typename = node.get("typename")
         .asText();
-    log.info("Deserializing type: [{}]", typename);
+    log.trace("Deserializing type: [{}]", typename);
 
     JsonNode objNode = node.get("entity");
-    log.info("From tree: [{}]", objNode.toPrettyString());
+    log.trace("From tree: [{}]", objNode);
 
     JsonParser objParser = objNode.traverse(jp.getCodec());
     objParser.nextToken();  // Need to do this to advance the parser
 
-
     try {
       Class<? extends Object> objClass = Class.forName(typename);
-      log.info("Found decoder class [{}]", objClass.getCanonicalName());
+      log.trace("Found decoder class [{}]", objClass.getCanonicalName());
       Object obj = objParser.readValueAs(objClass);
 
       return EntityDescriptor.builder()

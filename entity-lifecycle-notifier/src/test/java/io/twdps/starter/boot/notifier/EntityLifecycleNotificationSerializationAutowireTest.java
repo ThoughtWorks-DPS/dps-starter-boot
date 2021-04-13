@@ -39,7 +39,12 @@ public class EntityLifecycleNotificationSerializationAutowireTest {
       .version("0.0.1")
       .entityDescriptor(EntityDescriptor.create(new Foo("foo")))
       .build();
-  String json = "{\"version\":\"0.0.1\",\"operation\":\"CREATED\",\"timestamp\":\"2021-04-04T18:38:20.956276-04:00\",\"actor\":\"user:uuid\",\"entityDescriptor\":{\"typename\":\"io.twdps.starter.boot.notifier.Foo\",\"entity\":{\"data\":\"foo\"}}}";
+  String json = "{\"version\":\"0.0.1\","
+      + "\"operation\":\"CREATED\","
+      + "\"timestamp\":\"2021-04-04T18:38:20.956276-04:00\","
+      + "\"actor\":\"user:uuid\","
+      + "\"entityDescriptor\":{\"typename\":\"io.twdps.starter.boot.notifier.Foo\","
+      + "\"entity\":{\"data\":\"foo\"}}}";
   String typename = "io.twdps.starter.boot.notifier.Foo";
 
 

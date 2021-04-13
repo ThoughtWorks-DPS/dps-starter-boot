@@ -5,11 +5,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(prefix = "starter.openapi",
-    name = "default-oauth-scopes",
+@ConditionalOnProperty(prefix = "starter.openapi.default-oauth-scopes",
+    name = "enabled",
     havingValue = "true",
     matchIfMissing = true)
-public class DefaultOAuthScopeConfigurer implements CustomOAuthScopeConfigurer {
+public class DefaultOauthScopeConfigurer implements CustomOauthScopeConfigurer {
 
   @Override
   public void configure(Scopes scope) {

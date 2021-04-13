@@ -11,7 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
 @Configuration
-@ConditionalOnProperty(prefix = "starter.open-policy-agent-config", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(
+    prefix = "starter.open-policy-agent-config",
+    name = "enabled",
+    havingValue = "true",
+    matchIfMissing = true)
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @EnableWebSecurity
 @Import(SecurityProblemSupport.class)

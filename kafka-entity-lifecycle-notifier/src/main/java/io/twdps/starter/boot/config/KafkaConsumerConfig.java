@@ -34,8 +34,9 @@ public class KafkaConsumerConfig {
    * @return configured Listener Factory
    */
   @Bean
-  public ConcurrentKafkaListenerContainerFactory<String, EntityLifecycleNotification>
-  entityLifecycleNotificationKafkaListenerContainerFactory() {
+  // CSOFF: LineLength
+  public ConcurrentKafkaListenerContainerFactory<String, EntityLifecycleNotification> entityLifecycleNotificationKafkaListenerContainerFactory() {
+    // CSON: LineLength
     ConcurrentKafkaListenerContainerFactory<String, EntityLifecycleNotification> factory =
         new ConcurrentKafkaListenerContainerFactory<>();
 

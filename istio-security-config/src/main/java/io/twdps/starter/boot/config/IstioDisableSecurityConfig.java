@@ -11,7 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.zalando.problem.spring.web.advice.security.SecurityProblemSupport;
 
 @Configuration
-@ConditionalOnProperty(prefix = "starter.istio-security-config", name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnProperty(
+    prefix = "starter.istio-security-config",
+    name = "enabled",
+    havingValue = "true",
+    matchIfMissing = true)
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @EnableWebSecurity
 @Import(SecurityProblemSupport.class)

@@ -5,8 +5,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(prefix = "starter.openapi",
-    name = "default-jwt-bearer-security-scheme",
+@ConditionalOnProperty(prefix = "starter.openapi.default-jwt-bearer-security-scheme",
+    name = "enabled",
     havingValue = "true",
     matchIfMissing = true)
 public class DefaultJwtBearerSecuritySchemeProvider implements CustomSecuritySchemeProvider {

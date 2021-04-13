@@ -51,7 +51,8 @@ public class KafkaEntityLifecycleNotifierConfig {
   public KafkaEntityLifecycleNotifierConfig(
       KafkaTemplate<String, EntityLifecycleNotification> kafkaTemplate,
       TimestampProvider provider,
-      @Value("${starter.boot.kafka-lifecycle-notifier.queue-name:entity-lifecycle-notifier}") String queueName,
+      @Value("${starter.boot.kafka-lifecycle-notifier.queue-name:entity-lifecycle-notifier}")
+          String queueName,
       KafkaEntityLifecycleNotifierConfigProperties properties) {
     log.warn("Constructing KafkaEntityLifecycleNotifierConfig");
     this.configProperties = properties;

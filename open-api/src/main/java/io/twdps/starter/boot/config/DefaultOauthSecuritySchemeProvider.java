@@ -12,19 +12,19 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@ConditionalOnProperty(prefix = "starter.openapi",
-    name = "default-oauth-security-scheme",
+@ConditionalOnProperty(prefix = "starter.openapi.default-oauth-security-scheme",
+    name = "enabled",
     havingValue = "true",
     matchIfMissing = true)
-public class DefaultOAuthSecuritySchemeProvider implements CustomSecuritySchemeProvider {
+public class DefaultOauthSecuritySchemeProvider implements CustomSecuritySchemeProvider {
 
   private String oauthUrl;
-  private List<CustomOAuthScopeConfigurer> scopeConfigurers;
+  private List<CustomOauthScopeConfigurer> scopeConfigurers;
 
   @Autowired
-  public DefaultOAuthSecuritySchemeProvider(
+  public DefaultOauthSecuritySchemeProvider(
       @Value("${oauthUrl:http://idp.twdps.io/}")
-          String oauthUrl, List<CustomOAuthScopeConfigurer> scopeConfigurers) {
+          String oauthUrl, List<CustomOauthScopeConfigurer> scopeConfigurers) {
     this.oauthUrl = oauthUrl;
     this.scopeConfigurers = scopeConfigurers;
   }

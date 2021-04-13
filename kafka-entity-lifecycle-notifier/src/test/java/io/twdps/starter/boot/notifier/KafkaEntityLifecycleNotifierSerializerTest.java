@@ -31,7 +31,9 @@ import static org.assertj.core.api.Assertions.assertThat;
     properties = {
         "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}",
         "starter.boot.kafka-lifecycle-notifier.queue-name=raw-queue-name",
+        // CSOFF: LineLength
         "spring.kafka.consumer.value-deserializer=org.apache.kafka.common.serialization.StringDeserializer"
+        // CSON: LineLength
     })
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j

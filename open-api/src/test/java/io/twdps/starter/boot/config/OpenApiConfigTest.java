@@ -18,8 +18,8 @@ public class OpenApiConfigTest {
    */
   @Autowired
   ApplicationContextRunner context = new ApplicationContextRunner()
-      .withUserConfiguration(DefaultOAuthScopeConfigurer.class)
-      .withUserConfiguration(DefaultOAuthSecuritySchemeProvider.class)
+      .withUserConfiguration(DefaultOauthScopeConfigurer.class)
+      .withUserConfiguration(DefaultOauthSecuritySchemeProvider.class)
       .withUserConfiguration(DefaultJwtBearerSecuritySchemeProvider.class)
       .withUserConfiguration(OpenApiConfiguration.class);
 
@@ -53,7 +53,7 @@ public class OpenApiConfigTest {
      * AssertableApplicationContext
      */
     context
-        .withPropertyValues("starter.openapi.default-jwt-bearer-security-scheme=false")
+        .withPropertyValues("starter.openapi.default-jwt-bearer-security-scheme.enabled=false")
         .run(it -> {
           /*
            * I can use assertThat to assert on the context
@@ -70,14 +70,14 @@ public class OpenApiConfigTest {
   }
 
   @Test
-  public void openApiOAuthConditionalOnPropertyFalseNonexistent() {
+  public void openApiOauthConditionalOnPropertyFalseNonexistent() {
     /*
      * We start the context and we will be able to trigger
      * assertions in a lambda receiving a
      * AssertableApplicationContext
      */
     context
-        .withPropertyValues("starter.openapi.default-oauth-security-scheme=false")
+        .withPropertyValues("starter.openapi.default-oauth-security-scheme.enabled=false")
         .run(it -> {
           /*
            * I can use assertThat to assert on the context
@@ -94,14 +94,14 @@ public class OpenApiConfigTest {
   }
 
   @Test
-  public void openApiOAuthScopesConditionalOnPropertyFalseNonexistent() {
+  public void openApiOauthScopesConditionalOnPropertyFalseNonexistent() {
     /*
      * We start the context and we will be able to trigger
      * assertions in a lambda receiving a
      * AssertableApplicationContext
      */
     context
-        .withPropertyValues("starter.openapi.default-oauth-scopes=false")
+        .withPropertyValues("starter.openapi.default-oauth-scopes.enabled=false")
         .run(it -> {
           /*
            * I can use assertThat to assert on the context

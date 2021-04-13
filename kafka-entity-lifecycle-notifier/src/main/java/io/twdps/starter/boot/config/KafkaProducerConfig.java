@@ -30,9 +30,10 @@ public class KafkaProducerConfig {
    *
    * @return configured KafkaTemplate
    */
+  // CSOFF: LineLength
   @Bean
-  public KafkaTemplate<String, EntityLifecycleNotification>
-  entityLifecycleNotificationKafkaTemplate() {
+  public KafkaTemplate<String, EntityLifecycleNotification> entityLifecycleNotificationKafkaTemplate() {
+    // CSON: LineLength
     Map<String, Object> props = new HashMap<>();
     props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
 

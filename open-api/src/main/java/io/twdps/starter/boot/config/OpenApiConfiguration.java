@@ -82,26 +82,23 @@ public class OpenApiConfiguration {
                         .url(contactUrl)
                         .email(contactEmail)))
             .servers(Arrays.asList(new Server().url(serverUrl)))
-            /*
-            .components(new Components()
-                .addSecuritySchemes("bearer-jwt",
-                    new SecurityScheme().type(SecurityScheme.Type.HTTP)
-                        .scheme("bearer")
-                        .bearerFormat("JWT")
-                        .in(SecurityScheme.In.HEADER)
-                        .name("Authorization"))
-                .addSecuritySchemes("oauth2",
-                    new SecurityScheme().type(SecurityScheme.Type.OAUTH2)
-                        .flows(new OAuthFlows()
-                            .implicit(new OAuthFlow()
-                                .authorizationUrl(oauthUrl)
-                                .scopes(scopes)))))
-             */
             .addSecurityItem(
                 new SecurityRequirement()
                     .addList("bearer-jwt", Arrays.asList("read", "write"))
                     .addList("oauth2", Arrays.asList("read", "write")));
 
+    config = configureSecuritySchemes(config);
+    config = configureSchemas(config);
+    return config;
+  }
+
+  /**
+   * Configure OpenAPI Security schemes.
+   *
+   * @param config current OpenAPI config object
+   * @return OpenAPI config object
+   */
+  protected OpenAPI configureSecuritySchemes(OpenAPI config) {
     if (null != securitySchemeProviders && securitySchemeProviders.size() > 0) {
       Components securitySchemes = new Components();
       securitySchemeProviders.forEach(
@@ -113,7 +110,16 @@ public class OpenApiConfiguration {
     } else {
       log.warn("No SecuritySchemeProviders defined.");
     }
+    return config;
+  }
 
+  /**
+   * Configure OpenAPI Schemas.
+   *
+   * @param config current OpenAPI config object
+   * @return OpenAPI config object
+   */
+  protected OpenAPI configureSchemas(OpenAPI config) {
     if (null != schemaProviders && schemaProviders.size() > 0) {
       Components schemas = new Components();
       schemaProviders.stream()

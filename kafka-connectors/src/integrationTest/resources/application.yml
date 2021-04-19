@@ -1,0 +1,126 @@
+info:
+  app:
+    name: TWDPS Example API
+    description: Starter Kit Example
+management:
+  server:
+    port: 8081
+  endpoint:
+    health:
+      probes:
+        enabled: true
+# Setting up K8 health probes - with health probs set to true you can use
+# the paths in your config like the snippet below
+
+#livenessProbe:
+#  httpGet:
+#    path: /actuator/health/liveness
+#    port: 8081
+#  failureThreshold: ...
+#  periodSeconds: ...
+#
+#readinessProbe:
+#  httpGet:
+#    path: /actuator/health/readiness
+#    port: 8081
+#  failureThreshold: ...
+
+server:
+  tomcat:
+    basedir: build/tomcat
+    max-threads: 100
+  ssl:
+    enabled: false
+  port: 8080
+
+spring:
+  application:
+    name: "starter-api"
+  data:
+    jpa:
+      repositories:
+        bootstrap-mode: "deferred"
+  datasource:
+    url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
+    username: skuser
+    password: localT3st!
+    hikari:
+      jdbc-url: jdbc:h2:mem:example;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;INIT=CREATE SCHEMA IF NOT EXISTS example\;SET SCHEMA example;
+      username: skuser
+      password: localT3st!
+  jpa:
+    show-sql: false
+    generate-ddl: false
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      org.hibernate.envers.audit_table_suffix: _audit
+      org.hibernate.envers.revision_field_name: revision_id
+      org.hibernate.envers.revision_type_field_name: type
+      org.hibernate.envers.global_with_modified_flag: true
+      org.hibernate.envers.store_data_at_delete: true
+      hibernate:
+        generate_statistics: false
+        implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
+        jdbc:
+          lob:
+            non_contextual_creation=true:
+  resources:
+    add-mappings: false
+  mvc:
+    throw-exception-if-no-handler-found: true
+  http:
+    encoding:
+      force: true
+  kafka:
+    bootstrap-servers: "localhost:9092"
+    #    bootstrap-servers: "${spring.embedded.kafka.brokers}"
+    topic:
+      name: embedded-test-topic
+    replication:
+      factor: 1
+    partition:
+      number: 1
+    consumer:
+      auto-offset-reset: latest
+      group-id: starter
+      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "io.twdps.starter.*"
+        #spring.json.value.default.type: String
+      level:
+        concurrency: 5
+    producer:
+      # This means the leader will wait for the full set of in-sync replicas to acknowledge
+      # the record. This guarantees that the record will not be lost as long as at least one
+      # in-sync replica remains alive. This is the strongest available guarantee.
+      # This is equivalent to the acks=-1 setting. For an eventing architecture this should be
+      # our default setting - no need for extremely high speed compromises here.
+      acks: all
+      batch-size: 1048576
+      buffer-memory: 2097152
+      client-id: "${pod.name}_${pod.namespace}_${pod.id}"
+      compression-type: lz4
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        max.in.flight.requests.per.connection: 2
+#      properties.spring.json.value.default.type: String
+test:
+  topic: embedded-secondary-test-topic
+
+
+opentracing:
+  zipkin:
+    enabled: true
+    http-sender.baseUrl: http://zipkin.istio-system.svc.cluster.local:9411
+
+starter:
+  istio-security-config: true
+  boot:
+    kafka-connector:
+      enabled: true
+      queue-name: test-queue-name

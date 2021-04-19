@@ -14,9 +14,8 @@ dependencies {
     testImplementation "org.springframework.boot:spring-boot-starter-validation"
     testImplementation project(':test-example')
     testImplementation "org.zalando:problem-spring-web"
-//    testCompile project(':error-handling')
-    testCompile project(':exceptions')
-//    testCompile 'de.adesso:junit-insights'
+    testImplementation project(':exceptions')
+//    testImplementation 'de.adesso:junit-insights'
 }
 
 

@@ -4,10 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.common.serialization.StringDeserializer;
+import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,35 +28,35 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@EmbeddedKafka
+@EmbeddedKafka(partitions = 1)
 @SpringBootTest(properties = "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KafkaProducerTest {
 
-  private BlockingQueue<ConsumerRecord<String, String>> records;
+  private BlockingQueue<ConsumerRecord<Integer, TestMessage>> records;
 
-  private KafkaMessageListenerContainer<String, String> container;
+  private KafkaMessageListenerContainer<Integer, TestMessage> container;
 
-  @Value("${test.topic}")
+  @Value("${spring.kafka.topic.name}")
   private String topicName;
 
   @Autowired
   private EmbeddedKafkaBroker embeddedKafkaBroker;
 
   @Autowired
-  private KafkaProducer producer;
+  private TestMessageKafkaProducer producer;
 
   @Autowired
   private ObjectMapper objectMapper;
 
   @BeforeAll
   void setUp() {
-    DefaultKafkaConsumerFactory<String, String> consumerFactory = new DefaultKafkaConsumerFactory<>(
-        getConsumerProperties());
+    DefaultKafkaConsumerFactory<Integer, TestMessage> consumerFactory =
+        new DefaultKafkaConsumerFactory<>(getConsumerProperties());
     ContainerProperties containerProperties = new ContainerProperties(topicName);
     container = new KafkaMessageListenerContainer<>(consumerFactory, containerProperties);
     records = new LinkedBlockingQueue<>();
-    container.setupMessageListener((MessageListener<String, String>) records::add);
+    container.setupMessageListener((MessageListener<Integer, TestMessage>) records::add);
     container.start();
     ContainerTestUtils.waitForAssignment(container, embeddedKafkaBroker.getPartitionsPerTopic());
   }
@@ -69,9 +68,10 @@ class KafkaProducerTest {
         ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true",
         ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "10",
         ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "60000",
-        ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
+        ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class,
         ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
-        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest",
+        JsonDeserializer.TRUSTED_PACKAGES, "io.twdps.starter.*");
   }
 
   @AfterAll
@@ -79,22 +79,18 @@ class KafkaProducerTest {
     container.stop();
   }
 
-//  @Disabled
   @Test
   void testWriteToKafka() throws InterruptedException, JsonProcessingException {
     // Create a user and write to Kafka
     String message = "Hello world!";
-    producer.send(topicName, message);
+    TestMessage msg = new TestMessage(message);
+    producer.send(topicName, msg);
 
     // Read the message (John Wick user) with a test consumer from Kafka and assert its properties
-    ConsumerRecord<String, String> response = records.poll(5000, TimeUnit.MILLISECONDS);
+    ConsumerRecord<Integer, TestMessage> response = records.poll(5000, TimeUnit.MILLISECONDS);
     assertThat(response).isNotNull();
-    assertThat(response.key()).isEqualTo("key");
-    assertThat(response.value()).isEqualTo(message);
-//    User result = objectMapper.readValue(response.value(), User.class);
-//    assertNotNull(result);
-//    assertEquals("John", result.getFirstName());
-//    assertEquals("Wick", result.getLastName());
+    assertThat(response.key()).isEqualTo(msg.getMessageIdentifier());
+    assertThat(response.value()).isEqualTo(msg);
   }
 
 

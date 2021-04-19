@@ -1,7 +1,9 @@
 plugins {
     id 'starter.std.java.library-conventions'
     id 'starter.java.config-conventions'
-
+    id 'starter.java.build-utils-conventions'
+    id 'starter.java.test-integration-conventions'
+    id 'starter.java.deps-integration-conventions'
 }
 
 dependencies {
@@ -9,11 +11,16 @@ dependencies {
     checkstyleRules platform(project(':checkstyle-bom'))
 
     implementation project(':exceptions')
+    implementation project(':kafka-connectors')
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation 'io.opentracing.contrib:opentracing-spring-web-starter'
-//    testCompile 'de.adesso:junit-insights'
+    implementation 'org.springframework.kafka:spring-kafka'
+//    testImplementation 'de.adesso:junit-insights'
     implementation "io.opentracing.contrib:opentracing-spring-cloud-jdbc-starter"
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     testImplementation "com.h2database:h2"
+    integrationTestImplementation 'org.springframework.kafka:spring-kafka-test'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-starter-web'
+    integrationTestImplementation 'org.springframework.boot:spring-boot-test-autoconfigure'
 }
 

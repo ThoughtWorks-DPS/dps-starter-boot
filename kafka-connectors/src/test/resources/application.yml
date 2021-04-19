@@ -77,17 +77,32 @@ spring:
     partition:
       number: 1
     consumer:
-      auto-offset-reset: earliest
+      auto-offset-reset: latest
       group-id: starter
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-#      properties.spring.json.value.default.type: String
       level:
         concurrency: 5
+      properties:
+        spring.json.trusted.packages: io.twdps.starter.*
+        # spring.json.value.default.type: String
     producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      # This means the leader will wait for the full set of in-sync replicas to acknowledge
+      # the record. This guarantees that the record will not be lost as long as at least one
+      # in-sync replica remains alive. This is the strongest available guarantee.
+      # This is equivalent to the acks=-1 setting. For an eventing architecture this should be
+      # our default setting - no need for extremely high speed compromises here.
+      acks: all
+      batch-size: 1048576
+      buffer-memory: 2097152
+      client-id: "${pod.name}_${pod.namespace}_${pod.id}"
+      compression-type: lz4
+      retries: 3
+      key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-#      properties.spring.json.value.default.type: String
+      properties:
+        max.in.flight.requests.per.connection: 2
+        # spring.json.value.default.type: String
 test:
   topic: embedded-secondary-test-topic
 
@@ -99,4 +114,7 @@ opentracing:
 
 starter:
   istio-security-config: true
-
+  boot:
+    kafka-connector:
+      enabled: true
+      queue-name: test-queue-name

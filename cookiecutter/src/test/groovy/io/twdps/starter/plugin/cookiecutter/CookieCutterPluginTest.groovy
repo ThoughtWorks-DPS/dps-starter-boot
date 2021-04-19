@@ -3,11 +3,7 @@ package io.twdps.starter.plugin.cookiecutter
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.tasks.Exec
-import org.gradle.api.Task
-import org.gradle.api.tasks.GradleBuild
-import org.gradle.internal.impldep.org.junit.Test
 import spock.lang.Specification
-import spock.lang.Stepwise
 
 class CookieCutterPluginTest extends Specification {
 

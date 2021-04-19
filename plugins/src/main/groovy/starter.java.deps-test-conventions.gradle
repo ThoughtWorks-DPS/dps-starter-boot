@@ -1,3 +1,6 @@
+plugins {
+    id 'java'
+}
 /**
  * Provides a set of common dependencies for typical unit testing.
  */
@@ -5,7 +8,7 @@
 sourceCompatibility = '11'
 
 dependencies {
-    testCompile 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-core'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 

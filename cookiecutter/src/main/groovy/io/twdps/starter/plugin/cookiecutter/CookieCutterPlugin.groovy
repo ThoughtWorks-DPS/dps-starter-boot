@@ -2,9 +2,7 @@ package io.twdps.starter.plugin.cookiecutter
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Exec
-import org.gradle.api.tasks.GradleBuild
 import org.slf4j.LoggerFactory
 
 

@@ -16,7 +16,7 @@ dependencies {
     implementation "org.zalando:problem-spring-web"
     implementation 'io.opentracing.contrib:opentracing-spring-web-starter'
     testImplementation project(':test-example')
-//    testCompile 'de.adesso:junit-insights'
+//    testImplementation 'de.adesso:junit-insights'
 }
 
 

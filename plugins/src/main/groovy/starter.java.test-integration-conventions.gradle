@@ -3,41 +3,44 @@
  */
 
 plugins {
+    id 'java'
     id 'starter.java.property-conventions'
 }
 
-sourceSets {
-    integrationTest {
-        java {
-            compileClasspath += main.output
-            //compileClasspath += test.output
-            runtimeClasspath += main.output
-            //runtimeClasspath += test.output
-            srcDir file('src/integration/java')
-        }
-        resources.srcDir file('src/integration/resources')
-    }
+def integrationTestSets = sourceSets.create('integrationTest') {
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
 }
 
-configurations {
-    integrationTestImplementation.extendsFrom implementation
-    integrationTestRuntimeOnly.extendsFrom runtimeOnly
-}
+configurations[integrationTestSets.implementationConfigurationName].extendsFrom(configurations.implementation)
+configurations[integrationTestSets.runtimeOnlyConfigurationName].extendsFrom(configurations.runtimeOnly)
 
 def integrationTest = tasks.register('integrationTest', Test) {
     description = 'Runs integration tests.'
     group = 'verification'
 
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
+    testClassesDirs = integrationTestSets.output.classesDirs
+    classpath = integrationTestSets.runtimeClasspath
+
+    // should find integration test output summary and use that as the timestamp comparison
+    // if there should be any updates that would affect the integration test
     outputs.upToDateWhen { false }
-    mustRunAfter tasks.named('test')
+    shouldRunAfter tasks.named('test')
     useJUnitPlatform {
-        excludeEngines 'junit-vintage'
+        // excludeEngines 'junit-vintage'
+    }
+    testLogging {
+        showStandardStreams = false // true
+        // events "passed", "skipped", "failed"
+        showExceptions true
+        showCauses true
+        minGranularity 2
+        minGranularity 4
+        displayGranularity 0
     }
 }
 
-check.configure {
+tasks.named('check') {
     dependsOn integrationTest
 }
 

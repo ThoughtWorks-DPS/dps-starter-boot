@@ -348,6 +348,9 @@ dependencies {
 ## starter.java.deps-test-conventions.gradle
 
 ```groovy
+plugins {
+    id 'java'
+}
 /**
  * Provides a set of common dependencies for typical unit testing.
  */
@@ -355,7 +358,7 @@ dependencies {
 sourceCompatibility = '11'
 
 dependencies {
-    testCompile 'org.mockito:mockito-core'
+    testImplementation 'org.mockito:mockito-core'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 
@@ -781,41 +784,44 @@ sourceSets {
  */
 
 plugins {
+    id 'java'
     id 'starter.java.property-conventions'
 }
 
-sourceSets {
-    integrationTest {
-        java {
-            compileClasspath += main.output
-            //compileClasspath += test.output
-            runtimeClasspath += main.output
-            //runtimeClasspath += test.output
-            srcDir file('src/integration/java')
-        }
-        resources.srcDir file('src/integration/resources')
-    }
+def integrationTestSets = sourceSets.create('integrationTest') {
+    compileClasspath += sourceSets.main.output
+    runtimeClasspath += sourceSets.main.output
 }
 
-configurations {
-    integrationTestImplementation.extendsFrom implementation
-    integrationTestRuntimeOnly.extendsFrom runtimeOnly
-}
+configurations[integrationTestSets.implementationConfigurationName].extendsFrom(configurations.implementation)
+configurations[integrationTestSets.runtimeOnlyConfigurationName].extendsFrom(configurations.runtimeOnly)
 
 def integrationTest = tasks.register('integrationTest', Test) {
     description = 'Runs integration tests.'
     group = 'verification'
 
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
+    testClassesDirs = integrationTestSets.output.classesDirs
+    classpath = integrationTestSets.runtimeClasspath
+
+    // should find integration test output summary and use that as the timestamp comparison
+    // if there should be any updates that would affect the integration test
     outputs.upToDateWhen { false }
-    mustRunAfter tasks.named('test')
+    shouldRunAfter tasks.named('test')
     useJUnitPlatform {
-        excludeEngines 'junit-vintage'
+        // excludeEngines 'junit-vintage'
+    }
+    testLogging {
+        showStandardStreams = false // true
+        // events "passed", "skipped", "failed"
+        showExceptions true
+        showCauses true
+        minGranularity 2
+        minGranularity 4
+        displayGranularity 0
     }
 }
 
-check.configure {
+tasks.named('check') {
     dependsOn integrationTest
 }
 
@@ -1123,7 +1129,6 @@ plugins {
     id 'application'
     id "org.springframework.boot" apply true
     id 'starter.java.deps-build-conventions'
-    id 'starter.java.deps-test-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.container-spring-conventions'
     id 'starter.java.style-conventions'
@@ -1132,6 +1137,7 @@ plugins {
     id 'starter.java.test-integration-conventions'
     id 'starter.java.test-jacoco-conventions'
     id 'starter.java.test-gatling-conventions'
+    id 'starter.java.deps-test-conventions'
     id 'starter.java.deps-integration-conventions'
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-bootjar-conventions'
@@ -1204,12 +1210,12 @@ plugins {
     id "org.ajoberstar.grgit"
     id 'starter.java.open-tracing-common-conventions'
     id 'starter.java.deps-build-conventions'
-    id 'starter.java.deps-test-conventions'
     id 'starter.java.style-conventions'
 //    id 'starter.java.doc-swagger-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-unit-conventions'
     id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.deps-test-conventions'
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-jar-conventions'
     id 'starter.java.versions-conventions'
@@ -1264,15 +1270,13 @@ shellcheck {
     severity = "style" // "error"
 }
 
-/*
-tasks.withType(type: Shellcheck).configureEach {
+tasks.named('shellcheck').configure {
     reports {
-        xml.isEnabled = false
-        txt.isEnabled = false
-        html.isEnabled = true
+        xml.enabled = false
+        txt.enabled = false
+        html.enabled = true
     }
 }
-*/
 
 check.configure {
     dependsOn tasks.named('shellcheck')

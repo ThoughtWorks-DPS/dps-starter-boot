@@ -4,7 +4,7 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         jcenter()
-        maven { url "http://palantir.bintray.com/releases" }
+        maven { url "https://palantir.bintray.com/releases" }
         maven { url  "https://dl.bintray.com/adesso/junit-insights" }
     }
 }
@@ -32,7 +32,9 @@ include ':istio-security-config'
 include ':open-policy-agent-config'
 include ':entity-lifecycle-notifier'
 include ':kafka-entity-lifecycle-notifier'
+include ':kafka-connectors'
 include ':open-api'
 include ':cookiecutter'
 include ':scripts'
 include ':test-example'
+include ':test-example-kafka'

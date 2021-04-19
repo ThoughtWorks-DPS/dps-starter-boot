@@ -16,6 +16,12 @@ function usage {
   echo "  --help        display this help"
 }
 
+function fail {
+  local msg=$*
+  echo "${msg}"
+  exit 1
+}
+
 function rename_dir {
   local from=$1
   local to=$2
@@ -28,17 +34,19 @@ function rename_dir {
 function process_dir {
   local path=$1
 
-  local pwd=$(pwd)
-  cd $path
+  local pwd
+  pwd=$(pwd)
+  cd "${path}" || fail "unable to change directory to [${path}]"
 
-  for i in $(find . -type d -depth 1)
+  find . -type d -depth 1 | while read -r i
   do
-    local name=$(basename $i)
-    process_dir $name
+    local name
+    name=$(basename "$i")
+    process_dir "${name}"
     [[ "${name}" = "${origTl}" ]] && rename_dir "${name}" "${tl}"
     [[ "${name}" = "${origOrg}" ]] && rename_dir "${name}" "${org}"
   done
-  cd $pwd
+  cd "${pwd}" || fail "unable to change directory to [${pwd}]"
 }
 
 while [ $# -gt 0 ]
@@ -50,13 +58,13 @@ do
   --orig-tl) shift; origTl=$1;;
   --orig-org) shift; origOrg=$1;;
   --help) usage; exit 0;;
-  *) usage; exit -1;;
+  *) usage; exit 1;;
   esac
   shift;
 done
 
 pwd=$(pwd)
 
-process_dir $path
+process_dir "${path}"
 
-cd $pwd
+cd "${pwd}" || fail "unable to change directory to [${pwd}]"

@@ -1242,3 +1242,39 @@ plugins {
 }
 
 ```
+
+## starter.std.java.shell-conventions.gradle
+
+```groovy
+/**
+ * Top-level configuration of all the typical standard configurations for a gradle plugin
+ */
+
+plugins {
+    id 'base'
+    id 'com.felipefzdz.gradle.shellcheck'
+}
+
+
+shellcheck {
+    sources = files(".")
+    ignoreFailures = true
+    showViolations = true
+    shellcheckVersion = "v0.7.1"
+    severity = "style" // "error"
+}
+
+/*
+tasks.withType(type: Shellcheck).configureEach {
+    reports {
+        xml.isEnabled = false
+        txt.isEnabled = false
+        html.isEnabled = true
+    }
+}
+*/
+
+check.configure {
+    dependsOn tasks.named('shellcheck')
+}
+```

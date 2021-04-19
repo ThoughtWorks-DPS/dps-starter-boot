@@ -15,17 +15,24 @@ function usage {
   echo "  --help        display this help"
 }
 
+function fail {
+  local msg=$*
+  echo "${msg}"
+  exit 1
+}
+
 function create_lib {
   local path=$1
   local pkg=$2
   local tl=$3
   local org=$4
 
-  local pwd=$(pwd)
-  cd $path;
+  local pwd
+  pwd=$(pwd)
+  cd "${path}" || fail "unable to change directory to [${path}]"
   mkdir -p "${pkg}"/src/{main,test}/java/"${tl}"/"${org}"/starter/boot
   mkdir -p "${pkg}"/src/{main,test}/resources
-  echo << EOF > "${pkg}"/build.gradle
+  cat << EOF > "${pkg}"/build.gradle
 plugins {
     id 'starter.std.java.library-conventions'
     id 'starter.java.config-conventions'
@@ -38,7 +45,7 @@ dependencies {
 }
 EOF
 
-  cd "${pwd}"
+  cd "${pwd}" || fail "unable to change directory to [${pwd}]"
 }
 
 while [ $# -gt 0 ]
@@ -49,7 +56,7 @@ do
   --org) shift; org=$1;;
   --pkg) shift; pkg=$1;;
   --help) usage; exit 0;;
-  *) usage; exit -1;;
+  *) usage; exit 1;;
   esac
   shift;
 done
@@ -57,11 +64,11 @@ done
 if [[ -z "${pkg}" ]]
 then
   usage
-  exit -1
+  exit 1
 fi
 
 pwd=$(pwd)
 
-create_lib $path $pkg $tl $org
+create_lib "${path}" "${pkg}" "${tl}" "${org}"
 
-cd $pwd
+cd "${pwd}" || fail "unable to change directory to [${pwd}]"

@@ -1,5 +1,6 @@
 package io.twdps.starter.boot.kafka;
 
+import io.twdps.starter.boot.config.KafkaProducerConfigProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,23 +15,17 @@ import org.springframework.util.concurrent.ListenableFuture;
 public class KafkaProducer<T extends IdentifiableMessage> {
 
   private final KafkaTemplate<Integer, T> kafkaTemplate;
+  private final KafkaProducerConfigProperties configProperties;
 
-  @Value("${spring.kafka.topic.name}")
-  private String topicName;
-
-  @Value("${spring.kafka.replication.factor:1}")
-  private int replicationFactor;
-
-  @Value("${spring.kafka.partition.number:1}")
-  private int partitionNumber;
-
-  public KafkaProducer(KafkaTemplate<Integer, T> kafkaTemplate) {
+  public KafkaProducer(KafkaTemplate<Integer, T> kafkaTemplate,
+      KafkaProducerConfigProperties configProperties) {
     this.kafkaTemplate = kafkaTemplate;
+    this.configProperties = configProperties;
   }
 
   public void send(T payload) {
     log.info("sending payload='{}'", payload);
-    kafkaTemplate.send(topicName, payload);
+    kafkaTemplate.send(configProperties.getTopic().getName(), payload);
   }
 
   public void send(String topic, T payload) {
@@ -40,7 +35,7 @@ public class KafkaProducer<T extends IdentifiableMessage> {
 
   public ListenableFuture<SendResult<Integer, T>> sendMessage(final T message) {
     log.info("(async) sending payload='{}'", message);
-    return sendMessage(topicName, message);
+    return sendMessage(configProperties.getTopic().getName(), message);
   }
 
   /**
@@ -58,9 +53,16 @@ public class KafkaProducer<T extends IdentifiableMessage> {
     return future;
   }
 
-  @Bean
-  @Order(-1)
+  /**
+   * create topic configuration bean.
+   *
+   * @return topic config bean
+   */
+  //@Bean
+  //@Order(-1)
   public NewTopic createNewTopic() {
-    return new NewTopic(topicName, partitionNumber, (short) replicationFactor);
+    return new NewTopic(configProperties.getTopic().getName(),
+        configProperties.getPartition().getNumber(),
+        (short) configProperties.getReplication().getFactor());
   }
 }

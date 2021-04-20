@@ -70,12 +70,9 @@ spring:
   kafka:
     bootstrap-servers: "localhost:9092"
 #    bootstrap-servers: "${spring.embedded.kafka.brokers}"
-    topic:
-      name: embedded-test-topic
-    replication:
-      factor: 1
-    partition:
-      number: 1
+    topic.name: embedded-test-topic
+    replication.factor: 1
+    partition.number: 1
     consumer:
       auto-offset-reset: latest
       group-id: starter
@@ -117,4 +114,13 @@ starter:
   boot:
     kafka-connector:
       enabled: true
-      queue-name: test-queue-name
+      producer:
+        topic.name: producer-test-topic
+        replication.factor: 1
+        partition.number: 5
+    alternate-kafka-connector:
+      enabled: true
+      producer:
+        topic.name: alternate-test-topic
+        replication.factor: 1
+        partition.number: 5

@@ -1,7 +1,9 @@
-package io.twdps.starter.boot.kafka;
+package io.twdps.starter.boot;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.twdps.starter.boot.kafka.TestMessage;
+import io.twdps.starter.boot.kafka.TestMessageKafkaProducer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.IntegerDeserializer;

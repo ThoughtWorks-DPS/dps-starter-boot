@@ -1,4 +1,4 @@
-package io.twdps.starter.boot.kafka;
+package io.twdps.starter.boot;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

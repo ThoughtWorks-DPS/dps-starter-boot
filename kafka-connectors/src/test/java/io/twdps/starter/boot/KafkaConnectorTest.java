@@ -1,6 +1,9 @@
-package io.twdps.starter.boot.kafka;
+package io.twdps.starter.boot;
 
 import io.twdps.starter.boot.config.KafkaProducerConfig;
+import io.twdps.starter.boot.kafka.TestMessage;
+import io.twdps.starter.boot.kafka.TestMessageKafkaConsumer;
+import io.twdps.starter.boot.kafka.TestMessageKafkaProducer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

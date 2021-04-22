@@ -1,8 +1,22 @@
-package io.twdps.starter.boot.notifier;
+package io.twdps.starter.boot;
 
+import io.twdps.starter.boot.config.KafkaEntityLifecycleNotifierConfigProperties;
+import io.twdps.starter.boot.notifier.EntityDescriptor;
+import io.twdps.starter.boot.notifier.EntityLifecycleNotification;
 import io.twdps.starter.boot.notifier.EntityLifecycleNotification.Operation;
+import io.twdps.starter.boot.notifier.Foo;
+import io.twdps.starter.boot.notifier.KafkaEntityLifecycleNotifier;
+import io.twdps.starter.boot.notifier.KafkaEntityTestConsumer;
+import io.twdps.starter.boot.notifier.KafkaRawTestConsumer;
+import io.twdps.starter.boot.notifier.MemoizedTimestampProvider;
+import io.twdps.starter.boot.notifier.TimestampProvider;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.serialization.IntegerDeserializer;
+import org.apache.kafka.common.serialization.StringDeserializer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -13,26 +27,33 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
+import org.springframework.kafka.listener.MessageListener;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.kafka.test.utils.ContainerTestUtils;
 
 import java.net.URI;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Disabled
-@EmbeddedKafka
+//@Disabled
+@EmbeddedKafka(partitions = 1)
 @SpringBootTest(
     properties = {
         "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}",
-        "starter.boot.kafka-lifecycle-notifier.queue-name=raw-queue-name",
+        // "starter.boot.kafka-lifecycle-notifier.queue-name=raw-queue-name",
         // CSOFF: LineLength
-        "spring.kafka.consumer.value-deserializer=org.apache.kafka.common.serialization.StringDeserializer"
+        // "spring.kafka.consumer.value-deserializer=org.apache.kafka.common.serialization.StringDeserializer"
         // CSON: LineLength
     })
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -59,24 +80,24 @@ class KafkaEntityLifecycleNotifierSerializerTest {
 
   }
 
-  private BlockingQueue<ConsumerRecord<String, String>> records;
+  private BlockingQueue<ConsumerRecord<Integer, String>> records;
 
-  private KafkaMessageListenerContainer<String, String> container;
-
-  @Autowired
-  private KafkaRawTestConsumer consumer;
+  private KafkaMessageListenerContainer<Integer, String> container;
 
   @Autowired
-  private KafkaTemplate<String, EntityLifecycleNotification> kafkaTemplate;
+  private KafkaEntityTestConsumer consumer;
 
   @Autowired
   TimestampProvider ts;
 
   @Autowired
+  KafkaEntityLifecycleNotifier notifier;
+
+  @Autowired
   private EmbeddedKafkaBroker embeddedKafkaBroker;
 
   @Autowired
-  KafkaEntityLifecycleNotifier notifier;
+  private KafkaEntityLifecycleNotifierConfigProperties configProperties;
 
 
   private URI user = URI.create("user:uuid");
@@ -84,13 +105,46 @@ class KafkaEntityLifecycleNotifierSerializerTest {
   private Foo entity = new Foo("foo");
   private String typename = "io.twdps.starter.boot.notifier.Foo";
   private ZonedDateTime now;
+  private String nowStamp;
 
 
   EntityLifecycleNotification notification;
 
+  @BeforeAll
+  void setUp() {
+    DefaultKafkaConsumerFactory<Integer, String> consumerFactory =
+        new DefaultKafkaConsumerFactory<>(getConsumerProperties());
+    ContainerProperties containerProperties = new ContainerProperties(
+        configProperties.getTopic().getName());
+    container = new KafkaMessageListenerContainer<>(consumerFactory, containerProperties);
+    records = new LinkedBlockingQueue<>();
+    container.setupMessageListener((MessageListener<Integer, String>) records::add);
+    container.start();
+    ContainerTestUtils.waitForAssignment(container, embeddedKafkaBroker.getPartitionsPerTopic());
+  }
+
+  private Map<String, Object> getConsumerProperties() {
+    return Map.of(
+        ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, embeddedKafkaBroker.getBrokersAsString(),
+        ConsumerConfig.GROUP_ID_CONFIG, "consumer",
+        ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true",
+        ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "10",
+        ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "60000",
+        ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class,
+        ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class,
+        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+    // JsonDeserializer.TRUSTED_PACKAGES, "io.twdps.starter.*");
+  }
+
+  @AfterAll
+  void tearDown() {
+    container.stop();
+  }
+
   @BeforeEach
   public void setup() {
     this.now = ts.now();
+    nowStamp = now.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
     notification = EntityLifecycleNotification.builder()
         .timestamp(now)
         .actor(user)
@@ -101,6 +155,7 @@ class KafkaEntityLifecycleNotifierSerializerTest {
             .build())
         .operation(Operation.CREATED)
         .build();
+    consumer.resetLatch();
   }
 
   private EntityLifecycleNotification from(EntityLifecycleNotification src, String version) {
@@ -115,26 +170,21 @@ class KafkaEntityLifecycleNotifierSerializerTest {
 
   private void verify(Operation expectedOp, String expectedVersion) throws Exception {
     log.info("Waiting for message [{}:{}] to appear...", expectedOp, expectedVersion);
-    consumer.getLatch()
-        .await(10000, TimeUnit.MILLISECONDS);
+    ConsumerRecord<Integer, String> response = records.poll(5000, TimeUnit.MILLISECONDS);
 
-    assertThat(consumer.getLatch()
-        .getCount()).isEqualTo(0L);
-
-    String payload = consumer.getPayload();
+    String payload = response.value();
     assertThat(payload).isNotNull();
     log.info("Received [{}]", payload);
     assertThat(payload).contains(expectedVersion);
     assertThat(payload).contains(expectedOp.label);
     assertThat(payload).contains(user.toString());
     assertThat(payload).contains(entity.data);
-    assertThat(payload).contains(now.toString());
+    assertThat(payload).contains(nowStamp);
   }
 
   @Test
   public void notifyIsCalled() throws Exception {
     String v = "0.0.0";
-    consumer.resetLatch();
     notifier.notify(from(notification, v));
     verify(Operation.CREATED, v);
   }
@@ -142,7 +192,6 @@ class KafkaEntityLifecycleNotifierSerializerTest {
   @Test
   public void notifyIsCalledWhenCreated() throws Exception {
     String v = "0.1.0";
-    consumer.resetLatch();
     notifier.created(entity, v, user);
     verify(Operation.CREATED, v);
   }
@@ -150,7 +199,6 @@ class KafkaEntityLifecycleNotifierSerializerTest {
   @Test
   public void notifyIsCalledWhenUpdated() throws Exception {
     String v = "0.2.0";
-    consumer.resetLatch();
     notifier.updated(entity, v, user);
     verify(Operation.UPDATED, v);
   }
@@ -158,7 +206,6 @@ class KafkaEntityLifecycleNotifierSerializerTest {
   @Test
   public void notifyIsCalledWhenDeleted() throws Exception {
     String v = "0.3.0";
-    consumer.resetLatch();
     notifier.deleted(entity, v, user);
     verify(Operation.DELETED, v);
   }
@@ -166,7 +213,6 @@ class KafkaEntityLifecycleNotifierSerializerTest {
   @Test
   public void notifyIsCalledWhenCreatedLong() throws Exception {
     String v = "0.1.1";
-    consumer.resetLatch();
     notifier.created(entity, entity.getClass(), v, user, now);
     verify(Operation.CREATED, v);
   }
@@ -174,7 +220,6 @@ class KafkaEntityLifecycleNotifierSerializerTest {
   @Test
   public void notifyIsCalledWhenUpdatedLong() throws Exception {
     String v = "0.2.1";
-    consumer.resetLatch();
     notifier.updated(entity, entity.getClass(), v, user, now);
     verify(Operation.UPDATED, v);
   }
@@ -182,7 +227,6 @@ class KafkaEntityLifecycleNotifierSerializerTest {
   @Test
   public void notifyIsCalledWhenDeletedLong() throws Exception {
     String v = "0.3.1";
-    consumer.resetLatch();
     notifier.deleted(entity, entity.getClass(), v, user, now);
     verify(Operation.DELETED, v);
   }

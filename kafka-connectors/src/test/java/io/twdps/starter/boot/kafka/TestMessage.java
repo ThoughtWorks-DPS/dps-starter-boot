@@ -2,33 +2,30 @@ package io.twdps.starter.boot.kafka;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.ToString;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.time.ZonedDateTime;
 
 @Getter
-@EqualsAndHashCode
+@Setter
 @ToString
-public class TestMessage implements IdentifiableMessage {
+@Builder
+@EqualsAndHashCode
+public class TestMessage {
 
-  private static AtomicInteger ident = new AtomicInteger(0);
-
-  private final String message;
-  private final Integer messageIdentifier;
-
-  public TestMessage(String message) {
-    this.message = message;
-    this.messageIdentifier = ident.incrementAndGet();
-  }
+  String text;
+  ZonedDateTime timestamp;
 
   @JsonCreator
   public TestMessage(
-      @NonNull @JsonProperty("message") String message,
-      @NonNull @JsonProperty("messageIdentifier") Integer messageIdentifier) {
-    this.message = message;
-    this.messageIdentifier = messageIdentifier;
+      @NonNull @JsonProperty("text") String text,
+      @NonNull @JsonProperty("timestamp") ZonedDateTime timestamp) {
+    this.text = text;
+    this.timestamp = timestamp;
   }
 }

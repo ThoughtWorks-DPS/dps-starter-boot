@@ -2,6 +2,8 @@ package io.twdps.starter.boot;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.twdps.starter.boot.config.TestKafkaProducerConfigProperties;
+import io.twdps.starter.boot.kafka.KafkaTestMessage;
 import io.twdps.starter.boot.kafka.TestMessage;
 import io.twdps.starter.boot.kafka.TestMessageKafkaProducer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -9,24 +11,29 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.serialization.IntegerDeserializer;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.listener.MessageListener;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.ContainerTestUtils;
+import org.springframework.util.concurrent.ListenableFuture;
 
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,12 +42,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class KafkaProducerTest {
 
-  private BlockingQueue<ConsumerRecord<Integer, TestMessage>> records;
+  private BlockingQueue<ConsumerRecord<Integer, KafkaTestMessage>> records;
 
-  private KafkaMessageListenerContainer<Integer, TestMessage> container;
-
-  @Value("${spring.kafka.topic.name}")
-  private String topicName;
+  private KafkaMessageListenerContainer<Integer, KafkaTestMessage> container;
 
   @Autowired
   private EmbeddedKafkaBroker embeddedKafkaBroker;
@@ -49,16 +53,24 @@ class KafkaProducerTest {
   private TestMessageKafkaProducer producer;
 
   @Autowired
+  private TestKafkaProducerConfigProperties configProperties;
+
+  @Autowired
   private ObjectMapper objectMapper;
+
+  private String text = "Sending with simple KafkaProducer";
+  private ZonedDateTime ts = ZonedDateTime.now();
+  private TestMessage payload = TestMessage.builder().text(text).timestamp(ts).build();
 
   @BeforeAll
   void setUp() {
-    DefaultKafkaConsumerFactory<Integer, TestMessage> consumerFactory =
+    DefaultKafkaConsumerFactory<Integer, KafkaTestMessage> consumerFactory =
         new DefaultKafkaConsumerFactory<>(getConsumerProperties());
-    ContainerProperties containerProperties = new ContainerProperties(topicName);
+    ContainerProperties containerProperties = new ContainerProperties(
+        configProperties.getTopic().getName());
     container = new KafkaMessageListenerContainer<>(consumerFactory, containerProperties);
     records = new LinkedBlockingQueue<>();
-    container.setupMessageListener((MessageListener<Integer, TestMessage>) records::add);
+    container.setupMessageListener((MessageListener<Integer, KafkaTestMessage>) records::add);
     container.start();
     ContainerTestUtils.waitForAssignment(container, embeddedKafkaBroker.getPartitionsPerTopic());
   }
@@ -82,17 +94,51 @@ class KafkaProducerTest {
   }
 
   @Test
-  void testWriteToKafka() throws InterruptedException, JsonProcessingException {
+  void testWriteToKafkaQueue() throws InterruptedException, JsonProcessingException {
     // Create a user and write to Kafka
-    String message = "Hello world!";
-    TestMessage msg = new TestMessage(message);
-    producer.send(topicName, msg);
+    KafkaTestMessage msg = new KafkaTestMessage(payload);
+    producer.send(configProperties.getTopic().getName(), msg);
 
     // Read the message (John Wick user) with a test consumer from Kafka and assert its properties
-    ConsumerRecord<Integer, TestMessage> response = records.poll(5000, TimeUnit.MILLISECONDS);
+    ConsumerRecord<Integer, KafkaTestMessage> response = records.poll(5000, TimeUnit.MILLISECONDS);
     assertThat(response).isNotNull();
     assertThat(response.key()).isEqualTo(msg.getMessageIdentifier());
-    assertThat(response.value()).isEqualTo(msg);
+    assertThat(response.value().getMessage().getText()).isEqualTo(text);
+    assertThat(response.value().getMessage().getTimestamp()).isEqualTo(ts);
+  }
+
+  @Disabled
+  @Test
+  void testWriteToKafka() throws InterruptedException, JsonProcessingException {
+    // Create a user and write to Kafka
+    KafkaTestMessage msg = new KafkaTestMessage(payload);
+    producer.send(msg);
+
+    // Read the message (John Wick user) with a test consumer from Kafka and assert its properties
+    ConsumerRecord<Integer, KafkaTestMessage> response = records.poll(5000, TimeUnit.MILLISECONDS);
+    assertThat(response).isNotNull();
+    assertThat(response.key()).isEqualTo(msg.getMessageIdentifier());
+    assertThat(response.value().getMessage().getText()).isEqualTo(text);
+    assertThat(response.value().getMessage().getTimestamp()).isEqualTo(ts);
+  }
+
+  @Test
+  void testFutureWriteToKafka()
+      throws InterruptedException, JsonProcessingException, TimeoutException, ExecutionException {
+    // Create a user and write to Kafka
+    String message = "Hello world!";
+    KafkaTestMessage msg = new KafkaTestMessage(payload);
+    ListenableFuture<SendResult<Integer, KafkaTestMessage>> future = producer.sendMessage(msg);
+
+    // Read the message (John Wick user) with a test consumer from Kafka and assert its properties
+    SendResult<Integer, KafkaTestMessage> result = future.get(5000, TimeUnit.MILLISECONDS);
+    assertThat(result).isNotNull();
+
+    ConsumerRecord<Integer, KafkaTestMessage> response = records.poll(5000, TimeUnit.MILLISECONDS);
+    assertThat(response).isNotNull();
+    assertThat(response.key()).isEqualTo(msg.getMessageIdentifier());
+    assertThat(response.value().getMessage().getText()).isEqualTo(text);
+    assertThat(response.value().getMessage().getTimestamp()).isEqualTo(ts);
   }
 
 

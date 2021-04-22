@@ -1,16 +1,20 @@
 package io.twdps.starter.boot.notifier;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.concurrent.CountDownLatch;
 
-@Component
+@Service
 @Slf4j
+@Getter
+@Setter
 public class KafkaRawTestConsumer {
 
   private CountDownLatch latch = new CountDownLatch(1);
@@ -24,7 +28,7 @@ public class KafkaRawTestConsumer {
    * @param partition partition number
    * @param offset    offset position in queue
    */
-  @KafkaListener(topics = "${starter.boot.kafka-lifecycle-notifier.queue-name}",
+  @KafkaListener(topics = "${starter.boot.kafka-lifecycle-notifier.consumer.topic.name}",
       concurrency = "${spring.kafka.consumer.level.concurrency:3}")
   public void logKafkaMessages(@Payload String payload,
       @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
@@ -36,19 +40,8 @@ public class KafkaRawTestConsumer {
     latch.countDown();
   }
 
-  public CountDownLatch getLatch() {
-    return latch;
-  }
-
   public void resetLatch() {
     latch = new CountDownLatch(1);
   }
 
-  public String getPayload() {
-    return payload;
-  }
-
-  public void setPayload(String payload) {
-    this.payload = payload;
-  }
 }

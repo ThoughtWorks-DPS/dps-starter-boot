@@ -8,9 +8,9 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AlternateMessageKafkaProducer extends KafkaProducer<TestMessage> {
+public class AlternateMessageKafkaProducer extends KafkaProducer<KafkaTestMessage> {
 
-  public AlternateMessageKafkaProducer(KafkaTemplate<Integer, TestMessage> kafkaTemplate,
+  public AlternateMessageKafkaProducer(KafkaTemplate<Integer, KafkaTestMessage> kafkaTemplate,
       AlternateKafkaProducerConfigProperties configProperties) {
     super(kafkaTemplate, configProperties);
   }

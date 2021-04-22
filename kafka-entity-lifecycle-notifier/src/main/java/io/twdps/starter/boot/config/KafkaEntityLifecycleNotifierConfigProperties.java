@@ -1,28 +1,14 @@
 package io.twdps.starter.boot.config;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+@Slf4j
 @Configuration
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@ConfigurationProperties(prefix = "starter.boot.kafka-lifecycle-notifier.producer")
 @AutoConfigureBefore(name = {"io.twdps.starter.boot.config.KafkaEntityLifecycleNotifierConfig"})
-public class KafkaEntityLifecycleNotifierConfigProperties {
-
-  @Value("${starter.boot.kafka-lifecycle-notifier.queue-name:entity-lifecycle-notifier}")
-  private String topicName;
-
-  @Value("${spring.kafka.replication.factor:1}")
-  private int replicationFactor;
-
-  @Value("${spring.kafka.partition.number:1}")
-  private int partitionNumber;
+public class KafkaEntityLifecycleNotifierConfigProperties extends KafkaProducerConfigProperties {
 
 }

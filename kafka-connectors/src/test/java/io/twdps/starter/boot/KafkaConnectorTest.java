@@ -1,10 +1,11 @@
 package io.twdps.starter.boot;
 
-import io.twdps.starter.boot.config.KafkaProducerConfig;
+import io.twdps.starter.boot.kafka.KafkaTestMessage;
 import io.twdps.starter.boot.kafka.TestMessage;
 import io.twdps.starter.boot.kafka.TestMessageKafkaConsumer;
 import io.twdps.starter.boot.kafka.TestMessageKafkaProducer;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +44,15 @@ class KafkaConnectorTest {
   @Value("${spring.kafka.topic.name}")
   private String topicName;
 
-  private String payload = "Sending with simple KafkaProducer";
+  private String text = "Sending with simple KafkaProducer";
+  private ZonedDateTime ts = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
+  private TestMessage payload = TestMessage.builder().text(text).timestamp(ts).build();
+
+
+  @BeforeEach
+  public void setup() {
+    consumer.resetLatch();
+  }
 
   @Test
   public void givenEmbeddedKafkaBroker_whenSendingtoSimpleProducer_thenMessageReceived()
@@ -49,14 +60,14 @@ class KafkaConnectorTest {
     assertThat(consumer).isNotNull();
     assertThat(producer).isNotNull();
 
-    TestMessage msg = new TestMessage(payload);
-    consumer.resetLatch();
+    KafkaTestMessage msg = new KafkaTestMessage(payload);
     producer.send(topicName, msg);
     consumer.getLatch()
         .await(20000, TimeUnit.MILLISECONDS);
 
     assertThat(consumer.getLatch()
         .getCount()).isEqualTo(0L);
+    assertThat(consumer.getPayload().getMessage().getText()).isEqualTo(text);
     assertThat(consumer.getPayload()).isEqualTo(msg);
   }
 

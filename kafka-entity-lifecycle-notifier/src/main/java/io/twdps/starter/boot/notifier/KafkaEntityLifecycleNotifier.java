@@ -1,15 +1,19 @@
 package io.twdps.starter.boot.notifier;
 
+import io.twdps.starter.boot.config.KafkaEntityLifecycleNotifierConfigProperties;
+import io.twdps.starter.boot.kafka.KafkaProducer;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 
 @Slf4j
-public class KafkaEntityLifecycleNotifier implements EntityLifecycleNotifier {
+public class KafkaEntityLifecycleNotifier
+    extends KafkaProducer<KafkaEntityLifecycleNotification>
+    implements EntityLifecycleNotifier {
 
   private TimestampProvider provider;
-  private final KafkaTemplate<String, EntityLifecycleNotification> kafkaTemplate;
 
   private String queueName;
 
@@ -18,16 +22,14 @@ public class KafkaEntityLifecycleNotifier implements EntityLifecycleNotifier {
    *
    * @param kafkaTemplate KafkaTemplate<> for sending the notifications
    * @param provider      Timestamp Provider (for testing)
-   * @param queueName     name of the kafka queue
    */
   public KafkaEntityLifecycleNotifier(
-      KafkaTemplate<String, EntityLifecycleNotification> kafkaTemplate,
-      TimestampProvider provider,
-      @Value("${starter.boot.kafka-lifecycle-notifier.queue-name:entity-lifecycle-notifier}")
-          String queueName) {
-    this.kafkaTemplate = kafkaTemplate;
-    this.queueName = queueName;
+      KafkaTemplate<Integer, KafkaEntityLifecycleNotification> kafkaTemplate,
+      KafkaEntityLifecycleNotifierConfigProperties configProperties,
+      TimestampProvider provider) {
+    super(kafkaTemplate, configProperties);
     this.provider = provider;
+    this.queueName = configProperties.getTopic().getName();
   }
 
   public TimestampProvider getTimestampProvider() {
@@ -40,11 +42,18 @@ public class KafkaEntityLifecycleNotifier implements EntityLifecycleNotifier {
    * @param notification lifecycle notification message
    */
   public void notify(EntityLifecycleNotification notification) {
-    log.info("notify: [{}] on topic [{}]", notification, queueName);
-    kafkaTemplate.send(queueName,
-        notification.getEntityDescriptor()
-            .getTypename(),
+    log.info("notify: [{}] on topic [{}:{}]", notification, getConfigProperties().getTopic()
+        .getName(), queueName);
+    KafkaEntityLifecycleNotification kafkaMessage = new KafkaEntityLifecycleNotification(
         notification);
+    send(queueName, kafkaMessage);
+  }
+
+
+  @Bean
+  @Order(-1)
+  public NewTopic createLifecycleNotifierTopic() {
+    return super.createNewTopic();
   }
 
 }

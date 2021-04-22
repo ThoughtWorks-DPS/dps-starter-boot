@@ -1,5 +1,6 @@
 package io.twdps.starter.boot;
 
+import io.twdps.starter.boot.config.AlternateKafkaProducerConfigProperties;
 import io.twdps.starter.boot.config.SpringKafkaProducerConfigProperties;
 import io.twdps.starter.boot.config.TestKafkaProducerConfigProperties;
 import org.junit.jupiter.api.Test;
@@ -17,12 +18,12 @@ public class KafkaProducerConfigPropertiesTest {
   private SpringKafkaProducerConfigProperties springKafkaProducerConfigProperties;
 
   @Autowired
-  private TestKafkaProducerConfigProperties testConfigProperties;
+  private AlternateKafkaProducerConfigProperties testConfigProperties;
 
   @Value("${spring.kafka.topic.name}")
   private String springTopicName;
 
-  @Value("${starter.boot.kafka-connector.producer.topic.name}")
+  @Value("${starter.boot.alternate-kafka-connector.producer.topic.name}")
   private String testTopicName;
 
   @Test
@@ -30,7 +31,7 @@ public class KafkaProducerConfigPropertiesTest {
     assertThat(springTopicName).isNotNull();
     assertThat(springTopicName).isEqualTo("embedded-test-topic");
     assertThat(testTopicName).isNotNull();
-    assertThat(testTopicName).isEqualTo("producer-test-topic");
+    assertThat(testTopicName).isEqualTo("alternate-test-topic");
   }
 
   @Test

@@ -1,6 +1,6 @@
 package io.twdps.starter.boot.notifier;
 
-class Foo {
+public class Foo {
 
   public String data;
 

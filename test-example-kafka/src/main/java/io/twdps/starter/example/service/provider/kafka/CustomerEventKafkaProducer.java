@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 public class CustomerEventKafkaProducer extends KafkaProducer<CustomerEventMessage> {
 
   public CustomerEventKafkaProducer(KafkaTemplate<Integer, CustomerEventMessage> kafkaTemplate,
-      KafkaProducerConfigProperties configProperties) {
+      CustomerEventKafkaProducerConfigProperties configProperties) {
     super(kafkaTemplate, configProperties);
   }
 }

@@ -1,5 +1,6 @@
 package io.twdps.starter.boot.kafka;
 
+import lombok.Generated;
 import org.slf4j.Logger;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -20,6 +21,7 @@ public interface KafkaConsumer<T> {
    */
   @KafkaListener(topics = "${spring.kafka.topic.name}",
       concurrency = "${spring.kafka.consumer.level.concurrency:3}")
+  @Generated
   default void receiveKafkaMessages(@Payload T payload,
       @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
       @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,
@@ -35,11 +37,13 @@ public interface KafkaConsumer<T> {
    * @param partition partition on which it appeared
    * @param offset offset in history
    */
+  @Generated
   default void handleMessage(T payload, String topic, Integer partition, Long offset) {
     getLogger().info("Received a message with topic: [{}] "
         + "partition: [{}] offset: [{}] payload: [{}] ", topic, partition, offset, payload);
     handleMessage(payload);
   }
 
+  @Generated
   default void handleMessage(T payload) {}
 }

@@ -1,17 +1,16 @@
 package io.twdps.starter.boot.kafka;
 
 import io.twdps.starter.boot.config.KafkaProducerConfigProperties;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.annotation.Order;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.concurrent.ListenableFuture;
 
 @Slf4j
+@Getter
 public class KafkaProducer<T extends IdentifiableMessage> {
 
   private final KafkaTemplate<Integer, T> kafkaTemplate;
@@ -25,7 +24,7 @@ public class KafkaProducer<T extends IdentifiableMessage> {
 
   public void send(T payload) {
     log.info("sending payload='{}'", payload);
-    kafkaTemplate.send(configProperties.getTopic().getName(), payload);
+    this.sendMessage(payload);
   }
 
   public void send(String topic, T payload) {

@@ -1,4 +1,4 @@
-package io.twdps.starter.boot.notifier;
+package io.twdps.starter.boot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -112,3 +112,21 @@ starter:
     kafka-connector:
       enabled: true
       queue-name: test-queue-name
+    kafka-lifecycle-notifier:
+      enabled: true
+      producer:
+        topic.name: lifecycle-notifier
+        replication.factor: 1
+        partition.number: 1
+      consumer:
+        topic.name: lifecycle-notifier
+        level.concurrency: 1
+    customer-event:
+      enabled: true
+      producer:
+        topic.name: customer-event
+        replication.factor: 1
+        partition.number: 1
+      consumer:
+        topic.name: customer-event
+        level.concurrency: 1

@@ -49,6 +49,7 @@ public class KafkaProducerConsumerTest {
         .toEpochSecond());
     customerEvent.setCustomerId(1000);
     customerEvent.setType("CUSTOMER_ADDED");
+    eventConsumer.resetLatch();
   }
 
   private String getRequestUrl() {

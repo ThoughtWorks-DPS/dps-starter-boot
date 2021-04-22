@@ -75,7 +75,7 @@ spring:
     partition.number: 1
     consumer:
       auto-offset-reset: latest
-      client-id: "${pod.name}_${pod.namespace}_${pod.id}"
+      #client-id: "${pod.name}_${pod.namespace}_${pod.id}"
       group-id: starter
       key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
@@ -93,7 +93,7 @@ spring:
       acks: all
       batch-size: 1048576
       buffer-memory: 2097152
-      client-id: "${pod.name}_${pod.namespace}_${pod.id}"
+      #client-id: "${pod.name}_${pod.namespace}_${pod.id}"
       compression-type: lz4
       retries: 3
       key-serializer: org.apache.kafka.common.serialization.IntegerSerializer

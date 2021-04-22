@@ -23,7 +23,3 @@ dependencies {
     integrationTestImplementation 'org.springframework.boot:spring-boot-starter-web'
     integrationTestImplementation 'org.springframework.boot:spring-boot-test-autoconfigure'
 }
-
-ext {
-    jacoco_enforce_violations = true
-}

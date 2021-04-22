@@ -21,3 +21,8 @@ dependencies {
     //integrationTestImplementation 'org.springframework.boot:spring-boot-test-autoconfigure'
 }
 
+test {
+    testLogging {
+        showStandardStreams =  true
+    }
+}

@@ -126,7 +126,6 @@ class KafkaProducerTest {
   void testFutureWriteToKafka()
       throws InterruptedException, JsonProcessingException, TimeoutException, ExecutionException {
     // Create a user and write to Kafka
-    String message = "Hello world!";
     KafkaTestMessage msg = new KafkaTestMessage(payload);
     ListenableFuture<SendResult<Integer, KafkaTestMessage>> future = producer.sendMessage(msg);
 

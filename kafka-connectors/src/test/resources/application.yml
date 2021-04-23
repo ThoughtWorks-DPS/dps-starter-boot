@@ -117,7 +117,7 @@ starter:
     kafka-connector:
       enabled: true
       producer:
-        topic.name: producer-test-topic
+        topic.name: embedded-test-topic
         replication.factor: 1
         partition.number: 1
       consumer:

@@ -84,7 +84,7 @@ class KafkaProducerTest {
         ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, "60000",
         ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class,
         ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class,
-        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest",
+        ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest",
         JsonDeserializer.TRUSTED_PACKAGES, "io.twdps.starter.*");
   }
 

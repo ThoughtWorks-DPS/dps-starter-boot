@@ -19,17 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-//@EmbeddedKafka(
-//    topics = "embedded-test-topic",
-//    bootstrapServersProperty = "spring.kafka.bootstrap-servers",
-//    partitions = 1,
-//    controlledShutdown = false,
-//    brokerProperties = {
-//        "listeners=PLAINTEXT://localhost:9092",
-//        "port=9092"
-//    }
-//)
-@EmbeddedKafka
+@EmbeddedKafka(partitions = 1)
 @SpringBootTest(properties = "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Slf4j

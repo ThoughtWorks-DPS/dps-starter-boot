@@ -35,7 +35,7 @@ public class TestMessageKafkaConsumer {
    * @param offset    offset position in queue
    */
   @KafkaListener(topics = "${starter.boot.kafka-connector.consumer.topic.name}",
-      concurrency = "${starter.boot.kafka-connector.consumer.level.concurrency:3}")
+      concurrency = "${starter.boot.kafka-connector.consumer.level.concurrency:1}")
   void receiveKafkaMessages(@Payload KafkaTestMessage payload,
       @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
       @Header(KafkaHeaders.RECEIVED_PARTITION_ID) Integer partition,

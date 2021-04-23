@@ -1,7 +1,5 @@
 package io.twdps.starter.boot;
 
-import io.twdps.starter.boot.config.SpringKafkaProducerConfigProperties;
-import io.twdps.starter.boot.config.TestKafkaProducerConfigProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.junit.jupiter.api.Test;

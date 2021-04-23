@@ -2,16 +2,17 @@ package io.twdps.starter.boot;
 
 import io.twdps.starter.boot.config.AlternateKafkaProducerConfigProperties;
 import io.twdps.starter.boot.config.SpringKafkaProducerConfigProperties;
-import io.twdps.starter.boot.config.TestKafkaProducerConfigProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@TestPropertySource(properties = {"spring.config.location=classpath:application-alternate.yml"})
 public class KafkaProducerConfigPropertiesTest {
 
   @Autowired

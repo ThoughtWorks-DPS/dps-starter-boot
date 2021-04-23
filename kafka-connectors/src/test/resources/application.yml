@@ -74,7 +74,7 @@ spring:
     replication.factor: 1
     partition.number: 1
     consumer:
-      auto-offset-reset: latest
+      auto-offset-reset: earliest
       #client-id: "${pod.name}_${pod.namespace}_${pod.id}"
       group-id: connector
       key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
@@ -120,9 +120,3 @@ starter:
       consumer:
         topic.name: embedded-test-topic
         level.concurrency: 1
-    alternate-kafka-connector:
-      enabled: true
-      producer:
-        topic.name: alternate-test-topic
-        replication.factor: 1
-        partition.number: 5

@@ -20,7 +20,7 @@ public interface KafkaConsumer<T> {
    * @param offset    offset position in queue
    */
   @KafkaListener(topics = "${spring.kafka.topic.name}",
-      concurrency = "${spring.kafka.consumer.level.concurrency:3}")
+      concurrency = "${spring.kafka.consumer.level.concurrency:1}")
   @Generated
   default void receiveKafkaMessages(@Payload T payload,
       @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,

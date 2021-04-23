@@ -7,7 +7,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-@Service
+//@Service
 public class AlternateMessageKafkaProducer extends KafkaProducer<KafkaTestMessage> {
 
   public AlternateMessageKafkaProducer(KafkaTemplate<Integer, KafkaTestMessage> kafkaTemplate,

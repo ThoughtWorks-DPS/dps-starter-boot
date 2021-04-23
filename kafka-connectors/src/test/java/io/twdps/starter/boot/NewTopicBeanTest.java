@@ -22,7 +22,7 @@ public class NewTopicBeanTest {
     newTopics.stream().forEach(t -> log.info("Topic [{}]", t.toString()));
     assertThat(newTopics).isNotNull();
     assertThat(newTopics).isNotEmpty();
-    assertThat(newTopics.size()).isEqualTo(2);
+    assertThat(newTopics.size()).isEqualTo(1);
   }
 
 }

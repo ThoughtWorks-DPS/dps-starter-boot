@@ -3,6 +3,7 @@ package io.twdps.starter.boot.kafka;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
@@ -19,6 +20,11 @@ public class TestMessageKafkaConsumer {
 
   private CountDownLatch latch = new CountDownLatch(1);
   private KafkaTestMessage payload = null;
+
+  public TestMessageKafkaConsumer(
+      @Value("${starter.boot.kafka-connector.consumer.topic.name}") String topic) {
+    log.warn("Creating consumer on topic [{}]", topic);
+  }
 
   /**
    * receive messages from Kafka topic.

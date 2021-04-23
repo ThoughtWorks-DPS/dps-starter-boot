@@ -51,24 +51,24 @@ class KafkaConnectorTest {
 
   @BeforeEach
   public void setup() {
-    consumer.resetLatch();
+    this.consumer.resetLatch();
   }
 
   @Test
   public void givenEmbeddedKafkaBroker_whenSendingtoSimpleProducer_thenMessageReceived()
       throws Exception {
-    assertThat(consumer).isNotNull();
-    assertThat(producer).isNotNull();
+    assertThat(this.consumer).isNotNull();
+    assertThat(this.producer).isNotNull();
+    assertThat(this.consumer.getLatch().getCount()).isEqualTo(1L);
 
-    KafkaTestMessage msg = new KafkaTestMessage(payload);
-    producer.send(topicName, msg);
-    consumer.getLatch()
+    KafkaTestMessage msg = new KafkaTestMessage(this.payload);
+    this.producer.send(this.topicName, msg);
+    this.consumer.getLatch()
         .await(20000, TimeUnit.MILLISECONDS);
 
-    assertThat(consumer.getLatch()
-        .getCount()).isEqualTo(0L);
-    assertThat(consumer.getPayload().getMessage().getText()).isEqualTo(text);
-    assertThat(consumer.getPayload()).isEqualTo(msg);
+    assertThat(this.consumer.getLatch().getCount()).isEqualTo(0L);
+    assertThat(this.consumer.getPayload().getMessage().getText()).isEqualTo(this.text);
+    assertThat(this.consumer.getPayload()).isEqualTo(msg);
   }
 
 

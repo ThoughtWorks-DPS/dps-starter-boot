@@ -102,9 +102,6 @@ spring:
       properties:
         max.in.flight.requests.per.connection: 2
         # spring.json.value.default.type: String
-test:
-  topic: embedded-secondary-test-topic
-
 
 opentracing:
   zipkin:

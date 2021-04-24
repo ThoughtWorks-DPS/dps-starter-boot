@@ -19,3 +19,8 @@ dependencies {
     testImplementation project(':error-handling')
 }
 
+test {
+    testLogging {
+        showStandardStreams =  true
+    }
+}

@@ -28,7 +28,7 @@ scmVersion {
     ignoreUncommittedChanges = false // should uncommitted changes force version bump
 
     // doc: Version / Tag with highest version
-    useHighestVersion = false // Defaults as false, setting to true will find the highest visible version in the commit tree
+    useHighestVersion = true // Defaults as false, setting to true will find the highest visible version in the commit tree
 
     // doc: Version / Sanitization
     sanitizeVersion = true // should created version be sanitized, true by default
@@ -37,12 +37,12 @@ scmVersion {
 //    foldersToExclude = ['gradle'] // ignore changes in these subdirs when calculating changes to parent
 
     tag { // doc: Version / Parsing
-//        prefix = 'tag-prefix' // prefix to be used, 'release' by default
+        prefix = 'release' // prefix to be used, 'release' by default
 //        branchPrefix = [ // set different prefix per branch
 //                         'legacy/.*' : 'legacy'
 //        ]
 
-//        versionSeparator = '-' // separator between prefix and version number, '-' by default
+        versionSeparator = '-' // separator between prefix and version number, '-' by default
 //        serialize = { tag, version -> ... } // creates tag name from raw version
 //        deserialize = { tag, position, tagName -> ... } // reads raw version from tag
 //        initialVersion = { tag, position -> ... } // returns initial version if none found, 0.1.0 by default

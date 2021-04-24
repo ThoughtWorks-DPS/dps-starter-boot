@@ -7,10 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
+@TestPropertySource(properties = {
+    "spring.config.location=classpath:application-alternate.yml",
+    "starter.boot.test-topic-creation.enabled=true"
+})
 @Slf4j
 public class NewTopicBeanTest {
 
@@ -22,7 +27,7 @@ public class NewTopicBeanTest {
     newTopics.stream().forEach(t -> log.info("Topic [{}]", t.toString()));
     assertThat(newTopics).isNotNull();
     assertThat(newTopics).isNotEmpty();
-    assertThat(newTopics.size()).isEqualTo(1);
+    assertThat(newTopics.size()).isEqualTo(2);
   }
 
 }

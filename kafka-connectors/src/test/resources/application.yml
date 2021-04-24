@@ -74,7 +74,7 @@ spring:
     replication.factor: 1
     partition.number: 1
     consumer:
-      auto-offset-reset: latest
+      auto-offset-reset: earliest
       #client-id: "${pod.name}_${pod.namespace}_${pod.id}"
       group-id: connector
       key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer

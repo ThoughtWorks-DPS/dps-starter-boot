@@ -35,7 +35,7 @@ class KafkaConnectorTest {
   private String topicName;
 
   private String text = "Sending with simple KafkaProducer";
-  private ZonedDateTime ts = ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC"));
+  private ZonedDateTime ts = ZonedDateTime.now().withFixedOffsetZone();
   private TestMessage payload = TestMessage.builder().text(text).timestamp(ts).build();
 
 

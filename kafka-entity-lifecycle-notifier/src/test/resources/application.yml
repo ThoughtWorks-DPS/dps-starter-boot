@@ -83,8 +83,8 @@ spring:
       auto-offset-reset: earliest
       group-id: lifecycle
       key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
-#      value-deserializer: io.twdps.starter.boot.notifier.CustomJsonDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      value-deserializer: io.twdps.starter.boot.kafka.CustomJsonDeserializer
+      #value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       level:
         concurrency: 1
       properties:

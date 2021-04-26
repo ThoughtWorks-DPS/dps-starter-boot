@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.twdps.starter.boot.config.KafkaSerdeObjectMapperConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.support.JacksonUtils;
-import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 @Slf4j
-public class CustomJsonSerializer<T> extends JsonSerializer<T> {
+public class CustomJsonDeserializer<T> extends JsonDeserializer<T> {
 
-  public CustomJsonSerializer() {
+  public CustomJsonDeserializer() {
     super(customizedObjectMapper());
   }
 

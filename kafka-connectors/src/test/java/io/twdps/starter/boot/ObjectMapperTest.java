@@ -28,7 +28,7 @@ class ObjectMapperTest {
   private ObjectMapper mapper;
 
   private String text = "Sending with simple KafkaProducer";
-  private ZonedDateTime now = ZonedDateTime.now();
+  private ZonedDateTime now = ZonedDateTime.now().withFixedOffsetZone();
   private String nowStamp = now.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
   private TestMessage payload = TestMessage.builder().text(text).timestamp(now).build();
 

@@ -1,0 +1,18 @@
+/**
+ * Tasks for maintaining copyright dates
+ * - updateCopyrights  scans modified files for copyright string and updates to current year
+ */
+
+def gitPresent = new File('.git').exists()
+
+if (gitPresent) {
+    apply plugin: 'org.ajoberstar.grgit'
+}
+
+ext {
+    if (gitPresent) {
+        modifiedFiles = files(grgit.status().unstaged.modified)
+                .filter { f -> f.name.endsWith('.java') || f.name.endsWith('.kt') }
+    }
+}
+

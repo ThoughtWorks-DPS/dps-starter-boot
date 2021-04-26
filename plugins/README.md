@@ -49,6 +49,73 @@ tasks.register('printSourceSetInformation'){
 }
 ```
 
+## starter.java.build-utils-copyright-conventions.gradle
+
+```groovy
+/**
+ * Tasks for maintaining copyright dates
+ * - updateCopyrights  scans modified files for copyright string and updates to current year
+ */
+
+plugins {
+    id 'starter.java.build-utils-git-conventions'
+}
+
+tasks.register('updateCopyrights') {
+    onlyIf { gitPresent && !System.getenv('GITHUB_ACTION') }
+    if (gitPresent) {
+        inputs.files(modifiedFiles.filter { f -> f.path.contains(project.name) })
+    }
+    outputs.dir('build')
+
+    doLast {
+        def now = Calendar.instance.get(Calendar.YEAR) as String
+        inputs.files.each { file ->
+            def line
+            file.withReader { reader ->
+                while (line = reader.readLine()) {
+                    def matcher = line =~ /Copyright (20\d\d)-?(20\d\d)?/
+                    if (matcher.count) {
+                        def beginningYear = matcher[0][1]
+                        if (now != beginningYear && now != matcher[0][2]) {
+                            def years = "$beginningYear-$now"
+                            def sourceCode = file.text
+                            sourceCode = sourceCode.replaceFirst(/20\d\d(-20\d\d)?/, years)
+                            file.write(sourceCode)
+                            println "Copyright updated for file: $file"
+                        }
+                        break
+                    }
+                }
+            }
+        }
+    }
+}
+```
+
+## starter.java.build-utils-git-conventions.gradle
+
+```groovy
+/**
+ * Tasks for maintaining copyright dates
+ * - updateCopyrights  scans modified files for copyright string and updates to current year
+ */
+
+def gitPresent = new File('.git').exists()
+
+if (gitPresent) {
+    apply plugin: 'org.ajoberstar.grgit'
+}
+
+ext {
+    if (gitPresent) {
+        modifiedFiles = files(grgit.status().unstaged.modified)
+                .filter { f -> f.name.endsWith('.java') || f.name.endsWith('.kt') }
+    }
+}
+
+```
+
 ## starter.java.checkstyle-conventions.gradle
 
 ```groovy

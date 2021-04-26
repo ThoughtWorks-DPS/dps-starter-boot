@@ -16,17 +16,23 @@ Items they don't need to change can continue to be referred in their local confi
 The intention is that the `starter-boot` package can externalize these mixins as plugins so the team can continue to refer to those mixins that do not need to change.
 To that end, do not include or build upon other convention files, except at the `std` level.
 
-I think the only exception to this rule is `starter.java.style-conventions`, which includes `starter.java.checktyle-conventions`.
-This was only allowed because `style-conventions` is aggregating `checkstyle` and `spotless`.
-If 'spotless' gets more complicated, then these two should be split and propagated upwards instead of being aggregated under `style-conventions`.
-
-
+The only (current) exception to this rule is the open-tracing configuration, which pulls in a few standard plugins.
 
 ## starter.java.build-conventions.gradle
 
 Provides a set of common dependencies for typical build and test.
 Includes proper dependencies for lombok and mapstruct annotation processing.
 Also includes typical dependencies for unit testing with junit jupiter.
+
+## starter.java.build-copyright-conventions.gradle
+
+Provides a task `updateCopyrights` which will scan code for a copyright string and update the current year.
+This is only done for files which are modified (i.e. in a git changeset)
+
+## starter.java.build-git-conventions.gradle
+
+Provides configuration for the `org.ajoberstar.grgit` plugin.
+It will dynamically apply the plugin based on the presence of a `.git` folder in the root project directory.
 
 ## starter.java.checkstyle-conventions.gradle
 
@@ -39,6 +45,10 @@ Provides configurations for platform (BOM) dependencies, to ensure non-api/runti
 ## starter.java.container-conventions.gradle
 
 Provides docker container settings
+
+## starter.java.container-spring-conventions.gradle
+
+Provides customization of `docker` and `dockerRun` for spring-boot specific container construction.
 
 ## starter.java.coordinate-conventions.gradle
 
@@ -65,6 +75,10 @@ Library dependencies for integration testing gradle plugins
 
 General library dependencies for unit testing.
 
+## starter.java.doc-asciidoc-conventions.gradle
+
+Asciidoc configurations for generating documentation from Asciidoc (via Asciidoctor)
+
 ## starter.java.doc-springdoc-conventions.gradle
 
 SpringDoc configurations for generating OpenAPI specs
@@ -73,13 +87,17 @@ SpringDoc configurations for generating OpenAPI specs
 
 Swaggerhub configurations
 
-## starter.java.gatling-conventions.gradle
-
-Gatling configuration for running stress tests
-
 ## starter.java.open-tracing-common-conventions.gradle
 
-Typical dependencies to implement open tracing.
+Opentracing configuration, currently just a placeholder for including a few plugins.
+
+## starter.java.property-conventions.gradle
+
+Functions for providing default values if properties or variables aren't defined.
+
+## starter.java.publish-bootjar-conventions.gradle
+
+Configurations for publishing spring-boot fat jar files
 
 ## starter.java.publish-jar-conventions.gradle
 
@@ -88,6 +106,10 @@ Configurations for publishing jar files
 ## starter.java.publish-pom-conventions.gradle
 
 Configurations for publishing BOM packages (java-platform).
+
+## starter.java.publish-repo-conventions.gradle
+
+Configurations for where to publish packages (currently configurations for github packages)
 
 ## starter.java.release-conventions.gradle
 
@@ -109,9 +131,13 @@ Configurations for specifying only local maven `~/.m2` repository
 
 Configurations for specifying starter-bom Github Packages repository
 
+## starter.java.spotless-conventions.gradle
+
+Configuration for spotless code linting
+
 ## starter.java.style-conventions.gradle
 
-Configuration for checkstyle and spotless
+Include for checkstyle 
 
 ## starter.java.test-conventions.gradle
 
@@ -125,9 +151,17 @@ Configuration for gatling performance testing
 
 Configuration for integration testing
 
+## starter.java.test-jacoco-aggregation-conventions.gradle
+
+Configuration for aggregating jacoco test reports into one unified report. 
+
 ## starter.java.test-jacoco-conventions.gradle
 
 Configuration for jacoco
+
+## starter.java.test-unit-conventions.gradle
+
+Configuration for unit tests (currently empty placeholder)
 
 ## starter.java.versions-conventions.gradle
 
@@ -158,7 +192,11 @@ Top-level configuration of all the typical standard configurations for a java cl
 
 Top-level configuration of all the typical standard configurations for a normal Java jar.
 
-## starter.std.java.library-conventions.gradle
+## starter.std.java.plugin-conventions.gradle
 
 Top-level configuration of all the typical standard configurations for developing Gradle plugins.
+
+## starter.std.java.shell-conventions.gradle
+
+Top-level configuration for shell scripts.
 

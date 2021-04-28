@@ -58,13 +58,14 @@ tasks.register('printSourceSetInformation'){
  */
 
 plugins {
-    id 'starter.java.build-utils-git-conventions'
+    id 'starter.java.build-utils-fileset-conventions'
 }
 
 tasks.register('updateCopyrights') {
     onlyIf { gitPresent && !System.getenv('GITHUB_ACTION') }
     if (gitPresent) {
-        inputs.files(modifiedFiles.filter { f -> f.path.contains(project.name) })
+        def extensions = [".java", ".kt"]
+        inputs.files(filterProjectFiles(modifiedFiles, extensions))
     }
     outputs.dir('build')
 
@@ -93,7 +94,7 @@ tasks.register('updateCopyrights') {
 }
 ```
 
-## starter.java.build-utils-git-conventions.gradle
+## starter.java.build-utils-fileset-conventions.gradle
 
 ```groovy
 /**
@@ -101,16 +102,39 @@ tasks.register('updateCopyrights') {
  * - updateCopyrights  scans modified files for copyright string and updates to current year
  */
 
-def gitPresent = new File('.git').exists()
+ext {
+    /**
+     * Filter files based on an array of allowable extensions.
+     */
+    filterFiles = { FileCollection fileSet, extensions ->
+        return fileSet.filter { f -> extensions.any(e -> f.name.endsWith(e)) }
+    }
+    /**
+     * Filter files based on an array of allowable extensions that also are in the local sub-module.
+     */
+    filterProjectFiles = { FileCollection fileSet, extensions ->
+        return filterFiles(fileSet.filter { f -> f.path.contains(project.name) }, extensions)
+    }
 
-if (gitPresent) {
-    apply plugin: 'org.ajoberstar.grgit'
+}
+
+```
+
+## starter.java.build-utils-git-conventions.gradle
+
+```groovy
+/**
+ * Tasks for maintaining copyright dates
+ * - updateCopyrights  scans modified files for copyright string and updates to current year
+ */
+plugins {
+    id 'org.ajoberstar.grgit'
 }
 
 ext {
+    gitPresent = new File('.git').exists()
     if (gitPresent) {
         modifiedFiles = files(grgit.status().unstaged.modified)
-                .filter { f -> f.name.endsWith('.java') || f.name.endsWith('.kt') }
     }
 }
 
@@ -441,6 +465,50 @@ dependencies {
 
 }
 
+```
+
+## starter.java.doc-markdown-conventions.gradle
+
+```groovy
+/**
+ * Swaggerhub configurations
+ */
+
+plugins {
+    id 'base'
+    id 'starter.java.build-utils-fileset-conventions'
+}
+
+
+tasks.register('updateMarkdownToc') {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "(re)builds table of contents for Markdown documentation"
+    onlyIf { gitPresent && !System.getenv('GITHUB_ACTION') }
+    if (gitPresent) {
+        def extensions = [ '.md' ]
+        inputs.files(filterProjectFiles(modifiedFiles, extensions))
+    }
+    //outputs.dir('build')
+    outputs.upToDateWhen { false }
+
+    doLast {
+        StringBuilder files = new StringBuilder()
+
+        inputs.files.each { f -> files.append(" ").append(f) }
+        def cmdLine = "${project.rootDir}/scripts/generate-toc.sh --update ${files.toString()}  "
+        logger.debug("[{}]: {}", project.projectDir, cmdLine)
+        def proc = cmdLine.execute(null, project.projectDir)
+
+        proc.in.eachLine { line -> logger.quiet(line) }
+        proc.out.close()
+        proc.waitFor()
+        logger.quiet("Exit code: [{}]", proc.exitValue())
+    }
+}
+
+tasks.named('build').configure {
+    dependsOn tasks.named('updateMarkdownToc')
+}
 ```
 
 ## starter.java.doc-springdoc-conventions.gradle
@@ -811,12 +879,29 @@ test {
         //excludeEngines 'junit-vintage'
     }
     testLogging {
-        //showStandardStreams true
-        //events "passed", "skipped", "failed"
+        events "failed"
+        exceptionFormat "short"
+        showStandardStreams project.hasProperty("showStandardStreams") ?: false
         showExceptions true
-        showCauses true
+        showCauses false
+        showStackTraces false
+        debug {
+            events "started", "skipped", "failed"
+            showStandardStreams true
+            exceptionFormat "full"
+            showExceptions true
+            showCauses true
+            showStackTraces true
+        }
+        info {
+            events "skipped", "failed"
+            exceptionFormat "short"
+            showExceptions true
+            showCauses true
+            showStackTraces true
+        }
         minGranularity 2
-        minGranularity 4
+        maxGranularity 4
         displayGranularity 0
     }
 }

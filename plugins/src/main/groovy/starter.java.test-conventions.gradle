@@ -11,12 +11,29 @@ test {
         //excludeEngines 'junit-vintage'
     }
     testLogging {
-        //showStandardStreams true
-        //events "passed", "skipped", "failed"
+        events "failed"
+        exceptionFormat "short"
+        showStandardStreams project.hasProperty("showStandardStreams") ?: false
         showExceptions true
-        showCauses true
+        showCauses false
+        showStackTraces false
+        debug {
+            events "started", "skipped", "failed"
+            showStandardStreams true
+            exceptionFormat "full"
+            showExceptions true
+            showCauses true
+            showStackTraces true
+        }
+        info {
+            events "skipped", "failed"
+            exceptionFormat "short"
+            showExceptions true
+            showCauses true
+            showStackTraces true
+        }
         minGranularity 2
-        minGranularity 4
+        maxGranularity 4
         displayGranularity 0
     }
 }

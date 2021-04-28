@@ -4,13 +4,16 @@
  */
 
 plugins {
-    id 'starter.java.build-utils-git-conventions'
+    id 'starter.java.build-utils-fileset-conventions'
 }
 
 tasks.register('updateCopyrights') {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Update the copyright dates for any files which have been modified"
     onlyIf { gitPresent && !System.getenv('GITHUB_ACTION') }
     if (gitPresent) {
-        inputs.files(modifiedFiles.filter { f -> f.path.contains(project.name) })
+        def extensions = [".java", ".kt"]
+        inputs.files(filterProjectFiles(modifiedFiles, extensions))
     }
     outputs.dir('build')
 

@@ -57,9 +57,7 @@ spring:
       hibernate:
         generate_statistics: false
         implicit_naming_strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyHbmImpl
-        jdbc:
-          lob:
-            non_contextual_creation=true:
+        jdbc.lob.non_contextual_creation: true
   resources:
     add-mappings: false
   mvc:

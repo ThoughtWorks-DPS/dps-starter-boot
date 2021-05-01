@@ -241,6 +241,7 @@ dockerRun {
     image "${dockerRegistry}/${rootProject.name}"
     ports '8080:8080'
     env 'SECRETHUB_HELLO': getEnvOrDefault('SECRETHUB_HELLO', 'override-me')
+    dependsOn tasks.named("docker")
 }
 
 dockerCompose {
@@ -251,28 +252,34 @@ def dockerStart = tasks.register('dockerStart', GradleBuild) {
     tasks = ["dockerPrune", "clean", "dockerClean", "docker", "dockerRun"]
 }
 
-def dockerPrune = tasks.register('dockerPrune', Exec) {
+def dockerPrune = tasks.register('dockerPrune', GradleBuild) {
     mustRunAfter('dockerStop', 'dockerRemoveContainer')
-    executable "${project.rootDir}/scripts/docker-prune.sh"
-    args "--container", "--image"
+    tasks = ["dockerPruneContainer", "dockerPruneImage"]
 }
 
-def dockerVolumePrune = tasks.register('dockerVolumePrune', Exec) {
-    mustRunAfter('dockerStop', 'dockerRemoveContainer', 'dockerPrune')
-    executable "${project.rootDir}/scripts/docker-prune.sh"
-    args "--volume"
+def dockerPruneContainer = tasks.register('dockerPruneContainer', Exec) {
+    executable "/usr/bin/docker"
+    args "container", "prune", "-f"
 }
 
-def dcPrune = tasks.register('dcPrune', Exec) {
+def dockerPruneImage = tasks.register('dockerPruneImage', Exec) {
+    executable "/usr/bin/docker"
+    args "image", "prune", "-f"
+}
+
+def dockerPruneVolume = tasks.register('dockerPruneVolume', Exec) {
+    executable "/usr/bin/docker"
+    args "volume", "prune", "-f"
+}
+
+def dcPrune = tasks.register('dcPrune', GradleBuild) {
     mustRunAfter('dockerComposeDown')
-    executable "${project.rootDir}/scripts/docker-prune.sh"
-    args "--container", "--image"
+    tasks = ["dockerPruneContainer", "dockerPruneImage"]
 }
 
-def dcVolumePrune = tasks.register('dcVolumePrune', Exec) {
-    mustRunAfter('dockerComposeDown', 'dcPrune')
-    executable "${project.rootDir}/scripts/docker-prune.sh"
-    args "--volume"
+def dcPruneVolume = tasks.register('dcPruneVolume', GradleBuild) {
+    mustRunAfter('dockerComposeDown')
+    tasks = [ "dockerPruneVolume" ]
 }
 
 dockerRemoveContainer.configure {
@@ -280,10 +287,6 @@ dockerRemoveContainer.configure {
 }
 
 tasks.named("dockerComposeUp").configure {
-    dependsOn tasks.named("docker")
-}
-
-tasks.named("dockerRun").configure {
     dependsOn tasks.named("docker")
 }
 

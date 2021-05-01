@@ -62,6 +62,8 @@ plugins {
 }
 
 tasks.register('updateCopyrights') {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Update the copyright dates for any files which have been modified"
     onlyIf { gitPresent && !System.getenv('GITHUB_ACTION') }
     if (gitPresent) {
         def extensions = [".java", ".kt"]

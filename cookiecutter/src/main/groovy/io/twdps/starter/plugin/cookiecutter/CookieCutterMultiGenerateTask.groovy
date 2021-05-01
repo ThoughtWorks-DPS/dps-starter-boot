@@ -40,12 +40,15 @@ class CookieCutterMultiGenerateTask extends DefaultTask {
             context.get().each { p -> extra_context.append(' ').append(p) }
             extra_context.append(" outputPath=").append(fullOutputPath.get())//.append("'")
             extra_context.append(" projectDir=").append(project.projectDir)//.append("'")
+            def result = 0
             templates.get().each { p ->
                 def cmdLine = "${binary.get()} -f --verbose --debug-file /tmp/cc.out --no-input -o ${fullOutputPath.get()} ${p}"// ${extra_context.toString()}"
                 log.debug("l:mtask:exec [{}]: {}", project.projectDir, cmdLine)
                 def proc = cmdLine.execute(null, project.projectDir)
                 proc.waitForOrKill(taskTimeout.get())
+                result |= proc.exitValue()
             }
+            return result
         }
     }
 }

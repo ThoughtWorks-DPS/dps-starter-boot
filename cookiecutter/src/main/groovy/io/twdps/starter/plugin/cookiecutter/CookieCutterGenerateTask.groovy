@@ -49,6 +49,7 @@ class CookieCutterGenerateTask extends DefaultTask {
             proc.out.close()
             proc.waitForOrKill(taskTimeout.get())
             log.debug("Exit code: [{}]", proc.exitValue())
+            return proc.exitValue()
         }
     }
 }

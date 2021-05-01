@@ -79,7 +79,7 @@ class CookieCutterCompareTask extends DefaultTask {
             log.quiet("Exit code: [{}]", proc.exitValue())
             //log.quiet("Std err: [{}]", proc.err.text)
             //log.quiet("Std out: [{}]", proc.in.text)
-
+            return proc.exitValue()
         }
     }
 }

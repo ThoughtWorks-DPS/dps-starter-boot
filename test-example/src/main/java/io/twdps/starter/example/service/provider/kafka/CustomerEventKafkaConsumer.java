@@ -48,7 +48,8 @@ public class CustomerEventKafkaConsumer {
    * @param partition partition on which it appeared
    * @param offset    offset in history
    */
-  public void handleMessage(CustomerEventMessage payload, String topic, Integer partition, Long offset) {
+  public void handleMessage(CustomerEventMessage payload, String topic, Integer partition,
+      Long offset) {
     log.debug("Received a message with topic: [{}] "
         + "partition: [{}] offset: [{}] payload: [{}] ", topic, partition, offset, payload);
     setPayload(payload);

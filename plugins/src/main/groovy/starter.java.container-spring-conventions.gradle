@@ -3,8 +3,9 @@
  */
 
 plugins {
-    id 'starter.java.container-conventions'
 }
+// Requires
+// id 'starter.java.container-conventions'
 
 
 docker {

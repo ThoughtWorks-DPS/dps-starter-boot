@@ -4,7 +4,6 @@
 
 sourceCompatibility = '11'
 
-
 dependencies {
     testImplementation('org.spockframework:spock-core') {
         exclude module: 'groovy-all'

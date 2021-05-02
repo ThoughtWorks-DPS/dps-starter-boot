@@ -19,6 +19,14 @@ def isNonStable = { String version ->
     return !stableKeyword && !(version ==~ regex)
 }
 
+def isSnapshot = { String version ->
+    return ['SNAPSHOT'].any { it -> version.toUpperCase().contains(it) }
+}
+
+def isReleaseCandidate = { String version ->
+    return ['RC', 'rc'].any { it -> version.toUpperCase().contains(it) }
+}
+
 dependencyUpdates {
     checkForGradleUpdate = true
     checkConstraints = true

@@ -37,6 +37,7 @@ plugins {
     id('org.asciidoctor.jvm.gems') version "${asciidoctor_plugin_version}" apply false
     id('org.asciidoctor.jvm.convert') version "${asciidoctor_plugin_version}" apply false
     id("starter.metrics.build-time-tracker-conventions")
+    id("starter.java.property-conventions")
     id("starter.java.release-conventions")
     id("starter.java.versions-conventions")
     id("starter.java.test-jacoco-aggregation-conventions")

@@ -13,7 +13,6 @@ test {
         events = ["failed"]
         exceptionFormat = "short"
         showStandardStreams = project.hasProperty("showStandardStreams") ?: false
-        //showStandardStreams = false // true
         showExceptions = true
         showCauses = false
         showStackTraces = false

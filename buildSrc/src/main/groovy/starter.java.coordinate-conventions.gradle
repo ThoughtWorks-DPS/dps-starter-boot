@@ -4,7 +4,7 @@
  */
 
 /*
-//group = "${module_group}"
+group = "${module_group}"
 version getTagOrDefault("${module_version}")
 
 public static String getTagOrDefault(String defaultValue) {

@@ -7,8 +7,9 @@ plugins {
     id 'com.palantir.docker'
     id 'com.palantir.docker-run'
     id 'com.palantir.docker-compose'
-    id 'starter.java.property-conventions'
 }
+// Requires
+// id 'starter.java.property-conventions'
 
 ext {
     dockerRegistry = project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
@@ -29,48 +30,47 @@ dockerRun {
     image "${dockerRegistry}/${rootProject.name}"
     ports '8080:8080'
     env 'SECRETHUB_HELLO': getEnvOrDefault('SECRETHUB_HELLO', 'override-me')
-    dependsOn tasks.named("docker")
 }
 
 dockerCompose {
     dockerComposeFile 'src/docker/docker-compose.yml'
 }
 
-def dockerStart = tasks.register('dockerStart', GradleBuild) {
-    tasks = ["dockerPrune", "clean", "dockerClean", "docker", "dockerRun"]
+def dockerStart = tasks.register('dockerStart', DefaultTask) {
+    dependsOn "dockerPrune", "docker", "dockerRun"
 }
 
-def dockerPrune = tasks.register('dockerPrune', GradleBuild) {
-    mustRunAfter('dockerStop', 'dockerRemoveContainer')
-    tasks = ["dockerPruneContainer", "dockerPruneImage"]
+def dockerPrune = tasks.register('dockerPrune', DefaultTask) {
+    mustRunAfter 'dockerStop', 'dockerRemoveContainer'
+    dependsOn 'dockerPruneContainer', 'dockerPruneImage'
 }
 
 def dockerPruneContainer = tasks.register('dockerPruneContainer', Exec) {
-    executable "/usr/bin/docker"
+    executable "docker"
     args "container", "prune", "-f"
 }
 
 def dockerPruneImage = tasks.register('dockerPruneImage', Exec) {
-    executable "/usr/bin/docker"
+    executable "docker"
     args "image", "prune", "-f"
 }
 
 def dockerPruneVolume = tasks.register('dockerPruneVolume', Exec) {
-    executable "/usr/bin/docker"
+    executable "docker"
     args "volume", "prune", "-f"
 }
 
-def dcPrune = tasks.register('dcPrune', GradleBuild) {
+def dcPrune = tasks.register('dcPrune', DefaultTask) {
     mustRunAfter('dockerComposeDown')
-    tasks = ["dockerPruneContainer", "dockerPruneImage"]
+    dependsOn 'dockerPruneContainer', 'dockerPruneImage'
 }
 
-def dcPruneVolume = tasks.register('dcPruneVolume', GradleBuild) {
+def dcPruneVolume = tasks.register('dcPruneVolume', DefaultTask) {
     mustRunAfter('dockerComposeDown')
-    tasks = [ "dockerPruneVolume" ]
+    dependsOn 'dockerPruneVolume'
 }
 
-dockerRemoveContainer.configure {
+tasks.named("dockerRemoveContainer").configure {
     mustRunAfter('dockerStop')
 }
 
@@ -78,16 +78,6 @@ tasks.named("dockerComposeUp").configure {
     dependsOn tasks.named("docker")
 }
 
-/*
-task dockerSterilize(type: GradleBuild) {
-    tasks = ["dockerComposeDown",
-             "dockerStop",
-             "dockerRemoveContainer",
-             "clean",
-             "dockerClean",
-             "dockerPrune",
-             "dockerVolumePrune"]
+tasks.named("dockerRun").configure {
+    dependsOn tasks.named("docker")
 }
-
- */
-

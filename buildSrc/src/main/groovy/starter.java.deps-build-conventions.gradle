@@ -14,7 +14,9 @@ dependencies {
     //implementation "org.springdoc:springdoc-openapi-security"
     implementation "org.springdoc:springdoc-openapi-data-rest"
     implementation 'org.mapstruct:mapstruct'
+
     compileOnly 'org.projectlombok:lombok'
+
     annotationProcessor 'org.projectlombok:lombok'
 
 }

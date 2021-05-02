@@ -30,10 +30,12 @@ If 'spotless' gets more complicated, then these two should be split and propagat
 ```groovy
 /**
  * Tasks for debugging build problems
+ * - printSourceSetInformation  outputs source set content and classpath info for each type
  */
 
 tasks.register('printSourceSetInformation'){
-
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Show source set definitions"
     doLast{
         sourceSets.each { srcSet ->
             println "["+srcSet.name+"]"
@@ -58,8 +60,9 @@ tasks.register('printSourceSetInformation'){
  */
 
 plugins {
-    id 'starter.java.build-utils-fileset-conventions'
 }
+// Requires
+// id 'starter.java.build-utils-fileset-conventions'
 
 tasks.register('updateCopyrights') {
     group = JavaBasePlugin.DOCUMENTATION_GROUP
@@ -150,6 +153,7 @@ ext {
  */
 
 plugins {
+    // Apply the java Plugin to add support for Java.
     id 'checkstyle'
 }
 
@@ -219,8 +223,9 @@ plugins {
     id 'com.palantir.docker'
     id 'com.palantir.docker-run'
     id 'com.palantir.docker-compose'
-    id 'starter.java.property-conventions'
 }
+// Requires
+// id 'starter.java.property-conventions'
 
 ext {
     dockerRegistry = project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
@@ -241,48 +246,47 @@ dockerRun {
     image "${dockerRegistry}/${rootProject.name}"
     ports '8080:8080'
     env 'SECRETHUB_HELLO': getEnvOrDefault('SECRETHUB_HELLO', 'override-me')
-    dependsOn tasks.named("docker")
 }
 
 dockerCompose {
     dockerComposeFile 'src/docker/docker-compose.yml'
 }
 
-def dockerStart = tasks.register('dockerStart', GradleBuild) {
-    tasks = ["dockerPrune", "clean", "dockerClean", "docker", "dockerRun"]
+def dockerStart = tasks.register('dockerStart', DefaultTask) {
+    dependsOn "dockerPrune", "docker", "dockerRun"
 }
 
-def dockerPrune = tasks.register('dockerPrune', GradleBuild) {
-    mustRunAfter('dockerStop', 'dockerRemoveContainer')
-    tasks = ["dockerPruneContainer", "dockerPruneImage"]
+def dockerPrune = tasks.register('dockerPrune', DefaultTask) {
+    mustRunAfter 'dockerStop', 'dockerRemoveContainer'
+    dependsOn 'dockerPruneContainer', 'dockerPruneImage'
 }
 
 def dockerPruneContainer = tasks.register('dockerPruneContainer', Exec) {
-    executable "/usr/bin/docker"
+    executable "docker"
     args "container", "prune", "-f"
 }
 
 def dockerPruneImage = tasks.register('dockerPruneImage', Exec) {
-    executable "/usr/bin/docker"
+    executable "docker"
     args "image", "prune", "-f"
 }
 
 def dockerPruneVolume = tasks.register('dockerPruneVolume', Exec) {
-    executable "/usr/bin/docker"
+    executable "docker"
     args "volume", "prune", "-f"
 }
 
-def dcPrune = tasks.register('dcPrune', GradleBuild) {
+def dcPrune = tasks.register('dcPrune', DefaultTask) {
     mustRunAfter('dockerComposeDown')
-    tasks = ["dockerPruneContainer", "dockerPruneImage"]
+    dependsOn 'dockerPruneContainer', 'dockerPruneImage'
 }
 
-def dcPruneVolume = tasks.register('dcPruneVolume', GradleBuild) {
+def dcPruneVolume = tasks.register('dcPruneVolume', DefaultTask) {
     mustRunAfter('dockerComposeDown')
-    tasks = [ "dockerPruneVolume" ]
+    dependsOn 'dockerPruneVolume'
 }
 
-dockerRemoveContainer.configure {
+tasks.named("dockerRemoveContainer").configure {
     mustRunAfter('dockerStop')
 }
 
@@ -290,19 +294,9 @@ tasks.named("dockerComposeUp").configure {
     dependsOn tasks.named("docker")
 }
 
-/*
-task dockerSterilize(type: GradleBuild) {
-    tasks = ["dockerComposeDown",
-             "dockerStop",
-             "dockerRemoveContainer",
-             "clean",
-             "dockerClean",
-             "dockerPrune",
-             "dockerVolumePrune"]
+tasks.named("dockerRun").configure {
+    dependsOn tasks.named("docker")
 }
-
- */
-
 ```
 
 ## starter.java.container-spring-conventions.gradle
@@ -313,8 +307,9 @@ task dockerSterilize(type: GradleBuild) {
  */
 
 plugins {
-    id 'starter.java.container-conventions'
 }
+// Requires
+// id 'starter.java.container-conventions'
 
 
 docker {
@@ -391,7 +386,6 @@ dependencies {
 
 sourceCompatibility = '11'
 
-
 dependencies {
 
     integrationTestImplementation 'org.assertj:assertj-core'
@@ -413,7 +407,6 @@ dependencies {
  */
 
 sourceCompatibility = '11'
-
 
 dependencies {
     testImplementation('org.spockframework:spock-core') {
@@ -444,12 +437,12 @@ dependencies {
 ## starter.java.deps-test-conventions.gradle
 
 ```groovy
-plugins {
-    id 'java'
-}
 /**
  * Provides a set of common dependencies for typical unit testing.
  */
+plugins {
+    id 'java'
+}
 
 sourceCompatibility = '11'
 
@@ -481,8 +474,9 @@ dependencies {
 
 plugins {
     id 'base'
-    id 'starter.java.build-utils-fileset-conventions'
 }
+// Requires
+// id 'starter.java.build-utils-fileset-conventions'
 
 
 tasks.register('updateMarkdownToc') {
@@ -562,6 +556,7 @@ dependencies {
 ## starter.java.property-conventions.gradle
 
 ```groovy
+
 ext {
     /**
      * Utility function for choosing between a team-defined configuration and a default core-define value.
@@ -574,6 +569,16 @@ ext {
         return !value ? defaultValue : value;
     }
 
+    /**
+     * Utility function for choosing between a team-defined configuration and a default core-define value.
+     *
+     * @param value variable name (as String)
+     * @param defaultValue return value if null
+     * @return one or the other value
+     */
+    getPropertyOrDefault = { String propertyName,  defaultValue ->
+        return project.hasProperty[propertyName] ? project.properties[propertyName] : defaultValue;
+    }
 
     /**
      * Utility function for choosing between a team-defined configuration and a default core-define value.
@@ -684,9 +689,10 @@ publishing {
  */
 
 plugins {
-    id 'starter.java.property-conventions'
     id 'pl.allegro.tech.build.axion-release'
 }
+// Requires
+// id 'starter.java.property-conventions'
 
 scmVersion {
 
@@ -708,7 +714,7 @@ scmVersion {
     ignoreUncommittedChanges = false // should uncommitted changes force version bump
 
     // doc: Version / Tag with highest version
-    useHighestVersion = false // Defaults as false, setting to true will find the highest visible version in the commit tree
+    useHighestVersion = true // Defaults as false, setting to true will find the highest visible version in the commit tree
 
     // doc: Version / Sanitization
     sanitizeVersion = true // should created version be sanitized, true by default
@@ -717,12 +723,12 @@ scmVersion {
 //    foldersToExclude = ['gradle'] // ignore changes in these subdirs when calculating changes to parent
 
     tag { // doc: Version / Parsing
-//        prefix = 'tag-prefix' // prefix to be used, 'release' by default
+        prefix = 'release' // prefix to be used, 'release' by default
 //        branchPrefix = [ // set different prefix per branch
 //                         'legacy/.*' : 'legacy'
 //        ]
 
-//        versionSeparator = '-' // separator between prefix and version number, '-' by default
+        versionSeparator = '-' // separator between prefix and version number, '-' by default
 //        serialize = { tag, version -> ... } // creates tag name from raw version
 //        deserialize = { tag, position, tagName -> ... } // reads raw version from tag
 //        initialVersion = { tag, position -> ... } // returns initial version if none found, 0.1.0 by default
@@ -767,7 +773,6 @@ scmVersion {
 allprojects {
     project.version = scmVersion.version
 }
-
 ```
 
 ## starter.java.repo-altsource-conventions.gradle
@@ -863,7 +868,6 @@ spotless {
 
 plugins {
     id 'starter.java.checkstyle-conventions'
-//    id 'starter.java.spotless-conventions'
 }
 
 ```
@@ -874,40 +878,39 @@ plugins {
 /**
  * Configuration for test task
  */
-
 plugins {
     id 'java'
 }
 
 test {
     useJUnitPlatform {
-        //excludeEngines 'junit-vintage'
+//        excludeEngines 'junit-vintage'
     }
     testLogging {
-        events "failed"
-        exceptionFormat "short"
-        showStandardStreams project.hasProperty("showStandardStreams") ?: false
-        showExceptions true
-        showCauses false
-        showStackTraces false
+        events = ["failed"]
+        exceptionFormat = "short"
+        showStandardStreams = project.hasProperty("showStandardStreams") ?: false
+        showExceptions = true
+        showCauses = false
+        showStackTraces = false
         debug {
-            events "started", "skipped", "failed"
-            showStandardStreams true
-            exceptionFormat "full"
-            showExceptions true
-            showCauses true
-            showStackTraces true
+            events = ["started", "skipped", "failed"]
+            showStandardStreams = true
+            exceptionFormat = "full"
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
         }
         info {
-            events "skipped", "failed"
-            exceptionFormat "short"
-            showExceptions true
-            showCauses true
-            showStackTraces true
+            events = ["skipped", "failed"]
+            exceptionFormat = "short"
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
         }
-        minGranularity 2
-        maxGranularity 4
-        displayGranularity 0
+        minGranularity = 2
+        maxGranularity = 4
+        displayGranularity = 0
     }
 }
 
@@ -942,8 +945,9 @@ sourceSets {
 
 plugins {
     id 'java'
-    id 'starter.java.property-conventions'
 }
+// Requires
+// id 'starter.java.property-conventions'
 
 def integrationTestSets = sourceSets.create('integrationTest') {
     compileClasspath += sourceSets.main.output
@@ -1025,8 +1029,9 @@ clean.configure {
 plugins {
     id 'java'
     id 'jacoco'
-    id 'starter.java.property-conventions'
 }
+// Requires
+// id 'starter.java.property-conventions'
 
 jacoco {
     toolVersion = jacoco_version
@@ -1079,8 +1084,9 @@ jacocoTestCoverageVerification {
 
 ```groovy
 plugins {
-    id 'starter.java.test-conventions'
 }
+// Requires
+// id 'starter.java.test-conventions'
 
 ```
 
@@ -1286,13 +1292,14 @@ plugins {
     id 'application'
     id "org.springframework.boot" apply true
     id 'starter.java.deps-build-conventions'
+    id 'starter.java.property-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.container-spring-conventions'
     id 'starter.java.style-conventions'
     id 'starter.java.doc-springdoc-conventions'
     id 'starter.java.test-conventions'
-    id 'starter.java.test-integration-conventions'
     id 'starter.java.test-jacoco-conventions'
+    id 'starter.java.test-integration-conventions'
     id 'starter.java.test-gatling-conventions'
     id 'starter.java.deps-test-conventions'
     id 'starter.java.deps-integration-conventions'
@@ -1341,6 +1348,7 @@ plugins {
     id 'application'
     id 'starter.java.deps-build-conventions'
     id 'starter.java.deps-test-conventions'
+    id 'starter.java.property-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.style-conventions'
     id 'starter.java.test-conventions'
@@ -1365,6 +1373,7 @@ plugins {
     id 'java'
     id 'java-library'
     id "org.ajoberstar.grgit"
+    id 'starter.java.property-conventions'
     id 'starter.java.open-tracing-common-conventions'
     id 'starter.java.deps-build-conventions'
     id 'starter.java.style-conventions'
@@ -1394,6 +1403,7 @@ plugins {
     id 'java-library'
     id 'java-gradle-plugin'
     id "org.ajoberstar.grgit"
+    id 'starter.java.property-conventions'
     id 'starter.java.config-conventions'
     id 'starter.java.style-conventions'
     id 'starter.java.test-jacoco-conventions'

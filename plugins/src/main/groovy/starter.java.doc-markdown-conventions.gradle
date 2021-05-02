@@ -4,8 +4,9 @@
 
 plugins {
     id 'base'
-    id 'starter.java.build-utils-fileset-conventions'
 }
+// Requires
+// id 'starter.java.build-utils-fileset-conventions'
 
 
 tasks.register('updateMarkdownToc') {

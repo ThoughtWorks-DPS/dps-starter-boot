@@ -1,9 +1,11 @@
 /**
  * Tasks for debugging build problems
+ * - printSourceSetInformation  outputs source set content and classpath info for each type
  */
 
 tasks.register('printSourceSetInformation'){
-
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Show source set definitions"
     doLast{
         sourceSets.each { srcSet ->
             println "["+srcSet.name+"]"

@@ -1,9 +1,9 @@
-plugins {
-    id 'java'
-}
 /**
  * Provides a set of common dependencies for typical unit testing.
  */
+plugins {
+    id 'java'
+}
 
 sourceCompatibility = '11'
 

@@ -5,8 +5,9 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id 'starter.java.property-conventions'
 }
+// Requires
+// id 'starter.java.property-conventions'
 
 jacoco {
     toolVersion = jacoco_version
@@ -28,7 +29,7 @@ jacocoTestReport {
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['**/*MapperImpl.*'] )
+            fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*'] )
         }))
     }
 
@@ -39,10 +40,6 @@ jacocoTestCoverageVerification {
     violationRules {
         rule {
             enabled = jacoco_enforce_violations
-            //enabled = project.hasProperty('jacoco_enforce_violations') ? jacoco_enforce_violations : jacoco_enforce_violations_default
-            //enabled = ((!project.hasProperty('jacoco_ignore_violations')) && getPropertyOrDefault('jacoco_enforce_violations_default', false))
-            //enabled = ((!getPropertyOrDefault('jacoco_ignore_violations', false)) && getPropertyOrDefault('jacoco_enforce_violations_default', false))
-            //enabled = !getValueOrDefault(project.properties['jacoco_ignore_violations'], false) && getValueOrDefault(project.properties['jacoco_enforce_violations_default'], false)
             limit {
                 minimum = jacoco_minimum_coverage
             }

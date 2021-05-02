@@ -10,6 +10,7 @@ plugins {
     id 'application'
     id 'starter.java.deps-build-conventions'
     id 'starter.java.deps-test-conventions'
+    id 'starter.java.property-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.style-conventions'
     id 'starter.java.test-conventions'

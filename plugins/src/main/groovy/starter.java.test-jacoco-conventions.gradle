@@ -5,8 +5,9 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id 'starter.java.property-conventions'
 }
+// Requires
+// id 'starter.java.property-conventions'
 
 jacoco {
     toolVersion = jacoco_version

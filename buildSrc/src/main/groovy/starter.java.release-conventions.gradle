@@ -1,12 +1,12 @@
 /**
  * Configurations for axion-release-plugin.
  */
+
 plugins {
-    // Apply the java Plugin to add support for Java.
-//    id 'java'
-    id 'starter.java.property-conventions'
     id 'pl.allegro.tech.build.axion-release'
 }
+// Requires
+// id 'starter.java.property-conventions'
 
 scmVersion {
 

@@ -4,7 +4,6 @@
 
 sourceCompatibility = '11'
 
-
 dependencies {
 
     integrationTestImplementation 'org.assertj:assertj-core'

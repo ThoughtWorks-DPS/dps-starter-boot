@@ -37,11 +37,22 @@ repositories {
     }
 }
 
-// TODO: Write task to copy code into README
 def generateReadme = tasks.register('generateReadme', Exec) {
     executable('sh')
     args('-c', 'cp intro.md README.md; for i in `ls src/main/groovy`; do cat src/main/resources/gradle/header; echo $i; cat src/main/resources/gradle/toptick; cat src/main/groovy/$i; cat src/main/resources/gradle/bottomtick; done >> README.md')
     workingDir = project.projectDir
 }
 
-build.configure { dependsOn generateReadme }
+def compareWithBuildSrc = tasks.register('compareWithBuildSrc', Exec) {
+    executable('diff')
+    args('-r', "${project.projectDir}/src/main/groovy", "${project.projectDir}/../buildSrc/src/main/groovy")
+    ignoreExitValue true
+}
+
+tasks.named("build").configure {
+    dependsOn generateReadme
+}
+
+tasks.named("check").configure {
+    dependsOn compareWithBuildSrc
+}

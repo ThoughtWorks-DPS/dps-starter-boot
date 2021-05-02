@@ -2,7 +2,6 @@
  * Definition of publishing repository for any packages
  */
 
-
 plugins {
     id 'maven-publish'
 }

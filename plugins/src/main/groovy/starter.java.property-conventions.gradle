@@ -1,3 +1,4 @@
+
 ext {
     /**
      * Utility function for choosing between a team-defined configuration and a default core-define value.
@@ -10,6 +11,16 @@ ext {
         return !value ? defaultValue : value;
     }
 
+    /**
+     * Utility function for choosing between a team-defined configuration and a default core-define value.
+     *
+     * @param value variable name (as String)
+     * @param defaultValue return value if null
+     * @return one or the other value
+     */
+    getPropertyOrDefault = { String propertyName,  defaultValue ->
+        return project.hasProperty[propertyName] ? project.properties[propertyName] : defaultValue;
+    }
 
     /**
      * Utility function for choosing between a team-defined configuration and a default core-define value.

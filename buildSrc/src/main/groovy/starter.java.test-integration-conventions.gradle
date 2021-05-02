@@ -4,8 +4,9 @@
 
 plugins {
     id 'java'
-    id 'starter.java.property-conventions'
 }
+// Requires
+// id 'starter.java.property-conventions'
 
 def integrationTestSets = sourceSets.create('integrationTest') {
     compileClasspath += sourceSets.main.output

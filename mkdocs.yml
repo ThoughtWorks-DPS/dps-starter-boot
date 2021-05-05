@@ -1,0 +1,28 @@
+site_name: Starter-Boot
+site_description: Spring-Boot Starter
+
+nav:
+  - 'Quick Start': quickstart.md
+  - 'Tutorial': tutorial.md
+  - 'Reference':
+      - 'Checkstyle': reference/checkstyle.md
+      - 'Gradle Cookiecutter Plugins': reference/cookiecutter.md
+      - 'Entity Lifecycle Notification (ELN)': reference/entity-lifecycle-notifier.md
+      - 'Error handling': reference/error-handling.md
+      - 'Exceptions': reference/exceptions.md
+      - 'Istio Configuration': reference/istio-security-config.md
+      - 'Kafka Connectors': reference/kafka-connectors.md
+      - 'Kafka ELN': reference/kafka-entity-lifecycle-notifier.md
+      - 'OpenAPI': reference/open-api.md
+      - 'Open Policy Agent': reference/open-policy-agent-config.md
+      - 'Gradle Plugins': ../plugins/README.md
+      - 'Support Scripts': reference/scripts.md
+      - 'SpringDoc': reference/springdoc.md
+      - 'Starter BOM': reference/starter-bom.md
+      - 'Open Tracing': reference/tracing.md
+      - 'Documentation': reference/mdocs.md
+  - 'Architecture Decisions':
+      - '0001 - Record Decisions': architecture-decisions/0001-record-architecture-decisions.md
+
+#plugins:
+#  - techdocs-core

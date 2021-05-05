@@ -10,10 +10,10 @@ plugins {
     id 'application'
     id "org.springframework.boot" apply true
     id 'starter.java.deps-build-conventions'
-    id 'starter.java.property-conventions'
+    id 'starter.java.build-utils-property-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.container-spring-conventions'
-    id 'starter.java.style-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
     id 'starter.java.doc-springdoc-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-jacoco-conventions'

@@ -12,14 +12,16 @@ class CookieCutterPlugin implements Plugin<Project> {
         def extension = project.extensions.create('cookiecutter', CookieCutterPluginExtension)
         def verifyExtension = project.extensions.create('cookiecutterVerify', CookieCutterCompareTaskExtension)
         def buildExtension = project.extensions.create('cookiecutterBuild', CookieCutterLaunchBuildTaskExtension)
-        project.task('clean', type: Exec) {
+        project.getTasks().register('clean', Exec)
+                .configure {
             group = 'cookiecutter'
-            description = "Clean up oookiecutter template output directory"
+            description = "Clean up cookiecutter template output directory"
             executable('rm')
             args('-rf', "${project.buildDir}/${extension.outputPath.get()}")
         }
 
-        project.task('generateTemplates', type: CookieCutterMultiGenerateTask) {
+        project.getTasks().register('generateTemplates', CookieCutterMultiGenerateTask)
+                .configure {
             group = 'cookiecutter'
             description = "Generate multiple templates to the same output directory"
             doFirst {
@@ -42,7 +44,8 @@ class CookieCutterPlugin implements Plugin<Project> {
             }
         }
 
-        project.task('generateTemplate', type: CookieCutterGenerateTask) {
+        project.getTasks().register('generateTemplate', CookieCutterGenerateTask)
+                .configure {
             group = 'cookiecutter'
             description = "Generate a single template to an output directory"
             template = extension.template
@@ -53,7 +56,8 @@ class CookieCutterPlugin implements Plugin<Project> {
             outputs.upToDateWhen { false }
         }
 
-        project.task('compareTemplate', type: CookieCutterCompareTask) {
+        project.getTasks().register('compareTemplate', CookieCutterCompareTask)
+                .configure {
             group = 'cookiecutter'
             description = "Compare a generated template with the original (non-template) source"
             outputPath = verifyExtension.outputPath
@@ -64,7 +68,8 @@ class CookieCutterPlugin implements Plugin<Project> {
             mustRunAfter('generateTemplate', 'generateTemplates')
         }
 
-        project.task('buildTemplate', type: Exec) {
+        project.getTasks().register('buildTemplate', Exec)
+                .configure {
             group = 'cookiecutter'
             description = "Build the generated template"
             executable(buildExtension.buildBinary.get()) // set this upfront, update in closure
@@ -78,7 +83,8 @@ class CookieCutterPlugin implements Plugin<Project> {
         }
 
         /*
-        project.task('testBuildTemplate', type: CookieCutterLaunchBuildTask) {
+        project.getTasks().register('testBuildTemplate', CookieCutterLaunchBuildTask)
+                .configure {
             group = 'cookiecutter'
             description = "Build the generated template"
             executable(buildExtension.buildBinary.get()) // set this upfront, update in closure
@@ -89,12 +95,14 @@ class CookieCutterPlugin implements Plugin<Project> {
         }
          */
 
-        project.task('testTemplate') {
+        project.getTasks().register('testTemplate')
+                .configure {
             group = 'cookiecutter'
             description = "Test one template"
             dependsOn('generateTemplate', 'buildTemplate')
         }
-        project.task('testTemplates') {
+        project.getTasks().register('testTemplates')
+                .configure {
             group = 'cookiecutter'
             description = "Test collection of templates"
             dependsOn('generateTemplates', 'buildTemplate')

@@ -34,9 +34,7 @@ function create_lib {
   mkdir -p "${pkg}"/src/{main,test}/resources
   cat << EOF > "${pkg}"/build.gradle
 plugins {
-    id 'starter.std.java.library-conventions'
-    id 'starter.java.config-conventions'
-    id 'starter.java.build-utils-conventions'
+    id 'starter.std.java.library-spring-conventions'
 }
 
 dependencies {

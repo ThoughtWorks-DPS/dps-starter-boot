@@ -6,7 +6,7 @@ plugins {
     id 'pl.allegro.tech.build.axion-release'
 }
 // Requires
-// id 'starter.java.property-conventions'
+// id 'starter.java.build-utils-property-conventions'
 
 scmVersion {
 

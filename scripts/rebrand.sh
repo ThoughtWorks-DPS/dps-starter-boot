@@ -16,7 +16,12 @@ dst=
 clear=n
 
 function usage {
-  echo "$0 [--path <path>] [--dst <dest path> ] [--repo <reponame>] [--gh-org <github Org name>] [--tl <toplevel>] [--org <organization>] [--orig-repo <reponame>] [--orig-gh-org <github Org name>] [--orig-tl <original toplevel>] [--orig-org <original org>] [--nuke-git] [--clear] [--test]"
+  echo "$0 [--path <path>] [--dst <dest path> ] \\"
+  echo "    [--repo <reponame>] [--gh-org <github Org name>] \\"
+  echo "    [--tl <toplevel>] [--org <organization>] \\"
+  echo "    [--orig-repo <reponame>] [--orig-gh-org <github Org name>] \\"
+  echo "    [--orig-tl <original toplevel>] [--orig-org <original org>] \\"
+  echo "    [--nuke-git] [--clear] [--test]"
   echo "  --path        path to process ($path)"
   echo "  --dst         copy to destination (no in-place mods) ($dst)"
   echo "  --repo        repository name ($repoName)"

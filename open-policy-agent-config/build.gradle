@@ -1,7 +1,5 @@
 plugins {
-    id 'starter.std.java.library-conventions'
-    id 'starter.java.config-conventions'
-    id 'starter.java.build-utils-conventions'
+    id 'starter.std.java.library-spring-conventions'
 }
 
 dependencies {
@@ -11,6 +9,7 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation 'io.opentracing.contrib:opentracing-spring-web-starter'
+    api 'com.bisnode.opa:opa-filter-spring-boot-starter'
     testImplementation "org.springframework.boot:spring-boot-starter-validation"
     testImplementation project(':test-example')
     testImplementation "org.zalando:problem-spring-web"

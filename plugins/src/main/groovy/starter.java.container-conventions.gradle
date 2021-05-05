@@ -9,7 +9,7 @@ plugins {
     id 'com.palantir.docker-compose'
 }
 // Requires
-// id 'starter.java.property-conventions'
+// id 'starter.java.build-utils-property-conventions'
 
 ext {
     dockerRegistry = project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"

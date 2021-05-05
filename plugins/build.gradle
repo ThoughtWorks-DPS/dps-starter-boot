@@ -14,7 +14,7 @@ plugins {
     id 'java-gradle-plugin'
     id "org.ajoberstar.grgit"
     id 'starter.java.config-conventions'
-    id 'starter.java.style-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
     id 'starter.java.test-jacoco-conventions'
     id 'starter.java.deps-plugin-conventions'
     //id 'starter.java.deps-test-conventions'

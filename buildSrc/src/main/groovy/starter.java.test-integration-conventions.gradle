@@ -6,7 +6,7 @@ plugins {
     id 'java'
 }
 // Requires
-// id 'starter.java.property-conventions'
+// id 'starter.java.build-utils-property-conventions'
 
 def integrationTestSets = sourceSets.create('integrationTest') {
     compileClasspath += sourceSets.main.output

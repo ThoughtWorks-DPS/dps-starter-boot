@@ -1,0 +1,5 @@
+plugins {
+    id 'starter.java.build-utils-git-conventions'
+    id 'starter.java.build-utils-fileset-conventions'
+    id 'starter.java.doc-mkdocs-conventions'
+}

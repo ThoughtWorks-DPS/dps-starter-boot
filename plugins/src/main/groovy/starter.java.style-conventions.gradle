@@ -1,8 +1,0 @@
-/**
- * Configuration for checkstyle code analysis
- */
-
-plugins {
-    id 'starter.java.checkstyle-conventions'
-}
-

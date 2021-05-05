@@ -24,7 +24,7 @@ public class SpringDocConfig {
    */
   @Bean
   public GroupedOpenApi adminApi() {
-    return GroupedOpenApi.builder().group("openapi-admin").pathsToMatch("/admin/**").build();
+    return GroupedOpenApi.builder().group("openapi-admin").pathsToMatch("/admin/v1/**").build();
   }
 
   /**
@@ -34,6 +34,6 @@ public class SpringDocConfig {
    */
   @Bean
   public GroupedOpenApi internalApi() {
-    return GroupedOpenApi.builder().group("openapi-internal").pathsToMatch("/internal/**").build();
+    return GroupedOpenApi.builder().group("openapi-internal").pathsToMatch("/internal/v1/**").build();
   }
 }

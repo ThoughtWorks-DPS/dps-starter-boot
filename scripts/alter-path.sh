@@ -8,11 +8,11 @@ org='thoughtworks'
 
 function usage {
   echo "$0 [--path <path>] [--tl <toplevel>] [--org <organization>] [--orig-tl <original toplevel>] [--orig-org <original org>]"
-  echo "  --path        path to process ($path)"
-  echo "  --tl          top level package name ($tl)}"
-  echo "  --org         org level package name ($org)"
-  echo "  --orig-tl     top level package name ($origTl)}"
-  echo "  --orig-org    org level package name ($origOrg)"
+  echo "  --path        path to process (${path})"
+  echo "  --tl          top level package name (${tl})"
+  echo "  --org         org level package name (${org})"
+  echo "  --orig-tl     top level package name (${origTl})"
+  echo "  --orig-org    org level package name (${origOrg})"
   echo "  --help        display this help"
 }
 

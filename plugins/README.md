@@ -145,44 +145,44 @@ ext {
 
 ```
 
-## starter.java.checkstyle-conventions.gradle
+## starter.java.build-utils-property-conventions.gradle
 
 ```groovy
-/**
- * Setting for running checkstyle, pulls configuration from the checkstyle jar.
- */
 
-plugins {
-    // Apply the java Plugin to add support for Java.
-    id 'checkstyle'
-}
+ext {
+    /**
+     * Utility function for choosing between a team-defined configuration and a default core-define value.
+     *
+     * @param value variable (or null)
+     * @param defaultValue return value if null
+     * @return one or the other value
+     */
+    getValueOrDefault = { String value, String defaultValue ->
+        return !value ? defaultValue : value;
+    }
 
-configurations {
-    checkstyleRules
-}
+    /**
+     * Utility function for choosing between a team-defined configuration and a default core-define value.
+     *
+     * @param value variable name (as String)
+     * @param defaultValue return value if null
+     * @return one or the other value
+     */
+    getPropertyOrDefault = { String propertyName,  defaultValue ->
+        return project.hasProperty[propertyName] ? project.properties[propertyName] : defaultValue;
+    }
 
-dependencies {
-    checkstyleRules platform('io.twdps.starter:checkstyle-bom')
-    checkstyleRules 'io.twdps.starter:checkstyle'
-}
-
-checkstyle {
-    toolVersion "${checkstyle_version}"
-//    configFile = rootProject.file('settings/checkstyle/checkstyle.xml')
-    config project.resources.text.fromArchiveEntry(configurations.checkstyleRules, 'settings/checkstyle/checkstyle.xml')
-    configProperties = [
-            'checkstyle.cache.file': "${buildDir}/checkstyle.cache",
-    ]
-    ignoreFailures = true
-    showViolations = true
-
-}
-
-checkstyleMain {
-    source = "src/main/java"
-}
-checkstyleTest {
-    source = "src/test/java"
+    /**
+     * Utility function for choosing between a team-defined configuration and a default core-define value.
+     *
+     * @param tagName environment variable name (or null)
+     * @param defaultValue return value if environment value is null or doesn't exist
+     * @return environment value or default
+     */
+    getEnvOrDefault = { String tagName, String defaultValue ->
+        String ref = System.getenv(tagName)
+        return !ref ? defaultValue : ref;
+    }
 }
 
 ```
@@ -225,7 +225,7 @@ plugins {
     id 'com.palantir.docker-compose'
 }
 // Requires
-// id 'starter.java.property-conventions'
+// id 'starter.java.build-utils-property-conventions'
 
 ext {
     dockerRegistry = project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
@@ -324,30 +324,6 @@ dockerRun {
 
 ```
 
-## starter.java.coordinate-conventions.gradle
-
-```groovy
-/**
- * Provides shortcuts for overriding group and version.
- * NOTE: Most likely obsolete, in favor of specifying group directly in the gradle.properties file, and using axion to supply version based on git tags.
- */
-
-/*
-group = "${module_group}"
-version getTagOrDefault("${module_version}")
-
-public static String getTagOrDefault(String defaultValue) {
-    String ref = System.getenv('GITHUB_REF')
-
-    if (ref && ref.startsWith('refs/tags/')) {
-        return ref.substring('refs/tags/'.length())
-    }
-
-    return defaultValue
-}
-*/
-```
-
 ## starter.java.deps-build-conventions.gradle
 
 ```groovy
@@ -397,6 +373,22 @@ dependencies {
     integrationTestRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 }
 
+```
+
+## starter.java.deps-open-tracing-common-conventions.gradle
+
+```groovy
+/**
+ * Typical dependencies to implement open tracing.
+ */
+
+dependencies {
+    // Tracing support ==========================================================
+    api 'io.opentracing.brave:brave-opentracing'
+    api 'io.opentracing:opentracing-api'
+    api 'io.zipkin.reporter2:zipkin-reporter'
+    api 'io.zipkin.reporter2:zipkin-sender-okhttp3'
+}
 ```
 
 ## starter.java.deps-plugin-conventions.gradle
@@ -510,6 +502,28 @@ tasks.named('build').configure {
 }
 ```
 
+## starter.java.doc-mkdocs-conventions.gradle
+
+```groovy
+/**
+ * Swaggerhub configurations
+ */
+
+tasks.register('deployDocToGithubPages', Exec) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "use mkdocs to generate static site and commit to gh-pages branch"
+    executable('mkdocs')
+    args('gh-deploy', "--clean")
+}
+
+tasks.register('serveDocs', Exec) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "use mkdocs to serve documents locally"
+    executable('mkdocs')
+    args('serve', "-f", "../mkdocs.yml")
+}
+```
+
 ## starter.java.doc-springdoc-conventions.gradle
 
 ```groovy
@@ -537,62 +551,98 @@ plugins {
 
 ```
 
-## starter.java.open-tracing-common-conventions.gradle
+## starter.java.lint-checkstyle-conventions.gradle
 
 ```groovy
 /**
- * Typical dependencies to implement open tracing.
+ * Setting for running checkstyle, pulls configuration from the checkstyle jar.
  */
 
+plugins {
+    // Apply the java Plugin to add support for Java.
+    id 'checkstyle'
+}
+
+configurations {
+    checkstyleRules
+}
+
 dependencies {
-    // Tracing support ==========================================================
-    api 'io.opentracing.brave:brave-opentracing'
-    api 'io.opentracing:opentracing-api'
-    api 'io.zipkin.reporter2:zipkin-reporter'
-    api 'io.zipkin.reporter2:zipkin-sender-okhttp3'
+    checkstyleRules platform('io.twdps.starter:checkstyle-bom')
+    checkstyleRules 'io.twdps.starter:checkstyle'
+}
+
+checkstyle {
+    toolVersion "${checkstyle_version}"
+//    configFile = rootProject.file('settings/checkstyle/checkstyle.xml')
+    config project.resources.text.fromArchiveEntry(configurations.checkstyleRules, 'settings/checkstyle/checkstyle.xml')
+    configProperties = [
+            'checkstyle.cache.file': "${buildDir}/checkstyle.cache",
+    ]
+    ignoreFailures = true
+    showViolations = true
+
+}
+
+checkstyleMain {
+    source = "src/main/java"
+}
+checkstyleTest {
+    source = "src/test/java"
+}
+
+```
+
+## starter.java.lint-shellcheck-conventions.gradle
+
+```groovy
+/**
+ * Top-level configuration of all the typical standard configurations for a gradle plugin
+ */
+
+plugins {
+    id 'base'
+    id 'com.felipefzdz.gradle.shellcheck'
+}
+
+
+shellcheck {
+    sources = files(".")
+    ignoreFailures = true
+    showViolations = true
+    shellcheckVersion = "v0.7.1"
+    severity = "style" // "error"
+}
+
+tasks.named('shellcheck').configure {
+    reports {
+        xml.enabled = false
+        txt.enabled = false
+        html.enabled = true
+    }
+}
+
+check.configure {
+    dependsOn tasks.named('shellcheck')
 }
 ```
 
-## starter.java.property-conventions.gradle
+## starter.java.lint-spotless-conventions.gradle
 
 ```groovy
+/**
+ * Configuration for spotless code formatting
+ */
 
-ext {
-    /**
-     * Utility function for choosing between a team-defined configuration and a default core-define value.
-     *
-     * @param value variable (or null)
-     * @param defaultValue return value if null
-     * @return one or the other value
-     */
-    getValueOrDefault = { String value, String defaultValue ->
-        return !value ? defaultValue : value;
-    }
-
-    /**
-     * Utility function for choosing between a team-defined configuration and a default core-define value.
-     *
-     * @param value variable name (as String)
-     * @param defaultValue return value if null
-     * @return one or the other value
-     */
-    getPropertyOrDefault = { String propertyName,  defaultValue ->
-        return project.hasProperty[propertyName] ? project.properties[propertyName] : defaultValue;
-    }
-
-    /**
-     * Utility function for choosing between a team-defined configuration and a default core-define value.
-     *
-     * @param tagName environment variable name (or null)
-     * @param defaultValue return value if environment value is null or doesn't exist
-     * @return environment value or default
-     */
-    getEnvOrDefault = { String tagName, String defaultValue ->
-        String ref = System.getenv(tagName)
-        return !ref ? defaultValue : ref;
-    }
+plugins {
+    id "com.diffplug.spotless"
 }
 
+spotless {
+    java {
+        googleJavaFormat()
+    }
+}
 ```
 
 ## starter.java.publish-bootjar-conventions.gradle
@@ -692,7 +742,7 @@ plugins {
     id 'pl.allegro.tech.build.axion-release'
 }
 // Requires
-// id 'starter.java.property-conventions'
+// id 'starter.java.build-utils-property-conventions'
 
 scmVersion {
 
@@ -841,37 +891,6 @@ repositories {
 }
 ```
 
-## starter.java.spotless-conventions.gradle
-
-```groovy
-/**
- * Configuration for spotless code formatting
- */
-
-plugins {
-    id "com.diffplug.spotless"
-}
-
-spotless {
-    java {
-        googleJavaFormat()
-    }
-}
-```
-
-## starter.java.style-conventions.gradle
-
-```groovy
-/**
- * Configuration for checkstyle code analysis
- */
-
-plugins {
-    id 'starter.java.checkstyle-conventions'
-}
-
-```
-
 ## starter.java.test-conventions.gradle
 
 ```groovy
@@ -947,7 +966,7 @@ plugins {
     id 'java'
 }
 // Requires
-// id 'starter.java.property-conventions'
+// id 'starter.java.build-utils-property-conventions'
 
 def integrationTestSets = sourceSets.create('integrationTest') {
     compileClasspath += sourceSets.main.output
@@ -1031,7 +1050,7 @@ plugins {
     id 'jacoco'
 }
 // Requires
-// id 'starter.java.property-conventions'
+// id 'starter.java.build-utils-property-conventions'
 
 jacoco {
     toolVersion = jacoco_version
@@ -1292,10 +1311,10 @@ plugins {
     id 'application'
     id "org.springframework.boot" apply true
     id 'starter.java.deps-build-conventions'
-    id 'starter.java.property-conventions'
+    id 'starter.java.build-utils-property-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.container-spring-conventions'
-    id 'starter.java.style-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
     id 'starter.java.doc-springdoc-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-jacoco-conventions'
@@ -1348,9 +1367,9 @@ plugins {
     id 'application'
     id 'starter.java.deps-build-conventions'
     id 'starter.java.deps-test-conventions'
-    id 'starter.java.property-conventions'
+    id 'starter.java.build-utils-property-conventions'
     id 'starter.java.container-conventions'
-    id 'starter.java.style-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-jacoco-conventions'
     id 'starter.java.test-unit-conventions'
@@ -1373,10 +1392,10 @@ plugins {
     id 'java'
     id 'java-library'
     id "org.ajoberstar.grgit"
-    id 'starter.java.property-conventions'
-    id 'starter.java.open-tracing-common-conventions'
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.deps-open-tracing-common-conventions'
     id 'starter.java.deps-build-conventions'
-    id 'starter.java.style-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
 //    id 'starter.java.doc-swagger-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-unit-conventions'
@@ -1385,6 +1404,21 @@ plugins {
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-jar-conventions'
     id 'starter.java.versions-conventions'
+}
+
+```
+
+## starter.std.java.library-spring-conventions.gradle
+
+```groovy
+/**
+ * Top-level configuration of all the typical standard configurations for a normal Java jar.
+ */
+
+plugins {
+    id 'starter.std.java.library-conventions'
+    id 'starter.java.config-conventions'
+    id 'starter.java.build-utils-conventions'
 }
 
 ```
@@ -1403,9 +1437,9 @@ plugins {
     id 'java-library'
     id 'java-gradle-plugin'
     id "org.ajoberstar.grgit"
-    id 'starter.java.property-conventions'
+    id 'starter.java.build-utils-property-conventions'
     id 'starter.java.config-conventions'
-    id 'starter.java.style-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
     id 'starter.java.test-jacoco-conventions'
     id 'starter.java.test-unit-conventions'
     id 'starter.java.deps-plugin-conventions'
@@ -1424,28 +1458,7 @@ plugins {
  */
 
 plugins {
-    id 'base'
-    id 'com.felipefzdz.gradle.shellcheck'
+    id 'starter.java.lint-shellcheck-conventions'
 }
 
-
-shellcheck {
-    sources = files(".")
-    ignoreFailures = true
-    showViolations = true
-    shellcheckVersion = "v0.7.1"
-    severity = "style" // "error"
-}
-
-tasks.named('shellcheck').configure {
-    reports {
-        xml.enabled = false
-        txt.enabled = false
-        html.enabled = true
-    }
-}
-
-check.configure {
-    dependsOn tasks.named('shellcheck')
-}
 ```

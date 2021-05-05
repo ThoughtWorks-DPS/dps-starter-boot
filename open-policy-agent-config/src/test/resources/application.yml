@@ -76,3 +76,10 @@ opentracing:
 
 starter:
   istio-security-config: true
+
+opa:
+  filter:
+    enabled: false
+    document-path: authz
+    instance: http://opa:8181
+    endpoints-whitelist: /actuator/**,/swagger-ui/**,/v3/api-docs/**

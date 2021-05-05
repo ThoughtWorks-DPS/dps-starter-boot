@@ -7,10 +7,10 @@ plugins {
     id 'java'
     id 'java-library'
     id "org.ajoberstar.grgit"
-    id 'starter.java.property-conventions'
-    id 'starter.java.open-tracing-common-conventions'
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.deps-open-tracing-common-conventions'
     id 'starter.java.deps-build-conventions'
-    id 'starter.java.style-conventions'
+    id 'starter.java.lint-checkstyle-conventions'
 //    id 'starter.java.doc-swagger-conventions'
     id 'starter.java.test-conventions'
     id 'starter.java.test-unit-conventions'

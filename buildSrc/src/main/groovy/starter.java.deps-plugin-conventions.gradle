@@ -2,7 +2,7 @@
  * Provides a set of common dependencies for typical gradle plugin unit test .
  */
 
-sourceCompatibility = '11'
+// starter.java.build-javatarget-conventions
 
 dependencies {
     testImplementation('org.spockframework:spock-core') {

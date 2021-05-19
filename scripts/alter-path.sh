@@ -38,7 +38,7 @@ function process_dir {
   pwd=$(pwd)
   cd "${path}" || fail "unable to change directory to [${path}]"
 
-  find . -type d -depth 1 | while read -r i
+  find . -path ./gradle -prune -false -o -type d -depth 1 -print | while read -r i
   do
     local name
     name=$(basename "$i")

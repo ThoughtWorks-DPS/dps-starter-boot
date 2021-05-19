@@ -41,7 +41,7 @@ class CookieCutterGenerateTask extends DefaultTask {
             StringBuilder extra_context = new StringBuilder()
             context.get().each { p -> extra_context.append(p) }
             extra_context.append(" outputPath=").append(fullOutputPath.get())//.append("'")
-            extra_context.append(" projectDir=").append(project.projectDir)//.append("'")
+            extra_context.append(" projectDir=").append(project.rootDir)//.append("'")
             def cmdLine = "${binary.get()} -f --no-input --verbose --debug-file /tmp/cc.out -o ${fullOutputPath.get()} ${template.get()} ${extra_context.toString()}"
             log.debug("l:task:exec [{}]: {}", project.projectDir, cmdLine)
             def proc = cmdLine.execute(null, project.projectDir)

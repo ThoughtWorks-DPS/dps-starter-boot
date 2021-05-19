@@ -1,6 +1,6 @@
 info:
   app:
-    name: TWDPS Example API
+    name: Example API
     description: Starter Kit Example
 management:
   server:

@@ -8,9 +8,10 @@ plugins {
     id "org.ajoberstar.grgit"
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
-    id "org.springframework.boot" apply true
-    id 'starter.java.deps-build-conventions'
     id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
+    id 'starter.java.build-springboot-conventions'
+    id 'starter.java.deps-build-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.container-spring-conventions'
     id 'starter.java.lint-checkstyle-conventions'

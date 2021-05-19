@@ -3,6 +3,8 @@
  */
 
 plugins {
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
     id 'starter.std.java.library-conventions'
     id 'starter.java.config-conventions'
     id 'starter.java.build-utils-conventions'

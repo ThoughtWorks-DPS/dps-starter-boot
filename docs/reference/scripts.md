@@ -16,18 +16,18 @@ The same is true for `--orig-org` and `--org` respectively.
 scripts/alter-path.sh [--path <path>] [--tl <toplevel>] [--org <organization>] [--orig-tl <original toplevel>] [--orig-org <original org>]
   --path        path to process (.)
   --tl          top level package name (com)
-  --org         org level package name (thoughtworks)
+  --org         org level package name (bar)
   --orig-tl     top level package name (io)
-  --orig-org    org level package name (twdps)
+  --orig-org    org level package name (foo)
   --help        display this help
 ```
 
 ### Example Usage
 
-Rename the current `io.twdps` package name to `com.thoughtworks`
+Rename the current `io.foo` package name to `com.bar`
 
 ```bash
-% ./scripts/alter-path.sh --orig-tl io --tl com --orig-org twdps --org thoughtworks
+% ./scripts/alter-path.sh --orig-tl io --tl com --orig-org foo --org bar
 ```
 
 ## `apply-sed.sh`
@@ -98,12 +98,12 @@ scripts/rebrand.sh [--path <path>] [--dst <dest path> ] \
   --repo        repository name (starter-boot)
   --gh-org      github organization name [or username] (thoughtworks)
   --tl          top level package name (com)
-  --org         org level package name (thoughtworks)
+  --org         org level package name (foo)
   --group       group level package name (starter)
-  --orig-repo   original repository name (dps-starter-boot)
-  --orig-gh-org original github organization name [or username] (ThoughtWorks-DPS)
+  --orig-repo   original repository name (starter-boot)
+  --orig-gh-org original github organization name [or username] (thoughtworks-dps)
   --orig-tl     original top level package name (io)
-  --orig-org    original org level package name (twdps)
+  --orig-org    original org level package name (bar)
   --orig-group  original group level package name (starter)
   --nuke-git    remove .git repository folder (n)
   --clear       clear destination directory of current contents
@@ -113,17 +113,17 @@ scripts/rebrand.sh [--path <path>] [--dst <dest path> ] \
 
 ### Example Usage
 
-Rebrand this starter-boot to a generic ThoughtWorks project:
+Rebrand this starter-boot to a generic project:
 
 ```bash
 % scripts/rebrand.sh \
-  --dst ../tw-starter-boot \
-  --repo tw-starter-boot \
+  --dst ../starter-boot \
+  --repo starter-boot \
   --gh-org thoughtworks \
   --tl com \
   --org thoughtworks \
   --orig-repo dps-starter-boot \
-  --orig-gh-org ThoughtWorks-DPS \
+  --orig-gh-org thoughtworks-dps \
   --orig-tl io \
   --orig-org twdps \
   --nuke-git 

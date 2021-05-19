@@ -25,6 +25,42 @@ If 'spotless' gets more complicated, then these two should be split and propagat
 
 
 
+## starter.java.build-javatarget-conventions.gradle
+
+```groovy
+plugins {
+    id 'java'
+}
+
+sourceCompatibility = getPropertyOrDefault('java_version', '11')
+```
+
+## starter.java.build-springboot-conventions.gradle
+
+```groovy
+plugins {
+    id "org.springframework.boot" apply true
+}
+
+// starter.java.build-javatarget-conventions
+
+tasks.named('distZip'){
+    enabled = false
+}
+
+tasks.named('distTar'){
+    enabled = false
+}
+
+tasks.named('bootDistZip'){
+    enabled = false
+}
+
+tasks.named('bootDistTar'){
+    enabled = false
+}
+```
+
 ## starter.java.build-utils-conventions.gradle
 
 ```groovy
@@ -169,7 +205,7 @@ ext {
      * @return one or the other value
      */
     getPropertyOrDefault = { String propertyName,  defaultValue ->
-        return project.hasProperty[propertyName] ? project.properties[propertyName] : defaultValue;
+        return project.hasProperty(propertyName) ? project.properties[propertyName] : defaultValue;
     }
 
     /**
@@ -332,7 +368,7 @@ dockerRun {
  * Includes proper dependencies for lombok and mapstruct annotation processing.
  */
 
-sourceCompatibility = '11'
+// starter.java.build-javatarget-conventions
 
 dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
@@ -360,7 +396,7 @@ dependencies {
  * Provides a set of common dependencies for typical integration test.
  */
 
-sourceCompatibility = '11'
+// starter.java.build-javatarget-conventions
 
 dependencies {
 
@@ -398,7 +434,7 @@ dependencies {
  * Provides a set of common dependencies for typical gradle plugin unit test .
  */
 
-sourceCompatibility = '11'
+// starter.java.build-javatarget-conventions
 
 dependencies {
     testImplementation('org.spockframework:spock-core') {
@@ -415,7 +451,7 @@ dependencies {
  * Provides a set of common dependencies for typical gradle plugin integration test .
  */
 
-sourceCompatibility = '11'
+// starter.java.build-javatarget-conventions
 
 dependencies {
     integrationTestImplementation('org.spockframework:spock-core') {
@@ -436,7 +472,7 @@ plugins {
     id 'java'
 }
 
-sourceCompatibility = '11'
+// starter.java.build-javatarget-conventions
 
 dependencies {
     testImplementation 'org.mockito:mockito-core'
@@ -611,6 +647,8 @@ shellcheck {
     ignoreFailures = true
     showViolations = true
     shellcheckVersion = "v0.7.1"
+    useDocker = false
+    shellcheckBinary = "/usr/local/bin/shellcheck"
     severity = "style" // "error"
 }
 
@@ -1309,9 +1347,10 @@ plugins {
     id "org.ajoberstar.grgit"
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
-    id "org.springframework.boot" apply true
-    id 'starter.java.deps-build-conventions'
     id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
+    id 'starter.java.build-springboot-conventions'
+    id 'starter.java.deps-build-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.container-spring-conventions'
     id 'starter.java.lint-checkstyle-conventions'
@@ -1365,9 +1404,10 @@ plugins {
     id "org.ajoberstar.grgit"
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
     id 'starter.java.deps-build-conventions'
     id 'starter.java.deps-test-conventions'
-    id 'starter.java.build-utils-property-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.lint-checkstyle-conventions'
     id 'starter.java.test-conventions'
@@ -1393,6 +1433,7 @@ plugins {
     id 'java-library'
     id "org.ajoberstar.grgit"
     id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
     id 'starter.java.deps-open-tracing-common-conventions'
     id 'starter.java.deps-build-conventions'
     id 'starter.java.lint-checkstyle-conventions'
@@ -1416,6 +1457,8 @@ plugins {
  */
 
 plugins {
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
     id 'starter.std.java.library-conventions'
     id 'starter.java.config-conventions'
     id 'starter.java.build-utils-conventions'

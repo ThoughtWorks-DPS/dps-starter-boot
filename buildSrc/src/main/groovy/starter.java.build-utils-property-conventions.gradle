@@ -19,7 +19,7 @@ ext {
      * @return one or the other value
      */
     getPropertyOrDefault = { String propertyName,  defaultValue ->
-        return project.hasProperty[propertyName] ? project.properties[propertyName] : defaultValue;
+        return project.hasProperty(propertyName) ? project.properties[propertyName] : defaultValue;
     }
 
     /**

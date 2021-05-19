@@ -3,7 +3,7 @@
  * Includes proper dependencies for lombok and mapstruct annotation processing.
  */
 
-sourceCompatibility = '11'
+// starter.java.build-javatarget-conventions
 
 dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'

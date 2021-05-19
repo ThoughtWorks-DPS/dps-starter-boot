@@ -34,6 +34,7 @@ public class SpringDocConfig {
    */
   @Bean
   public GroupedOpenApi internalApi() {
-    return GroupedOpenApi.builder().group("openapi-internal").pathsToMatch("/internal/v1/**").build();
+    return GroupedOpenApi.builder().group("openapi-internal").pathsToMatch("/internal/v1/**")
+        .build();
   }
 }

@@ -12,7 +12,9 @@ shellcheck {
     sources = files(".")
     ignoreFailures = true
     showViolations = true
-    shellcheckVersion = "v0.7.1"
+    shellcheckVersion = "${shellcheck_version}"
+    useDocker = false
+    shellcheckBinary = "/usr/local/bin/shellcheck"
     severity = "style" // "error"
 }
 

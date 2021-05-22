@@ -16,18 +16,18 @@ The same is true for `--orig-org` and `--org` respectively.
 scripts/alter-path.sh [--path <path>] [--tl <toplevel>] [--org <organization>] [--orig-tl <original toplevel>] [--orig-org <original org>]
   --path        path to process (.)
   --tl          top level package name (com)
-  --org         org level package name (bar)
+  --org         org level package name (example)
   --orig-tl     top level package name (io)
-  --orig-org    org level package name (foo)
+  --orig-org    org level package name (twdps)
   --help        display this help
 ```
 
 ### Example Usage
 
-Rename the current `io.foo` package name to `com.bar`
+Rename the current `io.twdps` package name to `com.example`
 
 ```bash
-% ./scripts/alter-path.sh --orig-tl io --tl com --orig-org foo --org bar
+% ./scripts/alter-path.sh --orig-tl io --tl com --orig-org twdps --org example
 ```
 
 ## `apply-sed.sh`
@@ -64,7 +64,7 @@ The script will also create an empty `build.gradle` file as a starting point.
 ```
 scripts/create-lib.sh [--path <path>] [--tl <toplevel>] [--org <organization>] [--pkg <package name>]
   --path        path to create new package (.)
-  --tl          top level package name (io)}
+  --tl          top level package name (io)
   --org         org level package name (twdps)
   --pkg         package name ()}
   --help        display this help
@@ -96,15 +96,17 @@ scripts/rebrand.sh [--path <path>] [--dst <dest path> ] \
   --path        path to process (.)
   --dst         copy to destination (no in-place mods) ()
   --repo        repository name (starter-boot)
-  --gh-org      github organization name [or username] (thoughtworks)
+  --gh-org      github organization name [or username] (example)
   --tl          top level package name (com)
-  --org         org level package name (foo)
+  --org         org level package name (example)
   --group       group level package name (starter)
+  --prefix      prefix for repositories (dx)
   --orig-repo   original repository name (starter-boot)
   --orig-gh-org original github organization name [or username] (thoughtworks-dps)
   --orig-tl     original top level package name (io)
-  --orig-org    original org level package name (bar)
+  --orig-org    original org level package name (twdps)
   --orig-group  original group level package name (starter)
+  --orig-prefix original prefix for repositories (dps)
   --nuke-git    remove .git repository folder (n)
   --clear       clear destination directory of current contents
   --test        copy to temporary directory to test
@@ -117,11 +119,11 @@ Rebrand this starter-boot to a generic project:
 
 ```bash
 % scripts/rebrand.sh \
-  --dst ../starter-boot \
-  --repo starter-boot \
-  --gh-org thoughtworks \
+  --dst ../dx-starter-boot \
+  --repo example-starter-boot \
+  --gh-org example \
   --tl com \
-  --org thoughtworks \
+  --org example \
   --orig-repo dps-starter-boot \
   --orig-gh-org thoughtworks-dps \
   --orig-tl io \

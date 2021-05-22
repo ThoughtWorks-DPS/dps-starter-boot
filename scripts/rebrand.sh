@@ -87,12 +87,12 @@ then
   path="${dst}"
 fi
 
-[ -e "${path}"/.git ] && [ "${nukeGit}" = "y" ] && rm -rf "${path}"/.git
+[ -e "${path}"/.git ] && [ "${nukeGit}" = "y" ] && rm -rf "${path:?}"/.git
 [ -e "${path}"/.git ] && [ "${nukeGit}" = "n" ] && echo "Local .git repository still exists, consider deleting..."
 
 for subdir in buildSrc/build buildSrc/.gradle build .idea
 do
-  [ -e "${path}"/"${subdir}" ] && rm -rf "${path}"/"${subdir}"
+  [ -e "${path}"/"${subdir}" ] && rm -rf "${path:?}"/"${subdir}"
 done
 
 githubOrgOrigLower=$(echo "${githubOrgOrig}" | tr '[:upper:]' '[:lower:]')
@@ -127,8 +127,10 @@ binDir=$(dirname "$0")
 "${binDir}"/apply-sed.sh --sed "${sedFile}" --tree "${path}"
 
 # Initialize git repository if it doesn't already exist
-[ -e "${path}"/.git ] || (cd "${path}" && git init && git add . && git commit -m "initial starting point")
+[ -e "${path}"/.git ] || (cd "${path}" && git init && git branch -M main && git add .)
 
 cd "${pwd}" || fail "unable to change directory to [${pwd}]"
 rm "${sedFile}"
 echo "new repository is in ${path}"
+echo "make sure you commit changes before building"
+echo "git add -u . && git commit -m \"initial starting point\" && git branch -M main"

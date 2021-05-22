@@ -3,6 +3,23 @@
 NOTE: This readme is generated from the plugin source files.
 Do not edit directly.
 
+## README.md Construction
+
+The README.md is constructed from the plugin source and uses snippet files to piece the content together.
+The snippet files are located in the `src/main/resource/gradle` folder.
+The `toptick` and `bottomtick` files bracket the plugin code with Markdown code blocks.
+
+The `header` file provides the header formatting, to which the plugin filename is appended.
+Note, the `header` file **MUST NOT** have a trailing newline character.
+If you edit the file with `vi` or Intellij, they will add the trailing newline.
+In this situation, it is simple to reconstruct the `header` file:
+
+```bash
+% (echo && echo -n "## ") > plugins/src/main/resources/gradle/header
+```
+
+## Mixin Plugins
+
 The mixins are meant to provide snippets of Gradle configuration based on specific functional groupings.
 The groups are identified as starter scripts, and roughly grouped:
 

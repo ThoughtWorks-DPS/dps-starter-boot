@@ -3,6 +3,23 @@
 NOTE: This readme is generated from the plugin source files.
 Do not edit directly.
 
+## README.md Construction
+
+The README.md is constructed from the plugin source and uses snippet files to piece the content together.
+The snippet files are located in the `src/main/resource/gradle` folder.
+The `toptick` and `bottomtick` files bracket the plugin code with Markdown code blocks.
+
+The `header` file provides the header formatting, to which the plugin filename is appended.
+Note, the `header` file **MUST NOT** have a trailing newline character.
+If you edit the file with `vi` or Intellij, they will add the trailing newline.
+In this situation, it is simple to reconstruct the `header` file:
+
+```bash
+% (echo && echo -n "## ") > plugins/src/main/resources/gradle/header
+```
+
+## Mixin Plugins
+
 The mixins are meant to provide snippets of Gradle configuration based on specific functional groupings.
 The groups are identified as starter scripts, and roughly grouped:
 
@@ -493,6 +510,105 @@ dependencies {
 
 ```
 
+## starter.java.doc-asciidoc-conventions.gradle
+
+```groovy
+/**
+ * Swaggerhub configurations
+ */
+
+plugins {
+    id 'org.asciidoctor.jvm.pdf'
+    id 'org.asciidoctor.jvm.gems'
+    id 'org.asciidoctor.jvm.convert'
+}
+
+configurations {
+    docs
+}
+
+dependencies {
+    docs "io.spring.docresources:spring-doc-resources:${doc_resources_version}@zip"
+}
+
+
+tasks.register('prepareAsciidocBuild', type: Sync) {
+    dependsOn configurations.docs
+    from {
+        configurations.docs.collect { zipTree(it) }
+    }
+    from 'docs/src/main/asciidoc/','docs/src/main/java','docs/src/main/kotlin'
+    into "$buildDir/asciidoc"
+}
+
+asciidoctorPdf {
+    dependsOn prepareAsciidocBuild
+    baseDirFollowsSourceFile()
+    configurations 'asciidoctorExt'
+
+    asciidoctorj {
+        sourceDir "$buildDir/asciidoc"
+        inputs.dir(sourceDir)
+        sources {
+            include 'index.adoc'
+        }
+        options doctype: 'book'
+        attributes 'icons': 'font',
+                'sectanchors': '',
+                'sectnums': '',
+                'toc': '',
+                'source-highlighter' : 'coderay',
+                revnumber: project.version,
+                'project-version': project.version
+    }
+}
+
+asciidoctorj {
+    version = '2.4.1'
+    // fatalWarnings ".*"
+    options doctype: 'book', eruby: 'erubis'
+    attributes([
+            icons: 'font',
+            idprefix: '',
+            idseparator: '-',
+            docinfo: 'shared',
+            revnumber: project.version,
+            sectanchors: '',
+            sectnums: '',
+            'source-highlighter': 'highlight.js',
+            highlightjsdir: 'js/highlight',
+            'highlightjs-theme': 'googlecode',
+            stylesdir: 'css/',
+            stylesheet: 'stylesheet.css',
+            'spring-version': project.version,
+            'project-version': project.version,
+            'java-examples': 'io/twdps/starter/boot/jdocs',
+            'kotlin-examples': 'io/twdps/starter/boot/kdocs'
+    ])
+}
+
+asciidoctor {
+    dependsOn asciidoctorPdf
+    baseDirFollowsSourceFile()
+    configurations 'asciidoctorExt'
+    sourceDir = file("$buildDir/asciidoc")
+    sources {
+        include '*.adoc'
+    }
+    resources {
+        from(sourceDir) {
+            include 'images/*', 'css/**', 'js/**'
+        }
+    }
+
+}
+
+tasks.register('reference', dependsOn: asciidoctor) {
+    group = 'Documentation'
+    description = 'Generate the reference documentation'
+}
+```
+
 ## starter.java.doc-markdown-conventions.gradle
 
 ```groovy
@@ -504,6 +620,7 @@ plugins {
     id 'base'
 }
 // Requires
+// id 'starter.java.build-utils-git-conventions'
 // id 'starter.java.build-utils-fileset-conventions'
 
 
@@ -646,7 +763,7 @@ shellcheck {
     sources = files(".")
     ignoreFailures = true
     showViolations = true
-    shellcheckVersion = "v0.7.1"
+    shellcheckVersion = "${shellcheck_version}"
     useDocker = false
     shellcheckBinary = "/usr/local/bin/shellcheck"
     severity = "style" // "error"

@@ -1,6 +1,20 @@
 site_name: Starter-Boot
 site_description: Spring-Boot Starter
 
+theme:
+    name: mkdocs
+    highlightjs: true
+    hljs_languages:
+        - yaml
+        - java
+        - json
+        - bash
+
+repo_url: https://github.com/thoughtworks-dps/dps-starter-boot/
+repo_name: GitHub
+edit_uri: edit/main/docs/
+
+
 nav:
   - 'Quick Start': quickstart.md
   - 'Tutorial': tutorial.md

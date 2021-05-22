@@ -41,7 +41,9 @@ plugins {
     id("starter.java.release-conventions")
     id("starter.java.versions-conventions")
     id("starter.java.test-jacoco-aggregation-conventions")
+    id('starter.java.doc-mkdocs-conventions')
 }
+
 
 ext {
     jacoco_enforce_violations = false

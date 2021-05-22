@@ -1,5 +1,4 @@
 plugins {
-    id 'java'
 }
 
 sourceCompatibility = getPropertyOrDefault('java_version', '11')

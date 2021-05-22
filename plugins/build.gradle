@@ -13,6 +13,8 @@ plugins {
     id 'java-library'
     id 'java-gradle-plugin'
     id "org.ajoberstar.grgit"
+    id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
     id 'starter.java.config-conventions'
     id 'starter.java.lint-checkstyle-conventions'
     id 'starter.java.test-jacoco-conventions'

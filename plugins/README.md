@@ -46,6 +46,15 @@ If 'spotless' gets more complicated, then these two should be split and propagat
 
 ```groovy
 plugins {
+}
+
+sourceCompatibility = getPropertyOrDefault('java_version', '11')
+```
+
+## starter.java.build-javatarget-conventions.gradle.orig
+
+```groovy
+plugins {
     id 'java'
 }
 
@@ -1574,8 +1583,6 @@ plugins {
  */
 
 plugins {
-    id 'starter.java.build-utils-property-conventions'
-    id 'starter.java.build-javatarget-conventions'
     id 'starter.std.java.library-conventions'
     id 'starter.java.config-conventions'
     id 'starter.java.build-utils-conventions'
@@ -1598,6 +1605,7 @@ plugins {
     id 'java-gradle-plugin'
     id "org.ajoberstar.grgit"
     id 'starter.java.build-utils-property-conventions'
+    id 'starter.java.build-javatarget-conventions'
     id 'starter.java.config-conventions'
     id 'starter.java.lint-checkstyle-conventions'
     id 'starter.java.test-jacoco-conventions'

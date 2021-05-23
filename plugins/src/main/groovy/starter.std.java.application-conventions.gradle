@@ -25,6 +25,8 @@ plugins {
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-bootjar-conventions'
     id 'starter.java.versions-conventions'
+    id 'starter.java.lint-spotless-conventions'
+    id 'starter.java.lint-spotless-java-conventions'
 }
 
 dependencies {

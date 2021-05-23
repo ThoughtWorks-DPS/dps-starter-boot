@@ -30,7 +30,7 @@ spring:
       compression-type: lz4
       retries: 3
       key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
-      value-serializer: io.twdps.starter.boot.kafka.CustomJsonSerializer
+      value-serializer: io.twdps.starter.boot.kafkaconnectors.serde.CustomJsonSerializer
       #value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         max.in.flight.requests.per.connection: 2

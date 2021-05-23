@@ -1,3 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.twdps.starter.boot.config.EntityLifecycleNotifierConfig,\
-io.twdps.starter.boot.config.EntityLifecycleObjectMapperConfig
+io.twdps.starter.boot.notifier.lifecycle.entity.config.EntityLifecycleNotifierConfig,\
+io.twdps.starter.boot.notifier.lifecycle.entity.config.EntityLifecycleObjectMapperConfig

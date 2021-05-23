@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.twdps.starter.boot.config.IstioDisableSecurityConfig
+io.twdps.starter.boot.istio.security.config.IstioDisableSecurityConfig

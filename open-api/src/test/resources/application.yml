@@ -84,3 +84,5 @@ starter:
     contactName: Example
     serverUrl: http://localhost:8080
 
+logging:
+  register-shutdown-hook: true

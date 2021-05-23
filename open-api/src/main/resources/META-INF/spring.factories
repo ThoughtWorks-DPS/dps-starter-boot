@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.twdps.starter.boot.config.OpenApiConfiguration
+io.twdps.starter.boot.openapi.config.OpenApiConfiguration

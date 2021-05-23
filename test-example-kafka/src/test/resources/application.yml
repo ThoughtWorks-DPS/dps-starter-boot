@@ -118,3 +118,6 @@ starter:
       consumer:
         topic.name: customer-event
         level.concurrency: 1
+
+logging:
+  register-shutdown-hook: true

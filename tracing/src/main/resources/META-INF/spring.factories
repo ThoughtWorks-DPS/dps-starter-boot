@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.twdps.starter.boot.config.TracingConfig
+io.twdps.starter.boot.tracing.config.TracingConfig

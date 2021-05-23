@@ -65,3 +65,6 @@ opentracing:
   zipkin:
     enabled: true
     http-sender.baseUrl: http://zipkin.istio-system.svc.cluster.local:9411
+
+logging:
+  register-shutdown-hook: true

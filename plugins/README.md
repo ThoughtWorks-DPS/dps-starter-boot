@@ -51,16 +51,6 @@ plugins {
 sourceCompatibility = getPropertyOrDefault('java_version', '11')
 ```
 
-## starter.java.build-javatarget-conventions.gradle.orig
-
-```groovy
-plugins {
-    id 'java'
-}
-
-sourceCompatibility = getPropertyOrDefault('java_version', '11')
-```
-
 ## starter.java.build-springboot-conventions.gradle
 
 ```groovy
@@ -803,8 +793,69 @@ plugins {
 }
 
 spotless {
+    ratchetFrom 'origin/main' // only format files which have changed since origin/main
+}
+```
+
+## starter.java.lint-spotless-groovy-conventions.gradle
+
+```groovy
+/**
+ * Configuration for spotless code formatting
+ */
+
+plugins {
+    id "com.diffplug.spotless"
+}
+
+spotless {
+    groovy {
+        importOrder('', 'java', 'javax')
+        excludeJava()
+    }
+    groovyGradle {
+        target '*.gradle'
+    }
+}
+```
+
+## starter.java.lint-spotless-java-conventions.gradle
+
+```groovy
+/**
+ * Configuration for spotless code formatting
+ */
+
+plugins {
+    id "com.diffplug.spotless"
+}
+
+spotless {
     java {
-        googleJavaFormat()
+        googleJavaFormat("${google_java_format_version:'1.10.0'}")
+        toggleOffOn()
+        importOrder('', 'java', 'javax')
+    }
+}
+```
+
+## starter.java.lint-spotless-kotlin-conventions.gradle
+
+```groovy
+/**
+ * Configuration for spotless code formatting
+ */
+
+plugins {
+    id "com.diffplug.spotless"
+}
+
+spotless {
+    kotlin {
+        ktfmt("${ktfmt_format_version:'0.25'}")
+    }
+    kotlinGradle {
+        target '*.gradle.kts'
     }
 }
 ```
@@ -1490,6 +1541,8 @@ plugins {
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-bootjar-conventions'
     id 'starter.java.versions-conventions'
+    id 'starter.java.lint-spotless-conventions'
+    id 'starter.java.lint-spotless-java-conventions'
 }
 
 dependencies {
@@ -1542,6 +1595,8 @@ plugins {
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-jar-conventions'
     id 'starter.java.versions-conventions'
+    id 'starter.java.lint-spotless-conventions'
+    id 'starter.java.lint-spotless-java-conventions'
 }
 
 ```
@@ -1571,6 +1626,8 @@ plugins {
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.publish-jar-conventions'
     id 'starter.java.versions-conventions'
+    id 'starter.java.lint-spotless-conventions'
+    id 'starter.java.lint-spotless-java-conventions'
 }
 
 ```
@@ -1614,6 +1671,9 @@ plugins {
     id 'starter.java.deps-test-conventions'
     id 'starter.java.publish-repo-conventions'
     id 'starter.java.versions-conventions'
+    id 'starter.java.lint-spotless-conventions'
+    id 'starter.java.lint-spotless-java-conventions'
+    id 'starter.java.lint-spotless-groovy-conventions'
 }
 
 ```

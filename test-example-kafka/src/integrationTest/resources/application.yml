@@ -3,9 +3,6 @@ info:
     name: Example API
     description: Starter Kit Example
 
-logging:
-  register-shutdown-hook: true
-
 management:
   server:
     port: 8081
@@ -131,3 +128,6 @@ starter:
       consumer:
         topic.name: customer-event
         level.concurrency: 1
+
+logging:
+  register-shutdown-hook: true

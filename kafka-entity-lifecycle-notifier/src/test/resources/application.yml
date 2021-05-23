@@ -81,7 +81,7 @@ spring:
       auto-offset-reset: earliest
       group-id: lifecycle
       key-deserializer: org.apache.kafka.common.serialization.IntegerDeserializer
-      value-deserializer: io.twdps.starter.boot.kafka.CustomJsonDeserializer
+      value-deserializer: io.twdps.starter.boot.kafkaconnectors.serde.CustomJsonDeserializer
       #value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       level:
         concurrency: 1
@@ -100,7 +100,7 @@ spring:
       compression-type: lz4
       retries: 3
       key-serializer: org.apache.kafka.common.serialization.IntegerSerializer
-      value-serializer: io.twdps.starter.boot.kafka.CustomJsonSerializer
+      value-serializer: io.twdps.starter.boot.kafkaconnectors.serde.CustomJsonSerializer
       # value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
         max.in.flight.requests.per.connection: 2
@@ -130,3 +130,6 @@ starter:
       consumer:
         topic.name: test-queue-name
         level.concurrency: 1
+
+logging:
+  register-shutdown-hook: true

@@ -1,7 +1,6 @@
 package io.twdps.starter.example.service.spi.kafka.model;
 
-
-import io.twdps.starter.boot.kafka.IdentifiableMessage;
+import io.twdps.starter.boot.kafkaconnectors.spi.IdentifiableMessage;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,5 +26,4 @@ public class CustomerEventMessage implements IdentifiableMessage {
   public Integer getMessageIdentifier() {
     return Integer.valueOf(getEventId());
   }
-
 }

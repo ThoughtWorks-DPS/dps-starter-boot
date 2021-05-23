@@ -83,3 +83,6 @@ opa:
     document-path: authz
     instance: http://opa:8181
     endpoints-whitelist: /actuator/**,/swagger-ui/**,/v3/api-docs/**
+
+logging:
+  register-shutdown-hook: true

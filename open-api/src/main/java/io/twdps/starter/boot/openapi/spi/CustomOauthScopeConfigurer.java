@@ -1,0 +1,9 @@
+package io.twdps.starter.boot.openapi.spi;
+
+import io.swagger.v3.oas.models.security.Scopes;
+
+public interface CustomOauthScopeConfigurer {
+
+  /** Configure the Scope object for OpenAPI configuration bean. */
+  void configure(Scopes scope);
+}

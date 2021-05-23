@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-io.twdps.starter.boot.config.SpringDocConfig
+io.twdps.starter.boot.springdoc.config.SpringDocConfig

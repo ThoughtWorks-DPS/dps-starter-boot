@@ -12,6 +12,7 @@ class CookieCutterPlugin implements Plugin<Project> {
         def extension = project.extensions.create('cookiecutter', CookieCutterPluginExtension)
         def verifyExtension = project.extensions.create('cookiecutterVerify', CookieCutterCompareTaskExtension)
         def buildExtension = project.extensions.create('cookiecutterBuild', CookieCutterLaunchBuildTaskExtension)
+        def formatExtension = project.extensions.create('cookiecutterFormat', CookieCutterLaunchBuildTaskExtension)
         project.getTasks().register('clean', Exec)
                 .configure {
             group = 'cookiecutter'
@@ -65,7 +66,7 @@ class CookieCutterPlugin implements Plugin<Project> {
             generatedProjectName = verifyExtension.generatedProjectName
             omitFiles = verifyExtension.omitFiles
             binary = verifyExtension.diffBinary
-            mustRunAfter('generateTemplate', 'generateTemplates')
+            mustRunAfter('generateTemplate', 'generateTemplates', 'formatTemplate')
         }
 
         project.getTasks().register('buildTemplate', Exec)
@@ -82,7 +83,21 @@ class CookieCutterPlugin implements Plugin<Project> {
             }
         }
 
-        /*
+        project.getTasks().register('formatTemplate', Exec)
+                .configure {
+                    group = 'cookiecutter'
+                    description = "Format the generated template"
+                    executable(formatExtension.buildBinary.get()) // set this upfront, update in closure
+                    mustRunAfter('generateTemplate', 'generateTemplates')
+                    doFirst {
+                        logger.debug("f:dir [${project.buildDir}/${formatExtension.outputPath.get()}/${formatExtension.generatedProjectName.get()}]")
+                        executable(formatExtension.buildBinary.get())
+                        workingDir = "${project.buildDir}/${formatExtension.outputPath.get()}/${formatExtension.generatedProjectName.get()}"
+                        args(formatExtension.args.get())
+                    }
+                }
+
+/*
         project.getTasks().register('testBuildTemplate', CookieCutterLaunchBuildTask)
                 .configure {
             group = 'cookiecutter'

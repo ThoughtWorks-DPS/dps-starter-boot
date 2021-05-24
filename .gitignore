@@ -11,3 +11,30 @@ gradle-app.setting
 !gradle-wrapper.jar
 
 **.hprof
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### patch cruft
+*.orig
+*.rej
+
+*DS_Store
+.\!*
+

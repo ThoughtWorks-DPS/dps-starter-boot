@@ -1,0 +1,16 @@
+/**
+ * Gatling configuration for running stress tests
+ */
+
+plugins {
+    id 'au.com.dius.pact'
+}
+
+
+pact {
+    broker {
+        pactBrokerUrl = 'http://localhost:9292/'
+        pactBrokerUsername = pact
+        pactBrokerPassword = 'also-not-the-password'
+    }
+}

@@ -36,6 +36,7 @@ plugins {
     id('org.asciidoctor.jvm.pdf') version "${asciidoctor_plugin_version}" apply false
     id('org.asciidoctor.jvm.gems') version "${asciidoctor_plugin_version}" apply false
     id('org.asciidoctor.jvm.convert') version "${asciidoctor_plugin_version}" apply false
+    id('au.com.dius.pact') version "${pact_broker_plugin_version}" apply false
     id("starter.metrics.build-time-tracker-conventions")
     id("starter.java.build-utils-property-conventions")
     id("starter.java.release-conventions")

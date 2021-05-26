@@ -1,0 +1,48 @@
+version: '3.9'
+
+networks:
+  internal:
+  external:
+
+volumes:
+  pactdata:
+
+services:
+
+  pactdb:
+    image: postgres
+    hostname: pactdb
+    expose:
+      - "5432"
+    environment:
+      POSTGRES_USER: pactuser
+      POSTGRES_PASSWORD: not-the-user-password
+      POSTGRES_DB: pact
+    volumes:
+      - pactdata:/var/lib/postgresql/data
+    networks:
+      - internal
+# NOTE, security favors removing external access from the database container
+      - external
+    ports:
+      - "5432:5432"
+
+  pact:
+    image: pactfoundation/pact-broker
+    hostname: pact
+    expose:
+      - "9292"
+    ports:
+      - "9292:9292"
+    environment:
+      PACT_BROKER_DATABASE_ADAPTER: postgresql
+      PACT_BROKER_DATABASE_USERNAME: pactuser
+      PACT_BROKER_DATABASE_PASSWORD: not-the-user-password
+      PACT_BROKER_DATABASE_HOST: pactdb
+      PACT_BROKER_DATABASE_NAME: pact
+    depends_on:
+      - pactdb
+    networks:
+      - internal
+      - external
+

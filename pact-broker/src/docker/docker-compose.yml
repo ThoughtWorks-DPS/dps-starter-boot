@@ -1,8 +1,8 @@
 version: '3.9'
 
 networks:
-  internal:
-  external:
+  pact_internal:
+  pact_external:
 
 volumes:
   pactdata:
@@ -21,11 +21,11 @@ services:
     volumes:
       - pactdata:/var/lib/postgresql/data
     networks:
-      - internal
+      - pact_internal
 # NOTE, security favors removing external access from the database container
-      - external
-    ports:
-      - "5432:5432"
+#      - pact_external
+#    ports:
+#      - "5432:5432"
 
   pact:
     image: pactfoundation/pact-broker
@@ -43,6 +43,6 @@ services:
     depends_on:
       - pactdb
     networks:
-      - internal
-      - external
+      - pact_internal
+      - pact_external
 

@@ -29,6 +29,7 @@ ext {
     spring_boot_version = "2.4.4"
     springdoc_version =  "1.5.4"
     springfox_version = "3.0.0"
+    swagger_version = "2.1.6"
     test_containers_version = "1.15.2"
     zipkin_reporter_version = "2.16.3"
     zipkin_sender_okhttp3_version = "2.16.3"
@@ -48,6 +49,7 @@ dependencies {
         api project(":open-policy-agent-config")
         api project(":springdoc")
         api project(":open-api")
+        api project(":test-data")
         api "com.tngtech.archunit:archunit:${arch_unit_version}"
         api "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:${gradle_intellij_plugin_version}"
         api "io.opentracing.brave:brave-opentracing:${brave_opentracing_version}"
@@ -56,6 +58,8 @@ dependencies {
         api "io.opentracing:opentracing-api:${opentracing_api_version}"
         api "io.opentracing:opentracing-mock:${opentracing_mock_version}"
         api "io.springfox:springfox-boot-starter:${springfox_version}"
+        api "io.swagger.core.v3:swagger-annotations:${swagger_version}"
+        api "io.swagger.core.v3:swagger-models:${swagger_version}"
         api "io.zipkin.reporter2:zipkin-reporter:${zipkin_reporter_version}"
         api "io.zipkin.reporter2:zipkin-sender-okhttp3:${zipkin_sender_okhttp3_version}"
         api "org.mapstruct:mapstruct:${mapstruct_version}"

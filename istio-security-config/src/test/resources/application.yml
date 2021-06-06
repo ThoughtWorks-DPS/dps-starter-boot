@@ -76,3 +76,6 @@ opentracing:
 
 starter:
   istio-security-config: true
+
+logging:
+  register-shutdown-hook: true

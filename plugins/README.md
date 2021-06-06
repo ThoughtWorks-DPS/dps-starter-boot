@@ -414,14 +414,10 @@ dockerRun {
 // starter.java.build-javatarget-conventions
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-
-    implementation "org.zalando:problem-spring-web"
-    implementation "org.springdoc:springdoc-openapi-ui"
-    implementation "org.springdoc:springdoc-openapi-webmvc-core"
-    //implementation "org.springdoc:springdoc-openapi-security"
-    implementation "org.springdoc:springdoc-openapi-data-rest"
     implementation 'org.mapstruct:mapstruct'
+    implementation 'org.slf4j:slf4j-api'
 
     compileOnly 'org.projectlombok:lombok'
 
@@ -470,6 +466,23 @@ dependencies {
 }
 ```
 
+## starter.java.deps-openapi-conventions.gradle
+
+```groovy
+/**
+ * Provides a set of common dependencies for typical build.
+ * Includes proper dependencies for lombok and mapstruct annotation processing.
+ */
+
+// starter.java.build-javatarget-conventions
+
+dependencies {
+    implementation 'io.swagger.core.v3:swagger-annotations'
+    implementation 'io.swagger.core.v3:swagger-models'
+}
+
+```
+
 ## starter.java.deps-plugin-conventions.gradle
 
 ```groovy
@@ -501,6 +514,45 @@ dependencies {
         exclude module: 'groovy-all'
     }
     integrationTestImplementation gradleTestKit()
+}
+
+```
+
+## starter.java.deps-spring-config-conventions.gradle
+
+```groovy
+/**
+ * Provides a set of common dependencies for typical build.
+ * Includes proper dependencies for lombok and mapstruct annotation processing.
+ */
+
+// starter.java.build-javatarget-conventions
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+
+    testImplementation 'org.springframework:spring-web'
+}
+
+```
+
+## starter.java.deps-springdoc-conventions.gradle
+
+```groovy
+/**
+ * Provides a set of common dependencies for typical build.
+ * Includes proper dependencies for lombok and mapstruct annotation processing.
+ */
+
+// starter.java.build-javatarget-conventions
+
+dependencies {
+    implementation 'org.zalando:problem-spring-web'
+    implementation 'org.springdoc:springdoc-openapi-ui'
+    implementation 'org.springdoc:springdoc-openapi-webmvc-core'
+    //implementation 'org.springdoc:springdoc-openapi-security'
+    implementation 'org.springdoc:springdoc-openapi-data-rest'
 }
 
 ```
@@ -1555,6 +1607,9 @@ plugins {
     id 'starter.java.build-javatarget-conventions'
     id 'starter.java.build-springboot-conventions'
     id 'starter.java.deps-build-conventions'
+    id 'starter.java.deps-openapi-conventions'
+    id 'starter.java.deps-spring-config-conventions'
+    id 'starter.java.deps-springdoc-conventions'
     id 'starter.java.container-conventions'
     id 'starter.java.container-spring-conventions'
     id 'starter.java.lint-checkstyle-conventions'
@@ -1668,6 +1723,7 @@ plugins {
 
 plugins {
     id 'starter.std.java.library-conventions'
+    id 'starter.java.deps-spring-config-conventions'
     id 'starter.java.config-conventions'
     id 'starter.java.build-utils-conventions'
 }

@@ -6,6 +6,7 @@ dependencies {
     annotationBom platform(project(':starter-bom'))
     checkstyleRules platform(project(':checkstyle-bom'))
 
+    implementation'org.zalando:problem-spring-web'
     implementation "org.springframework.boot:spring-boot-starter-web"
     implementation "org.springframework.boot:spring-boot-starter-security"
     implementation 'io.opentracing.contrib:opentracing-spring-web-starter'

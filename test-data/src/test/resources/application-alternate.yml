@@ -1,0 +1,42 @@
+test-data:
+  account:
+    data:
+      default:
+        first-name: Agent
+        last-name: Smith
+        pii: eigenvalue
+        id: uuid-unit-vector
+      matrix:
+        first-name: Neo
+        last-name: None
+        pii: sunglasses
+        id: Reeves
+      raiders:
+        first-name: Indiana
+        last-name: Jones
+        pii: archeologist
+        id: Ford
+    collections:
+      default:
+        - first-name: Agent
+          last-name: Smith
+          pii: eigenvalue
+          id: uuid-unit-vector
+        - first-name: Neo
+          last-name: None
+          pii: sunglasses
+          id: Reeves
+      starwars:
+        - first-name: Han
+          last-name: Solo
+          pii: Falcon
+          id: Ford
+        - first-name: Luke
+          last-name: Skywalker
+          pii: saber
+          id: Hamill
+        - first-name: Anakin
+          last-name: Skywalker
+          pii: darkhelmet
+          id: Jones
+

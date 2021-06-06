@@ -1,6 +1,48 @@
+[![Maintainability](https://api.codeclimate.com/v1/badges/<fixme>>/maintainability)](https://codeclimate.com/repos/<fixme>>/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/<fixme>>/test_coverage)](https://codeclimate.com/repos/<fixme>>/test_coverage)
+[![CircleCI](https://circleci.com/gh/ThoughtWorks-DPS/dps-starter-boot.svg?style=shield&circle-token=<fixme>)](https://app.circleci.com/pipelines/github/ThoughtWorks-DPS/dps-starter-boot?branch=master)
+
 # starter-boot
 
 starter-boot is a project to provide many of the same developer affordances that Spring Boot provides.
+
+## Developer environment
+
+### Build requirements
+
+- Java 11
+
+Mac users can execute the following command to install the latest version of Java:
+
+```bash
+brew install java
+```
+
+Verify that the correct Java version is being used by running:
+
+```bash
+java -version
+```
+
+If needed, set your machine to use the correct version of Java (JAVA_VERSION in the command below) that was installed by
+adding the following line to your .bashrc or .zshrc:
+
+```bash
+export JAVA_HOME=/usr/local/Cellar/openjdk/<JAVA_VERSION>/libexec/openjdk.jdk/Contents/Home 
+```
+
+Reload the shell by running:
+
+```bash
+source .bashrc
+#or
+source .zshrc
+```
+
+### Dev Tools Setup
+
+- `cd scripts`
+- Run `sh mac-dev-tools.sh`
 
 
 ## starter-bom

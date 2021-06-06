@@ -7,11 +7,13 @@ org='twdps'
 pkg=""
 
 function usage {
+  local msg=$*
+  echo "${msg}"
   echo "$0 [--path <path>] [--tl <toplevel>] [--org <organization>] [--pkg <package name>]"
   echo "  --path        path to create new package ($path)"
-  echo "  --tl          top level package name ($tl)}"
+  echo "  --tl          top level package name ($tl)"
   echo "  --org         org level package name ($org)"
-  echo "  --pkg         package name ($pkg)}"
+  echo "  --pkg         package name ($pkg)"
   echo "  --help        display this help"
 }
 
@@ -54,14 +56,14 @@ do
   --org) shift; org=$1;;
   --pkg) shift; pkg=$1;;
   --help) usage; exit 0;;
-  *) usage; exit 1;;
+  *) usage "Unknown option(s) [$*]"; exit 1;;
   esac
   shift;
 done
 
 if [[ -z "${pkg}" ]]
 then
-  usage
+  usage "Package name must be specified."
   exit 1
 fi
 

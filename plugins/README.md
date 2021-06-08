@@ -842,7 +842,7 @@ shellcheck {
     ignoreFailures = true
     showViolations = true
     shellcheckVersion = "${shellcheck_version}"
-    useDocker = false
+    useDocker = true
     shellcheckBinary = "/usr/local/bin/shellcheck"
     severity = "style" // "error"
 }

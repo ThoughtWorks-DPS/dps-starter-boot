@@ -1,6 +1,7 @@
 /**
- * Tasks for maintaining copyright dates
- * - updateCopyrights  scans modified files for copyright string and updates to current year
+ * Git convenience helpers
+ * - gitPresent  determines if there is a .git repository present in the project
+ * - modifiedFiles   set to a collection of the files which are currently modified since last comit
  */
 plugins {
     id 'org.ajoberstar.grgit'

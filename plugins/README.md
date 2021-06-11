@@ -181,8 +181,9 @@ ext {
 
 ```groovy
 /**
- * Tasks for maintaining copyright dates
- * - updateCopyrights  scans modified files for copyright string and updates to current year
+ * Git convenience helpers
+ * - gitPresent  determines if there is a .git repository present in the project
+ * - modifiedFiles   set to a collection of the files which are currently modified since last comit
  */
 plugins {
     id 'org.ajoberstar.grgit'
@@ -222,6 +223,17 @@ ext {
      */
     getPropertyOrDefault = { String propertyName,  defaultValue ->
         return project.hasProperty(propertyName) ? project.properties[propertyName] : defaultValue;
+    }
+
+    /**
+     * Utility function for choosing between a team-defined configuration in ext{} block and a default core-define value.
+     *
+     * @param value variable name (as String)
+     * @param defaultValue return value if null
+     * @return one or the other value
+     */
+    getExtPropertyOrDefault = { String propertyName,  defaultValue ->
+        return project.ext.properties.containsKey(propertyName) ? project.ext[propertyName] : defaultValue;
     }
 
     /**
@@ -280,22 +292,22 @@ plugins {
 // id 'starter.java.build-utils-property-conventions'
 
 ext {
-    dockerRegistry = project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
+    dockerRegistry = getPropertyOrDefault('dockerRegistry', group)
     dockerImageVersion = project.hasProperty("buildNumber") ? "${project.version}-${project.buildNumber}" : project.version
 }
 
 docker {
     dependsOn(assemble)
-    name "${dockerRegistry}/${rootProject.name}"
-    tag "Build", "${dockerRegistry}/${rootProject.name}:${dockerImageVersion}"
-    tag "Latest", "${dockerRegistry}/${rootProject.name}:latest"
+    name "${dockerRegistry}/${rootProject.name}-${project.name}"
+    tag "Build", "${dockerRegistry}/${rootProject.name}-${project.name}:${dockerImageVersion}"
+    tag "Latest", "${dockerRegistry}/${rootProject.name}-${project.name}:latest"
     noCache true
     dockerfile file('src/docker/Dockerfile')
 }
 
 dockerRun {
     name project.name
-    image "${dockerRegistry}/${rootProject.name}"
+    image "${dockerRegistry}/${rootProject.name}-${project.name}"
     ports '8080:8080'
     env 'SECRETHUB_HELLO': getEnvOrDefault('SECRETHUB_HELLO', 'override-me')
 }

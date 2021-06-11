@@ -12,22 +12,22 @@ plugins {
 // id 'starter.java.build-utils-property-conventions'
 
 ext {
-    dockerRegistry = project.hasProperty("dockerRegistry") ? "${project.dockerRegistry}" : "${group}"
+    dockerRegistry = getPropertyOrDefault('dockerRegistry', group)
     dockerImageVersion = project.hasProperty("buildNumber") ? "${project.version}-${project.buildNumber}" : project.version
 }
 
 docker {
     dependsOn(assemble)
-    name "${dockerRegistry}/${rootProject.name}"
-    tag "Build", "${dockerRegistry}/${rootProject.name}:${dockerImageVersion}"
-    tag "Latest", "${dockerRegistry}/${rootProject.name}:latest"
+    name "${dockerRegistry}/${rootProject.name}-${project.name}"
+    tag "Build", "${dockerRegistry}/${rootProject.name}-${project.name}:${dockerImageVersion}"
+    tag "Latest", "${dockerRegistry}/${rootProject.name}-${project.name}:latest"
     noCache true
     dockerfile file('src/docker/Dockerfile')
 }
 
 dockerRun {
     name project.name
-    image "${dockerRegistry}/${rootProject.name}"
+    image "${dockerRegistry}/${rootProject.name}-${project.name}"
     ports '8080:8080'
     env 'SECRETHUB_HELLO': getEnvOrDefault('SECRETHUB_HELLO', 'override-me')
 }

@@ -21,19 +21,19 @@ public class CustomerEvent {
   private long createdAt;
 
   /**
-   *  constructor, for deserializing JSON objects.
+   * constructor, for deserializing JSON objects.
    *
    * @param customerId eponymous
    * @param type eponymous
    * @param createdAt eponymous
    */
   @JsonCreator
-  public CustomerEvent(@JsonProperty("customerId") int customerId,
+  public CustomerEvent(
+      @JsonProperty("customerId") int customerId,
       @NonNull @JsonProperty("type") String type,
       @JsonProperty("createdAt") long createdAt) {
     this.customerId = customerId;
     this.type = type;
     this.createdAt = createdAt;
   }
-
 }

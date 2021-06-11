@@ -50,27 +50,28 @@ public class EventProcessingServiceImpl implements EventProcessingService {
     // down the event chain - here we add a modified time and create a unique event id
     CustomerEventMessage customerEventMessage = createSimulatedEvent(customerEvent);
 
-    //call the kafka producer to send and then process the result
-    ListenableFuture<SendResult<Integer, CustomerEventMessage>> future
-        = eventProducer.sendMessage(customerEventMessage);
+    // call the kafka producer to send and then process the result
+    ListenableFuture<SendResult<Integer, CustomerEventMessage>> future =
+        eventProducer.sendMessage(customerEventMessage);
 
     try {
       SendResult<Integer, CustomerEventMessage> sendResult = future.get();
-      CustomerEventMessage cem = sendResult.getProducerRecord()
-          .value();
+      CustomerEventMessage cem = sendResult.getProducerRecord().value();
       RecordMetadata recordMetadata = sendResult.getRecordMetadata();
-      EventKafkaMetadata eventKafkaMetadata = new EventKafkaMetadata(customerEvent.getCustomerId(),
-          cem.getEventId(), recordMetadata);
-      log.info("successfully wrote eventId:{}, to partition:{} with offset:{}",
-          eventKafkaMetadata.getEventId(), eventKafkaMetadata.getPartition(),
+      EventKafkaMetadata eventKafkaMetadata =
+          new EventKafkaMetadata(customerEvent.getCustomerId(), cem.getEventId(), recordMetadata);
+      log.info(
+          "successfully wrote eventId:{}, to partition:{} with offset:{}",
+          eventKafkaMetadata.getEventId(),
+          eventKafkaMetadata.getPartition(),
           eventKafkaMetadata.getOffset());
       return eventKafkaMetadata;
     } catch (InterruptedException e) {
-      throw new DownstreamTimeoutException("500",
-          String.format("Interrupted Write to kafka. Cause: %s", e.getLocalizedMessage()));
+      throw new DownstreamTimeoutException(
+          "500", String.format("Interrupted Write to kafka. Cause: %s", e.getLocalizedMessage()));
     } catch (ExecutionException e) {
-      throw new DownstreamTimeoutException("500",
-          String.format("Exception writing to kafka. Cause: %s", e.getLocalizedMessage()));
+      throw new DownstreamTimeoutException(
+          "500", String.format("Exception writing to kafka. Cause: %s", e.getLocalizedMessage()));
     }
   }
 
@@ -83,9 +84,12 @@ public class EventProcessingServiceImpl implements EventProcessingService {
   protected CustomerEventMessage createSimulatedEvent(CustomerEvent customerEvent) {
 
     int eventId = simulatedEventId.incrementAndGet();
-    long modified = ZonedDateTime.now()
-        .toEpochSecond();
-    return new CustomerEventMessage(eventId, customerEvent.getCustomerId(),
-        customerEvent.getCreatedAt(), modified, customerEvent.getType());
+    long modified = ZonedDateTime.now().toEpochSecond();
+    return new CustomerEventMessage(
+        eventId,
+        customerEvent.getCustomerId(),
+        customerEvent.getCreatedAt(),
+        modified,
+        customerEvent.getType());
   }
 }

@@ -7,5 +7,4 @@ import java.util.Optional;
 public interface TestEntityRepository extends CrudRepository<TestEntity, String> {
 
   Optional<TestEntity> findByUserName(String userName);
-
 }

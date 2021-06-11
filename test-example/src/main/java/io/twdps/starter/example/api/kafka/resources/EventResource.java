@@ -17,5 +17,3 @@ public interface EventResource {
   ResponseEntity<EventKafkaMetadata> createCustomerEventMessage(
       @RequestBody CustomerEvent customerEvent);
 }
-
-

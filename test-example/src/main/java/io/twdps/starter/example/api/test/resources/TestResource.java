@@ -30,13 +30,12 @@ public interface TestResource {
 
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
-  ResponseEntity<TestResponse> updateEntityById(@PathVariable(value = "id") String id,
-      @RequestBody TestRequest request)
-      throws ResourceNotFoundException,  RequestValidationException;
+  ResponseEntity<TestResponse> updateEntityById(
+      @PathVariable(value = "id") String id, @RequestBody TestRequest request)
+      throws ResourceNotFoundException, RequestValidationException;
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.OK)
   ResponseEntity<TestResponse> deleteEntityById(@PathVariable(value = "id") String id)
       throws ResourceNotFoundException;
-
 }

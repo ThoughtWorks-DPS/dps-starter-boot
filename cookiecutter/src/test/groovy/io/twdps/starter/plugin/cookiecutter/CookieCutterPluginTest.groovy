@@ -1,8 +1,8 @@
 package io.twdps.starter.plugin.cookiecutter
 
 import org.gradle.api.Project
-import org.gradle.testfixtures.ProjectBuilder
 import org.gradle.api.tasks.Exec
+import org.gradle.testfixtures.ProjectBuilder
 import spock.lang.Specification
 
 class CookieCutterPluginTest extends Specification {

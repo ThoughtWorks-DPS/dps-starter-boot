@@ -15,17 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class EventController implements EventResource {
 
-  @Autowired
-  private EventProcessingServiceImpl eventProcessingService;
+  @Autowired private EventProcessingServiceImpl eventProcessingService;
 
   @Override
   public ResponseEntity<EventKafkaMetadata> createCustomerEventMessage(
       @RequestBody CustomerEvent customerEvent) {
 
-    EventKafkaMetadata eventKafkaMetadata = eventProcessingService.createAndSendEvent(
-        customerEvent);
+    EventKafkaMetadata eventKafkaMetadata =
+        eventProcessingService.createAndSendEvent(customerEvent);
     return new ResponseEntity<EventKafkaMetadata>(eventKafkaMetadata, HttpStatus.OK);
   }
 }
-
-

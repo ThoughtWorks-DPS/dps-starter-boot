@@ -30,5 +30,4 @@ public interface TestEntityMapper {
 
   @Mapping(target = "id", ignore = true)
   TestEntity updateMetadata(TestModel src, @MappingTarget TestEntity dst);
-
 }

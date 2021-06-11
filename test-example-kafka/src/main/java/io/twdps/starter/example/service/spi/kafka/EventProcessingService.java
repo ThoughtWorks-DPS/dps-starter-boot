@@ -5,7 +5,6 @@ import io.twdps.starter.example.api.kafka.responses.EventKafkaMetadata;
 
 public interface EventProcessingService {
 
-
   /**
    * create message and send via kafka.
    *

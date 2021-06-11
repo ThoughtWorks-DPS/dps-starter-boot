@@ -22,4 +22,3 @@ class CookieCutterLaunchBuildTaskExtension {
         buildBinary.set('./gradlew')
     }
 }
-

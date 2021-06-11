@@ -35,4 +35,3 @@ class CookieCutterPluginExtension {
         taskTimeout.convention(10000L)
     }
 }
-

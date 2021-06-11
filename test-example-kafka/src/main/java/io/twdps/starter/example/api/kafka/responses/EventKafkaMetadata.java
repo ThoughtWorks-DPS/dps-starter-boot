@@ -19,8 +19,8 @@ public class EventKafkaMetadata {
   /**
    * constructor.
    *
-   * @param customerId     eponymous
-   * @param eventId        eponymous
+   * @param customerId eponymous
+   * @param eventId eponymous
    * @param recordMetadata eponymous
    */
   public EventKafkaMetadata(int customerId, int eventId, RecordMetadata recordMetadata) {
@@ -34,5 +34,4 @@ public class EventKafkaMetadata {
     partition = recordMetadata.partition();
     topic = recordMetadata.topic();
   }
-
 }

@@ -9,7 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TestApplication {
   private static Logger log = LoggerFactory.getLogger(TestApplication.class);
 
-  /** main function.
+  /**
+   * main function.
    *
    * @param args command line args
    */

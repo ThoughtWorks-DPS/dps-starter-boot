@@ -226,17 +226,6 @@ ext {
     }
 
     /**
-     * Utility function for choosing between a team-defined configuration in ext{} block and a default core-define value.
-     *
-     * @param value variable name (as String)
-     * @param defaultValue return value if null
-     * @return one or the other value
-     */
-    getExtPropertyOrDefault = { String propertyName,  defaultValue ->
-        return project.ext.properties.containsKey(propertyName) ? project.ext[propertyName] : defaultValue;
-    }
-
-    /**
      * Utility function for choosing between a team-defined configuration and a default core-define value.
      *
      * @param tagName environment variable name (or null)

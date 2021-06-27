@@ -1,0 +1,31 @@
+@startuml
+!include architecture-core-factory.plantuml
+
+together {
+  class DataNotFoundException
+  interface DataLoader <<T>> {
+    loadData(): Map<String, T>
+    loadCollections(): Map<String, List<T>>
+  }
+  class NamedDataFactory <<String>> <<T>> implements DataFactory {
+    data: Map<String, T>
+    collections: Map<String, List<T>>
+
+    ctor(DataLoader<T>): void
+    createBySpec(String): T
+    createCollectionBySpec(String): List<T>
+
+  }
+  class GenericDataLoader <<T>> implements DataLoader {
+    data: Map<String, T>
+    collections: Map<String, List<T>>
+
+    loadData(): Map<String, T>
+    loadCollections(): Map<String, List<T>>
+  }
+}
+
+DataLoader <-- NamedDataFactory::ctor
+DataNotFoundException <-- NamedDataFactory
+
+@enduml

@@ -28,7 +28,8 @@ scmVersion {
     ignoreUncommittedChanges = false // should uncommitted changes force version bump
 
     // doc: Version / Tag with highest version
-    useHighestVersion = true // Defaults as false, setting to true will find the highest visible version in the commit tree
+    useHighestVersion = true
+    // Defaults as false, setting to true will find the highest visible version in the commit tree
 
     // doc: Version / Sanitization
     sanitizeVersion = true // should created version be sanitized, true by default

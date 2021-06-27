@@ -1,0 +1,21 @@
+@startuml
+!include architecture-core-factory.plantuml
+
+together {
+  class DataFactorySpec <<FakerProto>> {
+    collectionSize: integer
+    valid: boolean
+    prototype: FakerProto
+  }
+  class FakerDataFactory <<DataFactorySpec>> <<T>> implements DataFactory {
+    ctor(DataFactorySpec defaultSpec): void
+    createBySpec(DataFactorySpec): T
+    create(): T
+    createCollectionBySpec(DataFactorySpec): List<T>
+    createCollection(): List<T>
+  }
+}
+
+DataFactorySpec <-- FakerDataFactory::ctor
+
+@enduml

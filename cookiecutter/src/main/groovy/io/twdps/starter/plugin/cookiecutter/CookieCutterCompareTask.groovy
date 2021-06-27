@@ -42,17 +42,6 @@ class CookieCutterCompareTask extends DefaultTask {
                 '.gradle',
                 'build',
                 'reports',
-                'template',
-                '.circleci',
-                '.pre-commit-config.yaml',
-                'catalog-info.yaml',
-                'mkdocs.yml',
-                'copy-plugin-examples.sh',
-                'alter-path.sh',
-                'apply-sed.sh',
-                'service.sed',
-                'tmp',
-                'verify-generated-proj.sh',
                 'out')
         doLast {
             log.debug("l:task:generatedProjectName [{}]", generatedProjectName.get())

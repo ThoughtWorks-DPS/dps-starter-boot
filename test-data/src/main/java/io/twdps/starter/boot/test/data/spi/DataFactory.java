@@ -6,13 +6,13 @@ public interface DataFactory<T> {
 
   static String DEFAULT_NAME = "default";
 
-  T getNamedData(String name);
+  T getNamedData(String name) throws DataNotFoundException;
 
   default T getData() {
     return getNamedData(DEFAULT_NAME);
   }
 
-  default List<T> getNamedDataCollection(String name) {
+  default List<T> getNamedDataCollection(String name) throws DataNotFoundException {
     return List.of(this.getData());
   }
 

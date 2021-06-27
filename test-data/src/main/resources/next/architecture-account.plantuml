@@ -1,0 +1,35 @@
+@startuml
+!include architecture-core-loader.plantuml
+
+together {
+  class AccountData {
+    id: String
+    userName: String
+    pii: String
+    firstName: String
+    lastName: String
+    fullName: String
+    success: boolean
+  }
+}
+
+class AccountDataFactory <<Account>> extends NamedDataFactory {
+  ctor(DataLoader<AccountData>): void
+}
+
+class AccountDataProperties <<Account>> extends GenericDataLoader
+
+class AccountTestData <<Account>> extends GenericDataLoader {
+  ctor(): void
+}
+
+AccountData o-- AccountDataProperties
+AccountData o-- AccountTestData
+AccountData o-- AccountDataFactory
+
+AccountTestData <-- AccountDataFactory
+AccountDataProperties <-- AccountDataFactory
+DataLoader <-- AccountDataFactory::ctor
+
+
+@enduml

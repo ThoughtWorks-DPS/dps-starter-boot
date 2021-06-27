@@ -1,0 +1,14 @@
+@startuml
+
+class DataNotFoundException
+
+interface DataFactory <<T>> {
+  getNamedData(String): T
+  getData(): T
+  getNamedDataCollection(String): List<T>
+  getDataCollection(): List<T>
+}
+
+DataNotFoundException <-- DataFactory
+
+@enduml

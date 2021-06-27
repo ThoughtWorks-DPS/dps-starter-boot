@@ -240,6 +240,30 @@ ext {
 
 ```
 
+## starter.java.build-utils-task-conventions.gradle
+
+```groovy
+ext {
+    /**
+     * Utility function for constructing and applying task dependencies.
+     *
+     * @param modules module names (as array or list supporting ::each)
+     * @param taskClosure closure which constructs the task name given a module name
+     */
+    depender = { modules, taskClosure -> modules.each { dependsOn taskClosure(it) } }
+
+    /**
+     * Utility function to construct a closure given a task name (or task path).
+     *
+     * @param name task name (as String)
+     * @return closure constructing name of submodule task give submodule name
+     */
+    taskBuilder = { name -> return { module -> { "${module}:${name}" } } }
+
+}
+
+```
+
 ## starter.java.config-conventions.gradle
 
 ```groovy
@@ -306,41 +330,85 @@ dockerCompose {
 }
 
 def dockerStart = tasks.register('dockerStart', DefaultTask) {
-    dependsOn "dockerPrune", "docker", "dockerRun"
-}
-
-def dockerPrune = tasks.register('dockerPrune', DefaultTask) {
-    mustRunAfter 'dockerStop', 'dockerRemoveContainer'
-    dependsOn 'dockerPruneContainer', 'dockerPruneImage'
+    group = "Docker Run"
+    description = "Remove unused containers, build image, run container"
+    dependsOn tasks.named("dockerPrune")
+    dependsOn tasks.named("docker")
+    dependsOn tasks.named("dockerRun")
 }
 
 def dockerPruneContainer = tasks.register('dockerPruneContainer', Exec) {
+    group = "Docker"
+    description = "Remove unused containers"
     executable "docker"
     args "container", "prune", "-f"
 }
 
 def dockerPruneImage = tasks.register('dockerPruneImage', Exec) {
+    group = "Docker"
+    description = "Remove unused images"
     executable "docker"
     args "image", "prune", "-f"
 }
 
 def dockerPruneVolume = tasks.register('dockerPruneVolume', Exec) {
+    group = "Docker"
+    description = "Remove unused volumes"
     executable "docker"
     args "volume", "prune", "-f"
 }
 
+def dockerPrune = tasks.register('dockerPrune', DefaultTask) {
+    group = "Docker"
+    description = "Stop container, then remove unused containers and images"
+    mustRunAfter tasks.named('dockerStop')
+    mustRunAfter tasks.named('dockerRemoveContainer')
+    dependsOn dockerPruneContainer
+    dependsOn dockerPruneImage
+}
+
 def dcPrune = tasks.register('dcPrune', DefaultTask) {
-    mustRunAfter('dockerComposeDown')
-    dependsOn 'dockerPruneContainer', 'dockerPruneImage'
+    group = "Docker Container"
+    description = "Stop containers, then remove unused containers and images"
+    mustRunAfter tasks.named('dockerComposeDown')
+    dependsOn dockerPruneContainer
+    dependsOn dockerPruneImage
 }
 
 def dcPruneVolume = tasks.register('dcPruneVolume', DefaultTask) {
-    mustRunAfter('dockerComposeDown')
-    dependsOn 'dockerPruneVolume'
+    group = "Docker Container"
+    description = "Stop containers, then remove unused volumes"
+    mustRunAfter tasks.named('dockerComposeDown')
+    dependsOn dockerPruneVolume
+}
+
+def lintDockerfile = tasks.register('lintDockerfile', DefaultTask) {
+    group = JavaBasePlugin.VERIFICATION_GROUP
+    description = "Use linter (default hadolint) to perform static analysis on Dockerfile"
+    ext.binary = "/usr/local/bin/hadolint"
+    ext.targets = ["src/docker/Dockerfile"]
+    ext.taskTimeout = 10000L
+    def result = 0
+    def sout = new StringBuilder()
+    def serr = new StringBuilder()
+    doLast {
+        ext.targets.each { f ->
+            def cmdLine = "${ext.binary} ${f}"
+            def proc = cmdLine.execute(null, project.projectDir)
+            proc.consumeProcessOutput(sout, serr)
+            proc.waitForOrKill(ext.taskTimeout)
+            result |= proc.exitValue()
+        }
+        if (result != 0) {
+            logger.error("stderr: {}", serr.toString())
+            logger.error("stdout: {}", sout.toString())
+        }
+        return result
+    }
 }
 
 tasks.named("dockerRemoveContainer").configure {
-    mustRunAfter('dockerStop')
+    mustRunAfter tasks.named('dockerStop')
 }
 
 tasks.named("dockerComposeUp").configure {
@@ -349,6 +417,10 @@ tasks.named("dockerComposeUp").configure {
 
 tasks.named("dockerRun").configure {
     dependsOn tasks.named("docker")
+}
+
+tasks.named("check").configure {
+    dependsOn tasks.named("lintDockerfile")
 }
 ```
 
@@ -1059,7 +1131,8 @@ scmVersion {
     ignoreUncommittedChanges = false // should uncommitted changes force version bump
 
     // doc: Version / Tag with highest version
-    useHighestVersion = true // Defaults as false, setting to true will find the highest visible version in the commit tree
+    useHighestVersion = true
+    // Defaults as false, setting to true will find the highest visible version in the commit tree
 
     // doc: Version / Sanitization
     sanitizeVersion = true // should created version be sanitized, true by default

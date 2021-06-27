@@ -1,0 +1,10 @@
+@startuml
+
+interface DataFactory <<U>> <<T>> {
+  createBySpec(U): T
+  create(): T
+  createCollectionBySpec(U): List<T>
+  createCollection(): List<T>
+}
+
+@enduml

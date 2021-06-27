@@ -22,10 +22,6 @@ Describe overview of tech stack and any specific pre-requisites.
 
 [Describe how / where to obtain source code.]
 
-### Run Locally
-
-[Describe how / where to obtain source code.]
-
 ## Authoring Tips
 
 > NOTE: Delete this section, these are just tips for you, the author.

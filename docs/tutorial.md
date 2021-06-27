@@ -20,7 +20,7 @@ Provide request/replay example data with relevant input values.
 Make sure the input values are unique.
 Make sure the input values are used consistently throughout the examples, so that consumers can more easily follow the process flows.
 
-##### Request
+#### Request
 
 ```json
 {
@@ -28,7 +28,7 @@ Make sure the input values are used consistently throughout the examples, so tha
 }
 ```
 
-##### Reply
+#### Reply
 
 ```json
 {

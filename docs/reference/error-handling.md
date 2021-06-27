@@ -49,4 +49,3 @@ Maps `RequestValidationException` to the `BAD_REQUEST` HTTP error code.
 ### ResourceNotFoundAdviceTraits
 
 Maps `ResourceNotFoundException` to the `NOT_FOUND` HTTP error code.
-

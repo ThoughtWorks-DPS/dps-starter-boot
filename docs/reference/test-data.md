@@ -141,7 +141,3 @@ test-data:
 ## Future Development
 
 In the future, there may be a `FakerDataLoader<T>` which uses annotations on the data type in conjunction with the Faker library to generate realistic yet random data samples.
-
-
-
-

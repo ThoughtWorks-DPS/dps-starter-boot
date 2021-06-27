@@ -39,5 +39,3 @@ To that end, do not include or build upon other convention files, except at the 
 I think the only exception to this rule is `starter.java.style-conventions`, which includes `starter.java.checktyle-conventions`.
 This was only allowed because `style-conventions` is aggregating `checkstyle` and `spotless`.
 If 'spotless' gets more complicated, then these two should be split and propagated upwards instead of being aggregated under `style-conventions`.
-
-

@@ -137,7 +137,7 @@ Configuration for spotless code linting
 
 ## starter.java.style-conventions.gradle
 
-Include for checkstyle 
+Include for checkstyle
 
 ## starter.java.test-conventions.gradle
 
@@ -153,7 +153,7 @@ Configuration for integration testing
 
 ## starter.java.test-jacoco-aggregation-conventions.gradle
 
-Configuration for aggregating jacoco test reports into one unified report. 
+Configuration for aggregating jacoco test reports into one unified report.
 
 ## starter.java.test-jacoco-conventions.gradle
 
@@ -199,4 +199,3 @@ Top-level configuration of all the typical standard configurations for developin
 ## starter.std.java.shell-conventions.gradle
 
 Top-level configuration for shell scripts.
-

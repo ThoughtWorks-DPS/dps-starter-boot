@@ -76,4 +76,3 @@ The `compareTemplate` task also omits the following files, in addition to the fi
 ## testTemplate
 
 The `testTemplate` task is a shortcut that will run `generateTemplate` and `buildTemplate` tasks in succession.
-

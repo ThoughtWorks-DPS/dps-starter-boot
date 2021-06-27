@@ -31,7 +31,7 @@ The core classes include the `EntityLifecycleNotification` which defines the pay
 The `EntityLifecycleNotification` (ELN) is the event object that gets emitted to consumers.
 It contains metadata defining:
 
-* schema version of the entity 
+* schema version of the entity
 * mutation operation
 * when the operation took place
 * URI of the agent performing the operation
@@ -57,7 +57,7 @@ This is particularly useful for testing, since it provides a way to deterministi
 
 The `EntityLifecycleNotifierConfig` class provides default implementations for the `EntityLifecycleNotifier` and `TimestampProvider` bean classes.
 Each of these are annotated `@ConditionalOnMissingBean`.
-To override either of these, just provide your own Spring-Boot configuration class supplying a specific implementation. 
+To override either of these, just provide your own Spring-Boot configuration class supplying a specific implementation.
 
 ### EntityLifecycleObjectMapperConfig
 

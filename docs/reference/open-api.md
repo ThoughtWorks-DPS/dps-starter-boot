@@ -56,7 +56,7 @@ It provides the following scopes:
 ### `CustomSchemaProvider`
 
 It may become necessary to provide a specific schema definition.
-Commonly, this is because the automatic documentation generation fails for certain types of Generic<T> type definitions.
+Commonly, this is because the automatic documentation generation fails for certain types of `Generic<T>` type definitions.
 When this is necessary, implement a new `CustomSchemaProvider` (and ensure it is annotated as `@Component`) and make it available on the class path.
 
 The OpenAPI configuration will be injected with all classes impleenting the `CustomSchemaProvider` interface.
@@ -76,7 +76,6 @@ This configuration bean is enabled by the property `starter.openapi.default-jwt-
 This configuration bean defines the OAuth security scheme definitionl
 This configuration bean is enabled by the property `starter.openapi.default-oauth-security-scheme.enabled=true`.
 
-
 ### `OpenApiConfiguration`
 
 The `OpenApiConfiguration` bean defines the configuration for the OpenAPI capabilities within the service.
@@ -84,7 +83,8 @@ The `OpenApiConfiguration` bean defines the configuration for the OpenAPI capabi
 A sample set of properties is shown below.
 Each property maps in a straightforward way to properties defined by the OpenAPI configuration bean specified in the `OpenApiConfiguration` class.
 
-The SpringDoc configuration is also shown, since it has some relevance to how the OpenAPI documentation is produced. 
+The SpringDoc configuration is also shown, since it has some relevance to how the OpenAPI documentation is produced.
+
 #### Configuration Properties
 
 ```yaml
@@ -106,4 +106,3 @@ starter:
     contactName: Example
     serverUrl: http://localhost:8080
 ```
-

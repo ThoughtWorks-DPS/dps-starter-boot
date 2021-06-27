@@ -28,7 +28,7 @@ Current types include:
 * `starter.std.java.bom-conventions`: Bill-of-Materials package
 * `starter.std.java.cli-conventions`: Command-line utility application
 * `starter.std.java.library-conventions`: normal Java library
-* `starter.std.java.library-spring-conventions`: Spring-Boot configuration package Java library 
+* `starter.std.java.library-spring-conventions`: Spring-Boot configuration package Java library
 * `starter.std.java.plugin-conventions`: Gradle Plugin
 * `starter.std.java.shell-conventions`: (bash|sh) shell script utilities (primarily to drive script linting)
 
@@ -87,5 +87,3 @@ plugins {
 
 * (1) continue to reference the standard plugins
 * (2) this is our local version of the `local.java.config-conventions` plugin
-
-

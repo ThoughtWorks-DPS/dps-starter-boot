@@ -9,7 +9,7 @@ This package provides a producer class for publishing `LifecycleEntityNotificati
 
 ### What it is
 
-An implementation of the Entity Lifecycle Notifier using Kafka as the communication mechanism. 
+An implementation of the Entity Lifecycle Notifier using Kafka as the communication mechanism.
 
 ### What it isn't
 
@@ -26,7 +26,7 @@ The standard `spring.kafka.*` configuration properties are defined at the `start
 
 `KafkaEntityLifecycleNotifierConfig` supplies the Kafka implementation of the `EntityLifecycleNotifier` for use in service implementations.
 
-It also defines a `NewTopic` bean to create the defined topic from `starter.boot.kafka-lifecycle-notifier.producer.topic.name` 
+It also defines a `NewTopic` bean to create the defined topic from `starter.boot.kafka-lifecycle-notifier.producer.topic.name`
 
 ### TimestampProviderConfig
 

@@ -21,4 +21,3 @@ Don't expect it to make your lunch.
 ## IstioDisableSecurityConfig
 
 Disables security checks on all paths, and also disables csrf protection.
-

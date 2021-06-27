@@ -1,0 +1,66 @@
+exclude: >
+  (?x)^(
+      helm/templates/*
+  )
+repos:
+  - repo: https://github.com/thoughtworks/talisman
+    rev: v1.11.0
+    hooks:
+      - id: talisman-commit
+        stages: &commit-stage [commit]
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.5.0
+    hooks:
+      - id: check-case-conflict
+        stages: *commit-stage
+      - id: check-executables-have-shebangs
+        stages: *commit-stage
+      - id: check-merge-conflict
+        stages: *commit-stage
+      - id: check-json
+        stages: *commit-stage
+      - id: check-yaml
+        stages: *commit-stage
+      - id: check-xml
+        stages: *commit-stage
+      - id: forbid-new-submodules
+        stages: *commit-stage
+      - id: detect-private-key
+        stages: *commit-stage
+      - id: pretty-format-json
+        args:
+          - --no-sort-keys
+          - --autofix
+        files: \.json(\.tpl)?$
+        stages: *commit-stage
+        types: [ text ]
+    # - id: end-of-file-fixer
+
+  - repo: https://github.com/jguttman94/pre-commit-gradle
+    rev: v0.2.1
+    hooks:
+      - id: gradle-spotless
+        args: ['-w', '-o']
+        stages: [commit, push]
+      - id: gradle-task
+        args: ['test','-w','-o']
+        stages: [push]
+
+#  - repo: https://github.com/punitlad/commiterator.git
+#    rev: v0.3.0
+#    hooks:
+#      - id: check-commit-message
+#        # args: [ "[#[0-9]{4,}]" ]
+#        stages: [commit-msg]
+
+  - repo: https://github.com/punitlad/git-mob
+    rev: f111493
+    hooks:
+      - id: add-coauthors
+        stages: [prepare-commit-msg]
+
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.27.1
+    hooks:
+      - id: markdownlint

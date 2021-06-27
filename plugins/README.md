@@ -40,8 +40,6 @@ I think the only exception to this rule is `starter.java.style-conventions`, whi
 This was only allowed because `style-conventions` is aggregating `checkstyle` and `spotless`.
 If 'spotless' gets more complicated, then these two should be split and propagated upwards instead of being aggregated under `style-conventions`.
 
-
-
 ## starter.java.build-javatarget-conventions.gradle
 
 ```groovy

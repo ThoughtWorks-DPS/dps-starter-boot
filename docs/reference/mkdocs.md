@@ -24,7 +24,7 @@ The TOC will appear depending on the deployment target.
 
 ### Backstage
 
-When rendering to Backstage, one must uncomment the following lines in the mkdocs.yml file: 
+When rendering to Backstage, one must uncomment the following lines in the mkdocs.yml file:
 
 ```yaml
 #plugins:

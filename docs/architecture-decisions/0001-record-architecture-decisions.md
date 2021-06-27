@@ -1,6 +1,6 @@
 # [dps-multi-module-starterkit-java] Architecture Decision Record (ADR)
 
-# 1. Record architecture decisions
+## 1. Record architecture decisions
 
 Date: 2020-11-12
 

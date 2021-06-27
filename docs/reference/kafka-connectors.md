@@ -41,7 +41,7 @@ Both `KafkaProducerConfig` and `KafkaConnectorConfigProperties` are enabled via 
 
 This class maps the `KafkaProducerConfigProperties` class to the `spring.kafka` property prefix.
 
-As an example, the `TestKafkaConfigProperties` class maps to `starter.boot.kafka-connector.producer` property prefix. 
+As an example, the `TestKafkaConfigProperties` class maps to `starter.boot.kafka-connector.producer` property prefix.
 
 ```java
 @Slf4j
@@ -130,4 +130,4 @@ The `@Async` annotation specifies the `Executor` thread pool defined in `KafkaPr
 
 The `LatchedKafkaConsumer` class is primarily used for testing.
 It contains a `CountdownLatch` which is decremented upon message receipt.
-This allows the unit test code to wait on the latch and continue the tests as soon as the message arrives. 
+This allows the unit test code to wait on the latch and continue the tests as soon as the message arrives.

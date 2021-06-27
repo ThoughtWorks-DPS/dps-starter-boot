@@ -1,6 +1,6 @@
 # [dps-multi-module-starterkit-java] Architecture Decision Record (ADR)
 
-# NUMBER. TITLE
+## NUMBER. TITLE
 
 Date: DATE
 

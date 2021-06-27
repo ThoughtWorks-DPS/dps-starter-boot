@@ -12,7 +12,7 @@ The `alter-paths.sh` script will spin through a directory tree.
 It will rename any folders identified by the `--orig-tl` argument to the name specified by `--tl`.
 The same is true for `--orig-org` and `--org` respectively.
 
-```
+```bash
 scripts/alter-path.sh [--path <path>] [--tl <toplevel>] [--org <organization>] [--orig-tl <original toplevel>] [--orig-org <original org>]
   --path        path to process (.)
   --tl          top level package name (com)
@@ -34,8 +34,7 @@ Rename the current `io.twdps` package name to `com.example`
 
 The `apply-sed.sh` script will apply the given sed-script (defined in the named file) to a set of files.
 
-
-```
+```bash
 scripts/apply-sed.sh [--sed <script>] [--preserve <ext>] [--file <file>] [--path <path>] [--tree <tree>]
   --sed         sed script to execute ()
   --preserve    preserve translated files with this extension for debugging ()
@@ -61,7 +60,7 @@ The `create-lib.sh` script create a new empty sub-module package directory with 
 The skeleton will contain `src/main/*` and `src/test/*` paths for the specified package.
 The script will also create an empty `build.gradle` file as a starting point.
 
-```
+```bash
 scripts/create-lib.sh [--path <path>] [--tl <toplevel>] [--org <organization>] [--pkg <package name>]
   --path        path to create new package (.)
   --tl          top level package name (io)
@@ -85,8 +84,7 @@ It will also rename the package paths (directory paths and code).
 
 Given the option, it will also delete the local `.git` repository folder, effectively disconnecting its history from the parent.
 
-
-```
+```bash
 scripts/rebrand.sh [--path <path>] [--dst <dest path> ] \
     [--repo <reponame>] [--gh-org <github Org name>] \
     [--tl <toplevel>] [--org <organization>] \

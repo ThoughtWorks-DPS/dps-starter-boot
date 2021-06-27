@@ -12,7 +12,6 @@ Reference contains entries for all the packages included in the starter-boot umb
 
 Architecture Decisions is a decision log of the major design decisions made along the way.
 
-
 ## Support
 
 If you need support, the DPS channel is helpful: #starter-kit on DPS Slack.

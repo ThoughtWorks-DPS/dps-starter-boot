@@ -10,6 +10,7 @@ brew "docker"
 brew "codeclimate/formulae/codeclimate"
 brew "shellcheck"
 brew "mkdocs"
+brew "markdownlint-cli"
 
 tap "adoptopenjdk/openjdk" || true
 cask "adoptopenjdk11"

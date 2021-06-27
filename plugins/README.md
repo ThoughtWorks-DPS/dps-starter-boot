@@ -947,6 +947,10 @@ plugins {
 spotless {
 //    ratchetFrom getPropertyOrDefault('spotless_ratchet_branch', 'origin/main') // only format files which have changed since origin/main
 }
+
+tasks.named('build').configure {
+    mustRunAfter tasks.named('spotlessApply')
+}
 ```
 
 ## starter.java.lint-spotless-groovy-conventions.gradle

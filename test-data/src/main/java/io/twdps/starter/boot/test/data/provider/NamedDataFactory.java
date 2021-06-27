@@ -9,18 +9,19 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class GenericDataFactory<T> implements DataFactory<T> {
+public class NamedDataFactory<T> implements DataFactory<String, T> {
 
   Map<String, T> data;
   Map<String, List<T>> collections;
+  public static String DEFAULT_SPEC = "default";
 
-  public GenericDataFactory(DataLoader<T> loader) {
+  public NamedDataFactory(DataLoader<T> loader) {
     this.data = loader.loadData();
     this.collections = loader.loadCollections();
   }
 
   @Override
-  public T getNamedData(String name) {
+  public T createBySpec(String name) {
     if (data.containsKey(name)) {
       return data.get(name);
     } else {
@@ -29,11 +30,21 @@ public class GenericDataFactory<T> implements DataFactory<T> {
   }
 
   @Override
-  public List<T> getNamedDataCollection(String name) {
+  public T create() {
+    return createBySpec(DEFAULT_SPEC);
+  }
+
+  @Override
+  public List<T> createCollectionBySpec(String name) {
     if (collections.containsKey(name)) {
       return collections.get(name);
     } else {
       throw new DataNotFoundException(name);
     }
+  }
+
+  @Override
+  public List<T> createCollection() {
+    return createCollectionBySpec(DEFAULT_SPEC);
   }
 }

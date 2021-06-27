@@ -2,21 +2,15 @@ package io.twdps.starter.boot.test.data.spi;
 
 import java.util.List;
 
-public interface DataFactory<T> {
+public interface DataFactory<U, T> {
 
-  static String DEFAULT_NAME = "default";
+  T createBySpec(U spec) throws DataNotFoundException;
 
-  T getNamedData(String name) throws DataNotFoundException;
+  T create();
 
-  default T getData() {
-    return getNamedData(DEFAULT_NAME);
+  default List<T> createCollectionBySpec(U spec) throws DataNotFoundException {
+    return List.of(this.createBySpec(spec));
   }
 
-  default List<T> getNamedDataCollection(String name) throws DataNotFoundException {
-    return List.of(this.getData());
-  }
-
-  default List<T> getDataCollection() {
-    return getNamedDataCollection(DEFAULT_NAME);
-  }
+  List<T> createCollection();
 }

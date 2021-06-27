@@ -29,7 +29,7 @@ public class AccountDataFactoryTest {
   @Test
   public void dataDefaultRecordPopulated() {
     AccountData control = accountDataProperties.loadData().get("default");
-    AccountData data = accountDataProvider.getData();
+    AccountData data = accountDataProvider.create();
 
     assertThat(data.getFirstName()).isNotNull();
     assertThat(data.getFirstName()).isEqualTo(control.getFirstName());
@@ -40,7 +40,7 @@ public class AccountDataFactoryTest {
   @Test
   public void dataNamedRecordPopulated() {
     AccountData control = accountDataProperties.loadData().get("raiders");
-    AccountData data = accountDataProvider.getNamedData("raiders");
+    AccountData data = accountDataProvider.createBySpec("raiders");
 
     assertThat(data.getFirstName()).isNotNull();
     assertThat(data.getFirstName()).isEqualTo(control.getFirstName());
@@ -54,14 +54,14 @@ public class AccountDataFactoryTest {
     assertThrows(
         DataNotFoundException.class,
         () -> {
-          AccountData response = accountDataProvider.getNamedData(NOT_FOUND);
+          AccountData response = accountDataProvider.createBySpec(NOT_FOUND);
         });
   }
 
   @Test
   public void collectionDefaultCollectionPopulated() {
     List<AccountData> controlCollection = accountDataProperties.loadCollections().get("default");
-    List<AccountData> collection = accountDataProvider.getDataCollection();
+    List<AccountData> collection = accountDataProvider.createCollection();
 
     assertThat(collection.size()).isEqualTo(controlCollection.size());
     AccountData data = collection.get(0);
@@ -76,7 +76,7 @@ public class AccountDataFactoryTest {
   @Test
   public void collectionNamedCollectionPopulated() {
     List<AccountData> controlCollection = accountDataProperties.loadCollections().get("starwars");
-    List<AccountData> collection = accountDataProvider.getNamedDataCollection("starwars");
+    List<AccountData> collection = accountDataProvider.createCollectionBySpec("starwars");
 
     assertThat(collection.size()).isEqualTo(controlCollection.size());
     AccountData data = collection.get(0);
@@ -94,7 +94,7 @@ public class AccountDataFactoryTest {
     assertThrows(
         DataNotFoundException.class,
         () -> {
-          List<AccountData> response = accountDataProvider.getNamedDataCollection(NOT_FOUND);
+          List<AccountData> response = accountDataProvider.createCollectionBySpec(NOT_FOUND);
         });
   }
 }

@@ -13,7 +13,9 @@ together {
 
     ctor(DataLoader<T>): void
     createBySpec(String): T
+    create(): T
     createCollectionBySpec(String): List<T>
+    createCollection(): List<T>
 
   }
   class GenericDataLoader <<T>> implements DataLoader {

@@ -17,6 +17,7 @@ brew bundle -v
 echo "Installing pre-commit modules"
 pre-commit install --hook-type pre-push
 pre-commit install --hook-type commit-msg
+pre-commit install --hook-type pre-commit
 
 cd "${pwd}"
 echo "All done!"

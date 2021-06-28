@@ -42,7 +42,10 @@ repos:
     hooks:
       - id: gradle-spotless
         args: ['-w', '-o']
-        stages: [commit, push]
+        stages: [commit]
+      - id: gradle-task
+        args: ['spotlessCheck', '-w', '-o']
+        stages: [push]
       - id: gradle-task
         args: ['test','-w','-o']
         stages: [push]

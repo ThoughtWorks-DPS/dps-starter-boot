@@ -13,13 +13,17 @@ together {
   }
 }
 
-class AccountDataFactory <<Account>> extends NamedDataFactory {
+class AccountDataFactory <<AccountData>> extends NamedDataFactory {
   ctor(DataLoader<AccountData>): void
+  createBySpec(String): AccountData
+  create(): AccountData
+  createCollectionBySpec(String): List<AccountData>
+  createCollection(): List<AccountData>
 }
 
-class AccountDataProperties <<Account>> extends GenericDataLoader
+class AccountDataProperties <<AccountData>> extends GenericDataLoader
 
-class AccountTestData <<Account>> extends GenericDataLoader {
+class AccountTestData <<AccountData>> extends GenericDataLoader {
   ctor(): void
 }
 

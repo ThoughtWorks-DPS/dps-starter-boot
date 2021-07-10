@@ -1,0 +1,29 @@
+@startuml
+!include architecture-core-factory.plantuml
+
+together {
+  class AccountData {
+    id: String
+    userName: String
+    pii: String
+    firstName: String
+    lastName: String
+    fullName: String
+    success: boolean
+  }
+}
+
+class AccountDataFactory <<String>> <<AccountData>> extends DataFactory {
+  data: Map<String, AccountData>
+  collections: Map<String, List<AccountData>>
+
+  ctor(): void // initialize hardcoded data
+  createBySpec(String): AccountData
+  create(): AccountData
+  createCollectionBySpec(String): List<AccountData>
+  createCollection(): List<AccountData>
+}
+
+AccountData o-- AccountDataFactory
+
+@enduml

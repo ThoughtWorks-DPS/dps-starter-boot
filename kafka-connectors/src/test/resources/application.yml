@@ -121,3 +121,7 @@ starter:
 
 logging:
   register-shutdown-hook: true
+  level:
+    root: WARN
+    org.hibernate: ERROR
+    org.springframework.web: WARN

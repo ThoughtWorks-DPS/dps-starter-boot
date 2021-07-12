@@ -2,7 +2,7 @@
 set -e
 
 pwd=$(pwd)
-path=$(dirname $0)
+path=$(dirname "$0")
 cd "${path}"
 
 if ! command -v brew &> /dev/null

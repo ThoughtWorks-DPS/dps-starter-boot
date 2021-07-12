@@ -8,7 +8,7 @@ plugins {
 
 spotless {
     java {
-        googleJavaFormat("${google_java_format_version:'1.10.0'}")
+        googleJavaFormat(getPropertyOrDefault('google_java_format_version', '1.10.0'))
         toggleOffOn()
         importOrder('', 'java', 'javax')
     }

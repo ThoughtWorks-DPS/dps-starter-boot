@@ -10,7 +10,7 @@ plugins {
 // id 'starter.java.build-utils-property-conventions'
 
 jacoco {
-    toolVersion = jacoco_version
+    toolVersion = jacoco_tool_version
     reportsDir = file("$buildDir/jacoco")
 }
 

@@ -14,16 +14,16 @@ buildscript {
 }
 
 plugins {
-    id("org.ajoberstar.grgit") version "${grgit_version}" apply false
-    id("org.springframework.boot") version "${spring_boot_version}" apply false
-    id("io.swagger.swaggerhub") version "${swaggerhub_version}" apply false
-    id("com.diffplug.spotless") version "${spotless_version}" apply false
+    id("org.ajoberstar.grgit") version "${grgit_plugin_version}" apply false
+    id("org.springframework.boot") version "${spring_boot_release_version}" apply false
+    id("io.swagger.swaggerhub") version "${swaggerhub_plugin_version}" apply false
+    id("com.diffplug.spotless") version "${spotless_plugin_version}" apply false
     id("com.palantir.docker") version "${palantir_docker_plugin_version}" apply false
     id("com.palantir.docker-run") version "${palantir_docker_run_plugin_version}" apply false
     id("com.palantir.baseline-circleci") version "${palantir_baseline_plugin_version}" apply false
-    id("com.cdsap.talaiot") version "${talaiot_version}" apply false
+    id("com.cdsap.talaiot") version "${talaiot_plugin_version}" apply false
     id("com.cdsap.talaiot.plugin.base") version "${talaiot_plugin_base_version}" apply false
-    id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_version}" apply false
+    id("net.rdrei.android.buildtimetracker") version "${buildtimetracker_plugin_version}" apply false
     id("pl.allegro.tech.build.axion-release") version "${axion_release_plugin_version}" apply false
     id("com.github.ben-manes.versions") version "${versions_plugin_version}" apply false
     id("se.patrikerdes.use-latest-versions") version "${use_latest_versions_plugin_version}" apply false
@@ -44,7 +44,6 @@ plugins {
     id("starter.java.test-jacoco-aggregation-conventions")
     id('starter.java.doc-mkdocs-conventions')
 }
-
 
 ext {
     jacoco_enforce_violations = false

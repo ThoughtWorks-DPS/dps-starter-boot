@@ -8,7 +8,7 @@ plugins {
 
 spotless {
     kotlin {
-        ktfmt("${ktfmt_format_version:'0.25'}")
+        ktfmt(getPropertyOrDefault('ktfmt_format_version', '0.25'))
     }
     kotlinGradle {
         target '*.gradle.kts'

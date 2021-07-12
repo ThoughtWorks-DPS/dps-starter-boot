@@ -28,7 +28,8 @@ class CookieCutterBuildTask extends GradleBuild {
             log.debug("l:task [{}]", generatedProjectName.get())
             log.debug("l:task [{}]", outputPath.get())
             log.debug("l:task [{}]", fullOutputPath.get())
-            dir = "${fullOutputPath.get()}"
+//            dir = "${fullOutputPath.get()}"
+            dir = fullOutputPath.get()
         }
     }
 }

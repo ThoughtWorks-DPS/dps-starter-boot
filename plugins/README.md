@@ -46,7 +46,14 @@ If 'spotless' gets more complicated, then these two should be split and propagat
 plugins {
 }
 
-sourceCompatibility = getPropertyOrDefault('java_version', '11')
+//sourceCompatibility = getPropertyOrDefault('java_version', '11')
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(getPropertyOrDefault("java_target_version", '11'))
+        vendor = JvmVendorSpec.ADOPTOPENJDK
+    }
+}
 ```
 
 ## starter.java.build-springboot-conventions.gradle
@@ -162,7 +169,7 @@ ext {
      * Filter files based on an array of allowable extensions.
      */
     filterFiles = { FileCollection fileSet, extensions ->
-        return fileSet.filter { f -> extensions.any(e -> f.name.endsWith(e)) }
+        return fileSet.filter { f -> extensions.any { e -> f.name.endsWith(e) } }
     }
     /**
      * Filter files based on an array of allowable extensions that also are in the local sub-module.
@@ -256,7 +263,7 @@ ext {
      * @param name task name (as String)
      * @return closure constructing name of submodule task give submodule name
      */
-    taskBuilder = { name -> return { module -> { "${module}:${name}" } } }
+    taskBuilder = { name -> return { module -> return "${module}:${name}" } }
 
 }
 
@@ -426,22 +433,23 @@ tasks.named("check").configure {
 
 ```groovy
 plugins {
-    id 'starter.java.build-utils-property-conventions'
 }
+// id 'starter.java.build-utils-property-conventions'
+
 // NOTE: This is a simplified implementation.
 // For some reason, the tasks from com.palantir.docker don't have proper
 // input/outputs defined for the context where we just define a docker-compose.yaml
 // file and don't actually build our own docker image.
 // We re-use the same task names for consistency
 
-var dockerComposeUp = tasks.register('dockerComposeUp', Exec) {
+def dockerComposeUp = tasks.register('dockerComposeUp', Exec) {
     group = JavaBasePlugin.VERIFICATION_GROUP
     description = "Start up a set of containers defined by a docker-compose.yaml file"
     executable 'docker-compose'
     args "-f", "${project.projectDir}/src/docker/${getPropertyOrDefault('dockerComposeFile', 'docker-compose.yml')}", "up", "-d"
 }
 
-var dockerComposeDown = tasks.register('dockerComposeDown', Exec) {
+def dockerComposeDown = tasks.register('dockerComposeDown', Exec) {
     group = JavaBasePlugin.VERIFICATION_GROUP
     description = "Shut down a set of containers defined by a docker-compose.yaml file"
     executable 'docker-compose'
@@ -875,7 +883,7 @@ dependencies {
 }
 
 checkstyle {
-    toolVersion "${checkstyle_version}"
+    toolVersion "${checkstyle_tool_version}"
 //    configFile = rootProject.file('settings/checkstyle/checkstyle.xml')
     config project.resources.text.fromArchiveEntry(configurations.checkstyleRules, 'settings/checkstyle/checkstyle.xml')
     configProperties = [
@@ -912,7 +920,7 @@ shellcheck {
     sources = files(".")
     ignoreFailures = true
     showViolations = true
-    shellcheckVersion = "${shellcheck_version}"
+    shellcheckVersion = "${shellcheck_tool_version}"
     useDocker = true
     shellcheckBinary = "/usr/local/bin/shellcheck"
     severity = "style" // "error"
@@ -986,7 +994,7 @@ plugins {
 
 spotless {
     java {
-        googleJavaFormat("${google_java_format_version:'1.10.0'}")
+        googleJavaFormat(getPropertyOrDefault('google_java_format_version', '1.10.0'))
         toggleOffOn()
         importOrder('', 'java', 'javax')
     }
@@ -1006,7 +1014,7 @@ plugins {
 
 spotless {
     kotlin {
-        ktfmt("${ktfmt_format_version:'0.25'}")
+        ktfmt(getPropertyOrDefault('ktfmt_format_version', '0.25'))
     }
     kotlinGradle {
         target '*.gradle.kts'
@@ -1423,7 +1431,7 @@ plugins {
 // id 'starter.java.build-utils-property-conventions'
 
 jacoco {
-    toolVersion = jacoco_version
+    toolVersion = jacoco_tool_version
     reportsDir = file("$buildDir/jacoco")
 }
 

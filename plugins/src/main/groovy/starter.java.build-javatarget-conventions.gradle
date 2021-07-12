@@ -1,4 +1,11 @@
 plugins {
 }
 
-sourceCompatibility = getPropertyOrDefault('java_version', '11')
+//sourceCompatibility = getPropertyOrDefault('java_version', '11')
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(getPropertyOrDefault("java_target_version", '11'))
+        vendor = JvmVendorSpec.ADOPTOPENJDK
+    }
+}

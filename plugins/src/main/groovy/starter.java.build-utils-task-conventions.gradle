@@ -13,7 +13,7 @@ ext {
      * @param name task name (as String)
      * @return closure constructing name of submodule task give submodule name
      */
-    taskBuilder = { name -> return { module -> { "${module}:${name}" } } }
+    taskBuilder = { name -> return { module -> return "${module}:${name}" } }
 
 }
 

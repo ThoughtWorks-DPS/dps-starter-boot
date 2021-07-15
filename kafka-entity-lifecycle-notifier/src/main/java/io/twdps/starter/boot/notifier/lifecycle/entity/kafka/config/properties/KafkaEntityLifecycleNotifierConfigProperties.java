@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "starter.boot.kafka-lifecycle-notifier.producer")
 @AutoConfigureBefore(
     name = {
+      // CSOFF: LineLength
       "io.twdps.starter.boot.notifier.lifecycle.entity.kafka.config.KafkaEntityLifecycleNotifierConfig"
+      // CSON: LineLength
     })
 public class KafkaEntityLifecycleNotifierConfigProperties extends KafkaProducerConfigProperties {}

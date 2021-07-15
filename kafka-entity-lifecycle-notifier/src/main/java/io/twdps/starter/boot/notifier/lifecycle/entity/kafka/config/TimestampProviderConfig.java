@@ -10,7 +10,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @AutoConfigureBefore(
     name = {
+      // CSOFF: LineLength
       "io.twdps.starter.boot.notifier.lifecycle.entity.kafka.config.KafkaEntityLifecycleNotifierConfig"
+      // CSON: LineLength
     })
 public class TimestampProviderConfig {
 

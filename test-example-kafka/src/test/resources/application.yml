@@ -121,3 +121,13 @@ starter:
 
 logging:
   register-shutdown-hook: true
+  level:
+    root: ERROR
+    org.hibernate: ERROR
+    org.hibernate.SQL: ERROR # DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: ERROR # TRACE
+    org.springframework.web: WARN
+    org.springframework.jdbc.core: ERROR # DEBUG
+    org.springframework.jdbc.core.JdbcTemplate: ERROR # DEBUG
+    org.springframework.jdbc.core.StatementCreatorUtils: ERROR # TRACE
+    org.type.descriptor.sql.BasicBinder: ERROR # TRACE

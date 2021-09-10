@@ -40,3 +40,5 @@ include ':pact-broker'
 include ':scripts'
 include ':test-example'
 include ':test-example-kafka'
+include ':query-builder'
+

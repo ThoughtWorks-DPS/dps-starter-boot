@@ -3,4 +3,5 @@ fileignoreconfig:
   checksum: 5b3e8d350d6fc1db13595f926f3065bd6e0732b9ab8ba462a66fabad7f900cbe
 - filename: .circleci/config.yml
   checksum: 174c352f511a39c3390af41c0f1c709a5468ccc578dababe2ba4e1cbb71c8f0c
-
+- filename: query-builder/src/main/java/io/twdps/starter/boot/querybuilder/predicate/BasePredicate.java
+  checksum: a033aa140dbb51f2405e80a61dac78e4d8c299525b80bc9fb3aeb9fdebfdcf6b

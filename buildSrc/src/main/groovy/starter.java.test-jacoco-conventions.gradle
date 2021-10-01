@@ -29,7 +29,7 @@ jacocoTestReport {
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*'] )
+            fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*', '**/*_.*'] )
         }))
     }
 
@@ -45,7 +45,7 @@ jacocoTestCoverageVerification {
             }
             afterEvaluate {
                 classDirectories.setFrom(files(classDirectories.files.collect {
-                    fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*'] )
+                    fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*', '**/*_.*'] )
                 }))
             }
         }

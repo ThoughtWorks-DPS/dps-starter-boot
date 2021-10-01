@@ -984,7 +984,7 @@ plugins {
 
 spotless {
     groovy {
-        importOrder('', 'java', 'javax')
+        importOrder('', 'java')
         excludeJava()
     }
     groovyGradle {
@@ -1008,7 +1008,7 @@ spotless {
     java {
         googleJavaFormat(getPropertyOrDefault('google_java_format_version', '1.10.0'))
         toggleOffOn()
-        importOrder('', 'java', 'javax')
+        importOrder('', 'java')
     }
 }
 ```
@@ -1462,7 +1462,7 @@ jacocoTestReport {
 
     afterEvaluate {
         classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*'] )
+            fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*', '**/*_.*'] )
         }))
     }
 
@@ -1478,7 +1478,7 @@ jacocoTestCoverageVerification {
             }
             afterEvaluate {
                 classDirectories.setFrom(files(classDirectories.files.collect {
-                    fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*'] )
+                    fileTree(dir: it, exclude: ['**/*MapperImpl.*', '**/*Application.*', '**/*_.*'] )
                 }))
             }
         }

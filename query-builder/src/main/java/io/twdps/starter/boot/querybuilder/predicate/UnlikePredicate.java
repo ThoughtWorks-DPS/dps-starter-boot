@@ -3,7 +3,6 @@ package io.twdps.starter.boot.querybuilder.predicate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.Serializable;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;

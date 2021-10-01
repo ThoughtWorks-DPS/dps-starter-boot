@@ -5,7 +5,6 @@ import static io.twdps.starter.boot.querybuilder.misc.Constants.PERCENT_SIGN;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.Serializable;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;

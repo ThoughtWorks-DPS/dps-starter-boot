@@ -8,7 +8,7 @@ plugins {
 
 spotless {
     groovy {
-        importOrder('', 'java', 'javax')
+        importOrder('', 'java')
         excludeJava()
     }
     groovyGradle {

@@ -1,0 +1,12 @@
+plugins {
+    id 'starter.std.java.library-spring-conventions'
+}
+
+dependencies {
+    annotationBom platform(project(':starter-bom'))
+    checkstyleRules platform(project(':checkstyle-bom'))
+
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    annotationProcessor 'org.springframework.boot:spring-boot-autoconfigure-processor'
+}

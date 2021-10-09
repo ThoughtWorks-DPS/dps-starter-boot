@@ -86,5 +86,12 @@ scmVersion {
 }
 
 allprojects {
-    project.version = scmVersion.version
+    ext {
+        gitPresent = new File('.git').exists()
+        if (gitPresent) {
+            project.version = scmVersion.version
+        } else {
+            project.version = "0.0.0-SNAPSHOT"
+        }
+    }
 }

@@ -26,6 +26,6 @@ tasks.named('shellcheck').configure {
     }
 }
 
-check.configure {
+tasks.named('check').configure {
     dependsOn tasks.named('shellcheck')
 }

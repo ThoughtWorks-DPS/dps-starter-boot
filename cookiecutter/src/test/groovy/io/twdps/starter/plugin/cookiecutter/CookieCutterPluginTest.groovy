@@ -33,4 +33,8 @@ class CookieCutterPluginTest extends Specification {
         when: def t = project.getTasks().getByName('buildTemplate')
         then: t instanceof Exec
     }
+    def cookieCutterPluginAddsFormatTemplateTaskToProject() {
+        when: def t = project.getTasks().getByName('formatTemplate')
+        then: t instanceof Exec
+    }
 }

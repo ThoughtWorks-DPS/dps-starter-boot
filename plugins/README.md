@@ -773,7 +773,7 @@ asciidoctor {
 }
 
 tasks.register('reference', dependsOn: asciidoctor) {
-    group = 'Documentation'
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = 'Generate the reference documentation'
 }
 ```
@@ -946,7 +946,7 @@ tasks.named('shellcheck').configure {
     }
 }
 
-check.configure {
+tasks.named('check').configure {
     dependsOn tasks.named('shellcheck')
 }
 ```
@@ -1211,7 +1211,14 @@ scmVersion {
 }
 
 allprojects {
-    project.version = scmVersion.version
+    ext {
+        gitPresent = new File('.git').exists()
+        if (gitPresent) {
+            project.version = scmVersion.version
+        } else {
+            project.version = "0.0.0-SNAPSHOT"
+        }
+    }
 }
 ```
 
@@ -1368,7 +1375,7 @@ configurations[integrationTestSets.runtimeOnlyConfigurationName].extendsFrom(con
 
 def integrationTest = tasks.register('integrationTest', Test) {
     description = 'Runs integration tests.'
-    group = 'verification'
+    group = JavaBasePlugin.VERIFICATION_GROUP
 
     testClassesDirs = integrationTestSets.output.classesDirs
     classpath = integrationTestSets.runtimeClasspath
@@ -1417,13 +1424,13 @@ jacocoLogTestCoverage {
 }
 
 def cleanReports = tasks.register('cleanReports', Exec) {
-    group = 'Verification'
+    group = JavaBasePlugin.VERIFICATION_GROUP
     description = "Clean up aggregate jacoco reports"
     executable('rm')
     args('-rf', "${project.buildDir}/{reports,jacoco}")
 }
 
-clean.configure {
+tasks.named('clean').configure {
     dependsOn cleanReports
 }
 ```

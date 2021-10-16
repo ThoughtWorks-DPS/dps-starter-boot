@@ -49,7 +49,7 @@ plugins {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(getPropertyOrDefault("java_target_version", '11'))
-        vendor = JvmVendorSpec.ADOPTOPENJDK
+//        vendor = JvmVendorSpec.ADOPTOPENJDK
     }
 }
 ```
@@ -63,7 +63,7 @@ plugins {
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(getPropertyOrDefault("plugin_target_version", '11'))
-        vendor = JvmVendorSpec.ADOPTOPENJDK
+//        vendor = JvmVendorSpec.ADOPTOPENJDK
     }
 }
 ```
@@ -100,12 +100,13 @@ tasks.named('bootDistTar'){
 /**
  * Tasks for debugging build problems
  * - printSourceSetInformation  outputs source set content and classpath info for each type
+ * - javaVersion  outputs the version of the java jdk used for building the code
  */
 
 tasks.register('printSourceSetInformation'){
     group = JavaBasePlugin.DOCUMENTATION_GROUP
     description = "Show source set definitions"
-    doLast{
+    doLast {
         sourceSets.each { srcSet ->
             println "["+srcSet.name+"]"
             print "-->Source directories: "+srcSet.allJava.srcDirs+"\n"
@@ -117,6 +118,33 @@ tasks.register('printSourceSetInformation'){
             println ""
         }
     }
+}
+
+var javaVersion = tasks.register("javaVersion", Exec) {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Output java version being used"
+    executable "java"
+    args "-version"
+}
+
+var javaConfigVersion = tasks.register("javaConfigVersion") {
+    group = JavaBasePlugin.DOCUMENTATION_GROUP
+    description = "Output java version configured in gradle.properties (or default)"
+    var jdkVersion = getPropertyOrDefault("java_target_version", 'not set')
+    doLast {
+        println "JDK Target Version: [" + jdkVersion + "]"
+        println "doLast: [" + getPropertyOrDefault("java_target_version", 'still not set') + "]"
+    }
+}
+
+tasks.named('test') {
+    mustRunAfter javaVersion
+    mustRunAfter javaConfigVersion
+}
+
+tasks.named('check').configure {
+    dependsOn javaVersion
+    dependsOn javaConfigVersion
 }
 ```
 

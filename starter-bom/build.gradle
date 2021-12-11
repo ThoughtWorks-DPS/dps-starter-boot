@@ -14,6 +14,7 @@ ext {
     gradle_intellij_plugin_version = "0.4.14"
     h2_version = "1.4.200"
     junit_insights_version = "1.1.0"
+    log4j2_version = "2.15.0"
     mapstruct_version = "1.4.2.Final"
     mockserver_netty_version = "5.11.2"
     opa_filter_starter_version = "1.2.0"
@@ -37,6 +38,7 @@ ext {
 }
 
 dependencies {
+    api platform("org.apache.logging.log4j:log4j-bom:${log4j2_version}")
     api platform("org.springframework.boot:spring-boot-dependencies:${spring_boot_version}")
 
     constraints {
@@ -76,6 +78,18 @@ dependencies {
         api "de.adesso:junit-insights:${junit_insights_version}"
         api "com.bisnode.opa:opa-filter-spring-boot-starter:${opa_filter_starter_version}"
         api "org.testcontainers:kafka:${test_containers_version}"
+        api ('org.apache.logging.log4j:log4j-api') {
+            version {
+                strictly '[2.15,3.0['
+            }
+            because 'CVE-2021-44228: https://www.cyberkendra.com/2021/12/apache-log4j-vulnerability-details-and.html'
+        }
+        api ('org.apache.logging.log4j:log4j-core') {
+            version {
+                strictly '[2.15,3.0['
+            }
+            because 'CVE-2021-44228: https://www.cyberkendra.com/2021/12/apache-log4j-vulnerability-details-and.html'
+        }
 
         runtime "com.h2database:h2:${h2_version}"
         runtime "org.postgresql:postgresql:${postgresql_version}"

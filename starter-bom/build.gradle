@@ -14,7 +14,7 @@ ext {
     gradle_intellij_plugin_version = "0.4.14"
     h2_version = "1.4.200"
     junit_insights_version = "1.1.0"
-    log4j2_version = "2.17.0"
+    log4j2_version = "2.17.1"
     mapstruct_version = "1.4.2.Final"
     mockserver_netty_version = "5.11.2"
     opa_filter_starter_version = "1.2.0"
@@ -80,15 +80,15 @@ dependencies {
         api "org.testcontainers:kafka:${test_containers_version}"
         api('org.apache.logging.log4j:log4j-api') {
             version {
-                strictly '[2.17,3.0['
+                strictly '[2.17.1,3.0['
             }
-            because 'CVE-2021-45105, CVE-2021-45046, CVE-2021-44228: https://www.cyberkendra.com/2021/12/apache-log4j-vulnerability-details-and.html'
+            because 'CVE-2021-44832, CVE-2021-45105, CVE-2021-45046, CVE-2021-44228: https://www.cyberkendra.com/2021/12/apache-log4j-vulnerability-details-and.html'
         }
         api('org.apache.logging.log4j:log4j-core') {
             version {
-                strictly '[2.17,3.0['
+                strictly '[2.17.1,3.0['
             }
-            because 'CVE-2021-45105, CVE-2021-45046, CVE-2021-44228: https://www.cyberkendra.com/2021/12/apache-log4j-vulnerability-details-and.html'
+            because 'CVE-2021-44832, CVE-2021-45105, CVE-2021-45046, CVE-2021-44228: https://www.cyberkendra.com/2021/12/apache-log4j-vulnerability-details-and.html'
         }
 
         runtime "com.h2database:h2:${h2_version}"

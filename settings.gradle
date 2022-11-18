@@ -3,9 +3,6 @@ pluginManagement {
         mavenLocal()
         gradlePluginPortal()
         mavenCentral()
-        jcenter()
-        maven { url "https://palantir.bintray.com/releases" }
-        maven { url  "https://dl.bintray.com/adesso/junit-insights" }
     }
 }
 
@@ -13,7 +10,6 @@ dependencyResolutionManagement {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
     }
 }
 
